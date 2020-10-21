@@ -1,11 +1,9 @@
 {
   "name": "graphter",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "A project generator to make it easy to get a new Graphter project up and running",
   "main": "index.js",
-  "scripts": {
-
-  },
+  "scripts": {},
   "repository": {
     "type": "git",
     "url": "git+https://github.com/Graphter/graphter.git"
@@ -19,8 +17,7 @@
     "url": "https://github.com/Graphter/graphter/issues"
   },
   "homepage": "https://github.com/Graphter/graphter#readme",
-  "devDependencies": {
-  },
+  "devDependencies": {},
   "publishConfig": {
     "access": "public"
   }
