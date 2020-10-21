@@ -4,10 +4,7 @@
   "description": "A project generator to make it easy to get a new Graphter project up and running",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1",
-    "create-react-app": "node tasks/cra.js",
-    "create-graphter-app": "create-react-app test-app --template file:templates/cra-template-graphter-typescript --scripts-version=/Users/jonathanpritchard/Projects/supersonicanaconda/packages/graphter/react-scripts-3.4.4.tgz",
-    "create-graphter-app-2": "node tasks/cra.js --template file:templates/cra-template-graphter-typescript"
+
   },
   "repository": {
     "type": "git",
@@ -15,13 +12,14 @@
   },
   "author": "Jonathan Pritchard",
   "license": "ISC",
+  "bin": {
+    "graphter": "./index.js"
+  },
   "bugs": {
     "url": "https://github.com/Graphter/graphter/issues"
   },
   "homepage": "https://github.com/Graphter/graphter#readme",
   "devDependencies": {
-    "create-react-app": "^3.4.1",
-    "react-scripts": "^3.4.4"
   },
   "publishConfig": {
     "access": "public"
