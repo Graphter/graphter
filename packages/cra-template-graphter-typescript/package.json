@@ -24,5 +24,11 @@
   "files": [
     "template",
     "template.json"
-  ]
+  ],
+  "devDependencies": {
+    "@graphter/core": "0.0.1",
+    "@graphter/renderer-component-library-react": "0.0.1",
+    "@graphter/renderer-react": "0.0.1",
+    "@graphter/validator-jsonschema": "0.0.1"
+  }
 }
