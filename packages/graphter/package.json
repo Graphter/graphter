@@ -1,6 +1,6 @@
 {
   "name": "graphter",
-  "version": "0.0.4",
+  "version": "0.0.5",
   "description": "A project generator to make it easy to get a new Graphter project up and running",
   "main": "index.js",
   "scripts": {
