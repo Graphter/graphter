@@ -1,0 +1,28 @@
+@import "@graphter/theme/src/colours.pcss";
+
+.page{
+  display: inline-block;
+  color: var(--dark-text);
+  background-color: var(--light-background);
+  padding: 10px;
+  border-radius: 5px;
+  margin: 0 2px 2px 0;
+  font-size: 1rem;
+  border: 0 none transparent;
+  font-family: inherit;
+  min-width: 50px;
+  box-sizing: border-box;
+  text-align: center;
+  cursor: pointer;
+}
+a.page:hover{
+  color: var(--dark-text);
+  background-color: var(--light-background-hover);
+  text-decoration: none;
+}
+
+.current{
+  cursor: default;
+  color: white;
+  background-color: var(--brand-background);
+}

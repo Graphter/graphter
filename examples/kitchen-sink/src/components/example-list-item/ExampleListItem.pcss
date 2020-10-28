@@ -1,0 +1,24 @@
+@import '@graphter/theme/src/colours.pcss';
+
+.listItem{
+  display: block;
+  color: var(--dark-text);
+  background-color: var(--light-background);
+  padding: 1em 1em 1em 1.5em;
+  margin-bottom: 5px;
+  border-radius: 0.2em;
+  box-shadow: rgba(0,0,0,0.2) 0 3px 10px, inset 15px 0 0 0 white;
+}
+
+.listItem:hover{
+  color: var(--dark-text);
+  background-color: var(--light-background-hover);
+  text-decoration: none;
+}
+
+@supports (backdrop-filter: blur(10px)) {
+  .listItem {
+    background-color: var(--light-background-blurred);
+    backdrop-filter: blur(10px);
+  }
+}

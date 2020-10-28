@@ -3,5 +3,5 @@
 /packages/core/dist/*
 /packages/renderer-react/dist/*
 /packages/renderer-component-library-react/dist/*
-/examples/basic/dist/*
+/examples/kitchen-sink/dist/*
 /packages/validator-jsonschema/dist/*

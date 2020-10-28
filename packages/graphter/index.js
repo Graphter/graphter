@@ -7,6 +7,6 @@ console.log(figlet.textSync('Graphter', {
 }))
 console.log('The project scaffolder will live here when we make it.')
 console.log()
-console.log('For now refer to the basic example.')
+console.log('For now refer to the kitchen sink example.')
 console.log()
 console.log()
