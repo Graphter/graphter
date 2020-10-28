@@ -4,7 +4,7 @@
   "description": "A project generator to make it easy to get a new Graphter project up and running",
   "main": "index.js",
   "scripts": {
-    "build": "node ./index.js test-app"
+    "build": "node ./index.js"
   },
   "repository": {
     "type": "git",
