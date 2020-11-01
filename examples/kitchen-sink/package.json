@@ -7,7 +7,8 @@
     "start": "webpack-dev-server --display-modules",
     "build-dev": "webpack --mode development --display-modules",
     "build": "webpack --mode production",
-    "e2e": "npm run start & wait-on http://localhost:9000 & cypress run --browser firefox --config watchForFileChanges=false"
+    "e2e": "npm run start & wait-on http://localhost:9000 & cypress run --browser firefox",
+    "e2e:watch": "npm run start & wait-on http://localhost:9000 & cypress open --browser firefox --config watchForFileChanges=true"
   },
   "keywords": [],
   "author": "",
@@ -25,6 +26,7 @@
     "babel-loader": "^8.1.0",
     "classnames": "^2.2.6",
     "css-loader": "^3.5.2",
+    "cypress": "^5.5.0",
     "duplicate-package-checker-webpack-plugin": "^3.0.0",
     "file-loader": "^6.0.0",
     "html-loader": "^1.1.0",
