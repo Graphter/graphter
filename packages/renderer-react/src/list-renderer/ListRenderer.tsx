@@ -75,6 +75,7 @@ export default function ListRenderer(
     <Fragment>
       { error && <ErrorDisplayComponent err={error} /> }
       { loading && <div>loading...</div> }
+      <div data-cy='list'>
       {items.map((item, i) => (
         renderItem && (
           <ErrorBoundary
@@ -83,6 +84,7 @@ export default function ListRenderer(
             {renderWithErrorHandling(() => renderItem({ item }))}
           </ErrorBoundary>)
         ))}
+      </div>
       {renderPagination && (
         <ErrorBoundary errorRenderer={ErrorDisplayComponent}>
           {renderWithErrorHandling(() => renderPagination({count}))}
