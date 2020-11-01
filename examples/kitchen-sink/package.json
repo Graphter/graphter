@@ -6,7 +6,8 @@
   "scripts": {
     "start": "webpack-dev-server --display-modules",
     "build-dev": "webpack --mode development --display-modules",
-    "build": "webpack --mode production"
+    "build": "webpack --mode production",
+    "e2e": "npm run start & wait-on http://localhost:9000 & cypress run --browser firefox --config watchForFileChanges=false"
   },
   "keywords": [],
   "author": "",
