@@ -30,8 +30,8 @@ export default function ListNodeRenderer(
   } = useArrayNodeData(path, config, originalNodeData, committed)
 
   return (
-    <div className={s.listNodeRenderer}>
-      <div className={s.items}>
+    <div className={s.listNodeRenderer} data-nodetype='list' data-nodepath={path.join('/')}>
+      <div className={s.items} data-testid='items'>
         {childIds && childIds.map((childId: any, i: number) => {
           return (
             <DefaultExistingItemWrapper key={childId} onRemove={() => {
@@ -94,7 +94,7 @@ function DefaultNewItemWrapper(
 ) {
   return (
 
-    <div className={s.defaultNewItemWrapper}>
+    <div className={s.defaultNewItemWrapper} data-testid='add-item'>
       {children}
       <button type='button' className={s.button} onClick={onAdd}>Add [+]</button>
     </div>

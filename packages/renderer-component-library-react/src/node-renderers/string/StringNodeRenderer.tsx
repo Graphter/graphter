@@ -23,7 +23,7 @@ function StringNodeRenderer(
       <input
         type='text'
         value={nodeData}
-        data-nodetype='string-input'
+        data-nodetype='string'
         data-nodepath={path.join('/')}
         className={s.input}
         onChange={(e) => {

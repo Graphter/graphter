@@ -16,7 +16,7 @@ export default function ObjectNodeRenderer(
   if (!originalNodeData) originalNodeData = createDefault(config, {})
   useNodeData(path, config, originalNodeData, committed)
   return (
-    <div className={s.objectNodeRenderer}>
+    <div className={s.objectNodeRenderer} data-nodetype='object' data-nodepath={path.join('/')}>
       {config.children && config.children.map((childConfig, i) => {
         const childRendererRegistration = nodeRendererStore.get(childConfig.type)
         if (!childRendererRegistration) return null
