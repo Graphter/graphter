@@ -23,7 +23,8 @@ function StringNodeRenderer(
       <input
         type='text'
         value={nodeData}
-        data-testid='string-input'
+        data-nodetype='string-input'
+        data-nodepath={path.join('/')}
         className={s.input}
         onChange={(e) => {
           if(!touched) setTouched(true)
