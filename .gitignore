@@ -5,3 +5,4 @@
 /packages/renderer-component-library-react/dist/*
 /examples/kitchen-sink/dist/*
 /packages/validator-jsonschema/dist/*
+/examples/kitchen-sink/cypress/videos/*
