@@ -96,7 +96,7 @@ export default function NodeEditRenderer(
 
         <TypeRenderer
             committed={true}
-            path={[config.id, editingId || 'new']}
+            path={[config.id, editingId !== undefined ? editingId : 'new']}
             config={config}
             originalNodeData={startingData}
             options={registration.options}
