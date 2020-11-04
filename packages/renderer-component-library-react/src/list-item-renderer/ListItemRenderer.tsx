@@ -25,8 +25,8 @@ export default function ListItemRenderer({  idPath, item, titlePath, subtextPath
 
   return (
     <Fragment>
-      <span className={s.title} data-testid='item-title'>{title}</span>
-      {subtext && <span className={s.subtext} data-testid='item-subtext'>{subtext}</span>}
+      <span className={s.title} data-testid='title'>{title}</span>
+      {subtext && <span className={s.subtext} data-testid='subtext'>{subtext}</span>}
     </Fragment>
   );
 }
