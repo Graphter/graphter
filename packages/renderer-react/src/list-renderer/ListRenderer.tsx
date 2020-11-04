@@ -75,7 +75,7 @@ export default function ListRenderer(
     <Fragment>
       { error && <ErrorDisplayComponent err={error} /> }
       { loading && <div>loading...</div> }
-      <div data-cy='list'>
+      <div data-testid='list'>
       {items.map((item, i) => (
         renderItem && (
           <ErrorBoundary
