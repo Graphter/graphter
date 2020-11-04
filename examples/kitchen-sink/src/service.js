@@ -3,7 +3,7 @@ let pages = [...new Array(numberOfPages)].map((_, i) => {
   return {
     id: i,
     title: `Some name ${i}`,
-    description: `Some descriptive text ${i}`,
+    metadata: `Some descriptive text ${i}`,
     authors: [
       {
         name: `Joe Bloggs ${i}`,

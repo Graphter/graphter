@@ -34,6 +34,11 @@ export default {
       ]
     },
     {
+      id: 'metadata',
+      name: 'Metadata',
+      type: 'string'
+    },
+    {
       id: 'authors',
       name: 'Authors',
       description: 'The authors',

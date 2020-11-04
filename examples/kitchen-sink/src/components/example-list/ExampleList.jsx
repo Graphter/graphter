@@ -20,7 +20,7 @@ export default function ExampleList({}){
       <ListRenderer
         config={pageConfig}
         renderItem={({ item }) => (
-          <ExampleListItem item={item} page={page} size={size} />
+          <ExampleListItem item={item} page={page} size={size} subtextPath={['metadata']} />
         )}
         page={page}
         size={size}
