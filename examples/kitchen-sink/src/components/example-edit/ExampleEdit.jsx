@@ -68,32 +68,6 @@ export function ExampleEdit({config, listUri}) {
               cancel={() => history.push(backUri)}
               onSaved={() => history.push(backUri)}
             />
-            <NodeEditRenderer
-              config={config}
-              editingId={editingId}
-              errorRenderer={ErrorPanel}
-              typeRegistry={[
-                registerStringNodeRenderer(),
-                registerObjectNodeRenderer(),
-                registerListNodeRenderer(),
-                {
-                  type: 'multiline-string',
-                  renderer: ({propData, setPropDataValue, propertyConfig, validationResults}) => {
-                    return (
-                      <div>
-                        <label htmlFor={propertyConfig.id}>{propertyConfig.name}</label>
-                        {propertyConfig.description && <p>{propertyConfig.description}</p>}
-                        <textarea id={propertyConfig.id} value={propData} onChange={(e) => {
-                          setPropDataValue(e.currentTarget.value);
-                        }}/>
-                      </div>
-                    );
-                  }
-                }
-              ]}
-              cancel={() => history.push(backUri)}
-              onSaved={() => history.push(backUri)}
-            />
           </NodeDataProvider>
         </RecoilRoot>
       </NodeValidationProvider>
