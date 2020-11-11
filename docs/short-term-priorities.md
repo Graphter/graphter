@@ -8,11 +8,9 @@
 1. Generator
 1. E2E tests ✅
 1. Unit tests:
-    1. Full coverage of stable packages:
-        1. JsonSchema validator
-    1. Minimal coverage of more volatile elements
-        1. Component Lib
-    1. Judgement for everything in between
+    1. JsonSchema validator ✅
+    1. Component Lib
+    1. Renderer
 
 ## Milestone 1.
 
