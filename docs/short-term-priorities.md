@@ -16,10 +16,13 @@
 
 ## Milestone 1.
 
+1. List
+1. Search
 1. Local storage service
 1. 
 
 ## Backlog
+1. Full range of validation stages
 1. Read/Write node renderer modes
 1. Display node renderer
 1. Basic node renderers:
