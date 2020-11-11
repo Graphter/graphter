@@ -145,4 +145,11 @@ context('Edit', () => {
 
   })
 
+  it('should show validation errors', () => {
+    cy.get('[data-nodepath="page/0/title"]')
+      .type('{selectall}')
+      .type('{del}')
+    cy.get('[data-testid=validation-error]')
+      .should('be.visible')
+  })
 })

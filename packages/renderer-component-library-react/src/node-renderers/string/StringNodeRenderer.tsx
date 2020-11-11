@@ -31,7 +31,7 @@ function StringNodeRenderer(
           setNodeData && setNodeData(e.currentTarget.value);
         }} />
       {touched && validationResults && validationResults.map((result, i) => (
-        result.valid ? null : <div className={s.error} key={i}>{result.errorMessage}</div>
+        result.valid ? null : <div className={s.error} key={i} data-testid='validation-error'>{result.errorMessage}</div>
       ))}
     </>
   )
