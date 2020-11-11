@@ -1,4 +1,4 @@
-import { NodeValidator } from "./NodeValidator";
+import { NodeValidation } from "./NodeValidation";
 
 export interface NodeConfig {
   id: string
@@ -7,7 +7,7 @@ export interface NodeConfig {
   description?: string
   children?: Array<NodeConfig>
   identityPath?: Array<string>
-  validation?: NodeValidator | Array<NodeValidator>
+  validation?: NodeValidation | Array<NodeValidation>
   identifier?: boolean
   default?: any | Function
 }

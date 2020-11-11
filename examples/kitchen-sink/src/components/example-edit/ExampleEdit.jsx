@@ -22,6 +22,7 @@ import {
   useRecoilNodeValidation
 } from "@graphter/renderer-react";
 import { RecoilRoot } from "recoil";
+import { registerJsonSchemaValidatorSetup } from "@graphter/validator-jsonschema";
 
 export function ExampleEdit({config, listUri}) {
   const {id} = useParams();
@@ -35,13 +36,17 @@ export function ExampleEdit({config, listUri}) {
       <NodeValidationProvider
         instanceId={editingId}
         nodeValidationHook={useRecoilNodeValidation}
-        config={config}>
+        validatorRegistry={[
+          registerJsonSchemaValidatorSetup()
+        ]}
+      >
         <RecoilRoot>
           <NodeDataProvider
             instanceId={editingId}
             nodeDataHook={useRecoilNodeData}
             arrayNodeDataHook={useRecoilArrayNodeData}
-            config={config}>
+            config={config}
+          >
             <NodeEditRenderer
               config={config}
               editingId={editingId}
@@ -74,20 +79,3 @@ export function ExampleEdit({config, listUri}) {
     </div>
   )
 }
-
-// typeRenderers={
-// {
-//     'object': ObjectNodeRenderer_old,
-//     'multiline-string': ({ propData,setPropDataValue, propertyConfig, validationResults }) => {
-//     return (
-//         <div>
-//             <label htmlFor={propertyConfig.id}>{propertyConfig.name}</label>
-//             {propertyConfig.description && <p>{propertyConfig.description}</p>}
-//             <textarea id={propertyConfig.id} value={propData} onChange={(e) => {
-//                 setPropDataValue(e.currentTarget.value);
-//             }} />
-//         </div>
-//     );
-// },
-//     'list': ListNodeRenderer
-// }}

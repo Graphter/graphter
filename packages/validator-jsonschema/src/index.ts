@@ -1,5 +1,7 @@
-import JsonSchemaNodeValidator from "./JsonSchemaNodeValidator";
+import jsonSchemaNodeValidatorSetup from "./jsonSchemaNodeValidatorSetup";
+import registerJsonSchemaValidatorSetup from './registerJsonSchemaValidatorSetup'
 
 export {
-  JsonSchemaNodeValidator
+  jsonSchemaNodeValidatorSetup,
+  registerJsonSchemaValidatorSetup
 };

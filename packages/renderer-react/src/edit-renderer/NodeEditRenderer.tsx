@@ -40,6 +40,7 @@ export default function NodeEditRenderer(
 
   nodeRendererStore.registerAll(typeRegistry)
 
+
   const service = useService();
 
   const [ loading, setLoading ] = useState(true);

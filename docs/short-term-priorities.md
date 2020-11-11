@@ -6,6 +6,7 @@
 1. Readme skeleton ✅
 1. UI cleanup ✅
 1. Generator
+1. E2E tests ✅
 1. Unit tests:
     1. Full coverage of stable packages:
         1. JsonSchema validator

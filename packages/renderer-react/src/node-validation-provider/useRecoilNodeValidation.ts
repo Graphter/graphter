@@ -1,12 +1,13 @@
 import propDataStore from "../store/propDataStore";
-import { useRecoilState, useRecoilValue } from "recoil";
+import { useRecoilValue } from "recoil";
 import { useEffect, useMemo, useState } from "react";
-import { NodeConfig, PathSegment, ValidationExecutionStage, ValidationResult } from "@graphter/core";
-import { NodeValidator } from "@graphter/core/dist/NodeValidator";
+import { NodeValidatorRegistration, PathSegment, ValidationExecutionStage, ValidationResult } from "@graphter/core";
+import { NodeValidation } from "@graphter/core";
 import { NodeValidationHook } from "./NodeValidationProvider";
 
 export const useRecoilNodeValidation: NodeValidationHook = (
-  path: Array<PathSegment>
+  path: Array<PathSegment>,
+  validatorRegistry: Array<NodeValidatorRegistration>
 ) => {
   if(!propDataStore.has(path)) return []
   const propDataState = propDataStore.get(path)
@@ -16,8 +17,10 @@ export const useRecoilNodeValidation: NodeValidationHook = (
 
   const onChangeValidators = useMemo(() => {
     if(!config.validation) return null
-    let validations:Array<NodeValidator> = Array.isArray(config.validation) ? config.validation : [ config.validation ]
-    return validations.filter(validation => validation.executeOn.includes(ValidationExecutionStage.CHANGE))
+    let validations:Array<NodeValidation> = Array.isArray(config.validation) ? config.validation : [ config.validation ]
+    return validations
+      .filter(validation => validation.executeOn.includes(ValidationExecutionStage.CHANGE))
+      .map(validation => validatorRegistry.find(validator => validator.type === validation.type)?.validatorSetup(validation.options))
   }, [ config ])
 
   const [ validationResults, setValidationResults ] = useState<Array<ValidationResult>>([])
@@ -25,15 +28,19 @@ export const useRecoilNodeValidation: NodeValidationHook = (
   useEffect(() => {
     if(onChangeValidators) {
       (async () => {
-        const results = await Promise.all(onChangeValidators.map(validator =>
-          validator.execute(
-            ValidationExecutionStage.CHANGE,
-            config,
-            propData
-          )))
+        const results = await Promise.all(onChangeValidators.map(validator => {
+          if(validator) {
+            return validator(
+              ValidationExecutionStage.CHANGE,
+              config,
+              propData
+            )
+          }
+          return undefined
+        }))
         const flattenedValidationResults = results.reduce<ValidationResult[]>((a, c) => {
           if (Array.isArray(c)) return a.concat(c)
-          a.push(c)
+          if(c !== undefined) a.push(c)
           return a
         }, [])
         setValidationResults(flattenedValidationResults)

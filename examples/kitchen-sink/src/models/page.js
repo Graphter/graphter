@@ -1,5 +1,3 @@
-import { ValidationExecutionStage } from "@graphter/core";
-import { JsonSchemaNodeValidator } from "@graphter/validator-jsonschema";
 import { AllValidationExecutionStages } from "@graphter/core";
 
 export default {
@@ -14,23 +12,28 @@ export default {
       description: 'The page title',
       type: 'string',
       validation: [
-        new JsonSchemaNodeValidator({
-          error: 'Cannot be more than 255 characters long',
+        {
+          type: 'json-schema',
           executeOn: AllValidationExecutionStages,
-          schema: {
-            "maxLength": 255
-          },
           displayMode: [ 'INLINE', 'SUMMARY', 'MODAL' ],
-        }),
-        new JsonSchemaNodeValidator({
-          error: 'Must be at least 1 character long',
+          options: {
+            error: 'Must be at least 1 character long',
+            schema: {
+              "minLength": 1
+            },
+          }
+        },
+        {
+          type: 'json-schema',
           executeOn: AllValidationExecutionStages,
-          schema: {
-            "minLength": 1
-          },
           displayMode: [ 'INLINE', 'SUMMARY', 'MODAL' ],
-        }),
-
+          options: {
+            error: 'Cannot be more than 255 characters long',
+            schema: {
+              "maxLength": 255
+            },
+          }
+        }
       ]
     },
     {
@@ -54,14 +57,17 @@ export default {
               description: ' ',
               type: 'string',
               validation: [
-                new JsonSchemaNodeValidator({
-                  error: 'Must be at least 1 character long',
+                {
+                  type: 'json-schema',
                   executeOn: AllValidationExecutionStages,
-                  schema: {
-                    "minLength": 1
-                  },
                   displayMode: [ 'INLINE', 'SUMMARY', 'MODAL' ],
-                })
+                  options: {
+                    error: 'Must be at least 1 character long',
+                    schema: {
+                      "minLength": 1
+                    },
+                  }
+                },
               ]
             },
             {
@@ -94,14 +100,17 @@ export default {
           type: 'string',
           default: '',
           validation: [
-            new JsonSchemaNodeValidator({
-              error: 'Cannot be more than 255 characters long',
+            {
+              type: 'json-schema',
               executeOn: AllValidationExecutionStages,
-              schema: {
-                "minLength": 1
-              },
               displayMode: [ 'INLINE', 'SUMMARY', 'MODAL' ],
-            })
+              options: {
+                error: 'Must be at least 1 character long',
+                schema: {
+                  "minLength": 1
+                },
+              }
+            },
           ],
         }
       ]
