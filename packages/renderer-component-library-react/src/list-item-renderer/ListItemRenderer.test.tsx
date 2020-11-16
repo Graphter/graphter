@@ -11,43 +11,40 @@ describe('<ListItem />', () => {
 
     it.each([ 'name', 'Name', 'title', 'Title', 'id', 'Id', 'ID' ])(
       `should look for a property called %p to guess as title`, async (prop) => {
-        const { container } = render(<ListItemRenderer item={{
+        const { container, getByText } = render(<ListItemRenderer item={{
           somethingElse: 'blah blah',
           [prop]: 'Some name',
           description: 'Some descriptive text'
         }} />);
-        expect(screen.getByTestId('item-title')).toHaveTextContent('Some name');
+        expect(getByText('Some name')).not.toBeNull();
         expect(container).toMatchSnapshot();
       });
 
     it.each([ 'description', 'Description' ])(
       `should look for a property called %p to guess as subtext`, async (prop) => {
-        const { container } = render(<ListItemRenderer item={{
+        const { container, getByText } = render(<ListItemRenderer item={{
           somethingElse: 'blah blah',
           name: 'Some Name',
           [prop]: 'Some descriptive text'
         }}/>);
-        expect(screen.getByTestId('item-subtext')).toHaveTextContent('Some descriptive text');
+        expect(getByText('Some descriptive text')).not.toBeNull();
         expect(container).toMatchSnapshot();
       });
 
   });
 
-  it('should use idPath, titlePath and subtextPath when defined', async () => {
-    render(<ListItemRenderer
-      idPath={[ 'aSpecialId' ]}
+  it('should use titlePath and subtextPath when defined', async () => {
+    const { getByText } = render(<ListItemRenderer
       titlePath={[ 'aSpecialName' ]}
       subtextPath={[ 'aSpecialDescription' ]}
       item={{
-        aSpecialId: 'some-special-id',
         aSpecialName: 'Some Special Name',
         aSpecialDescription: 'blah blah special blah',
       }}
     />);
-    expect(screen.getByTestId('item-title')).toHaveTextContent('Some Special Name');
-    expect(screen.getByTestId('item-subtext')).toHaveTextContent('blah blah special blah');
+    expect(getByText('Some Special Name')).not.toBeNull();
+    expect(getByText('blah blah special blah')).not.toBeNull();
   });
-
 });
 
 export {};
