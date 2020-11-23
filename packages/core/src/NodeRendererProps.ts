@@ -22,5 +22,5 @@ export interface NodeRendererProps {
    */
   path: Array<PathSegment>
 
-  ErrorDisplayComponent: ComponentType<ErrorRendererProps> | null
+  ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
 }
