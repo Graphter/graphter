@@ -11,7 +11,7 @@
     1. Full coverage of stable packages:
         1. JsonSchema validator
     1. Minimal coverage of more volatile elements
-        1. Component Lib
+        1. Component Lib ✅
     1. Judgement for everything in between
 
 ## Milestone 1.
