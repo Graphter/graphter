@@ -23,9 +23,7 @@ describe(`<StringRenderer />`, () => {
         type: 'string',
         default: 'Unnamed'
       }}
-      originalNodeData={{
-        name: 'Foo Bar'
-      }}
+      originalNodeData={'Foo Bar'}
       committed={true}
       path={['/']}
     />);
@@ -58,9 +56,7 @@ describe(`<StringRenderer />`, () => {
         type: 'string',
         default: 'The default value'
       }}
-      originalNodeData={{
-        name: 'The original value'
-      }}
+      originalNodeData={'The original value'}
       committed={true}
       path={['/']}
     />);
@@ -81,9 +77,7 @@ describe(`<StringRenderer />`, () => {
         type: 'string',
         default: 'The default value'
       }}
-      originalNodeData={{
-        name: 'The original value'
-      }}
+      originalNodeData={'The original value'}
       committed={true}
       path={['/']}
     />);
@@ -107,9 +101,7 @@ describe(`<StringRenderer />`, () => {
         type: 'string',
         default: 'The default value'
       }}
-      originalNodeData={{
-        name: 'The original value'
-      }}
+      originalNodeData={'The original value'}
       committed={true}
       path={['/']}
     />);
