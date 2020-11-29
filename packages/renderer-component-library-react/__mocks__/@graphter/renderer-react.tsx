@@ -8,6 +8,16 @@ export const useArrayNodeData = jest.fn(() => {
     commitItem: jest.fn()
   }
 })
+
+export const useNodeData = jest.fn(() => {
+  return [
+    null,
+    () => {}
+  ]
+})
+
+export const useNodeValidation = jest.fn().mockResolvedValue([])
+
 export const nodeRendererStore = {
   get: jest.fn(() => ({
     type: 'string',
