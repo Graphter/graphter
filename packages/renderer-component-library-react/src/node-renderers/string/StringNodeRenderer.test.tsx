@@ -3,11 +3,9 @@ import { act, render, fireEvent } from '@testing-library/react';
 import * as graphterRenderer from "@graphter/renderer-react";
 import StringRenderer from "./StringNodeRenderer";
 
-jest.spyOn(graphterRenderer, 'useNodeData').mockImplementation(() => [ null, () => {} ])
-jest.spyOn(graphterRenderer, 'useNodeValidation').mockImplementation(() => [] )
-
 const useNodeDataMock = graphterRenderer.useNodeData as  jest.Mock<any>
 const useNodeValidationMock = graphterRenderer.useNodeValidation as  jest.Mock<any>
+const createDefaultMock = graphterRenderer.createDefault as jest.Mock<any>
 
 describe(`<StringRenderer />`, () => {
   afterEach(() => {
@@ -31,19 +29,22 @@ describe(`<StringRenderer />`, () => {
   });
   it('should render default data when new', () => {
     useNodeDataMock.mockReturnValue([ 'The default value', () => {} ])
+    createDefaultMock.mockReturnValue('The default value')
+    const config = {
+      id: 'name',
+      name: 'Name',
+      description: 'The name',
+      type: 'string',
+      default: 'The default value'
+    }
     const { getByDisplayValue } = render(<StringRenderer
-      config={{
-        id: 'name',
-        name: 'Name',
-        description: 'The name',
-        type: 'string',
-        default: 'The default value'
-      }}
+      config={config}
       originalNodeData={undefined}
       committed={true}
       path={['/']}
     />);
     expect(useNodeDataMock).toHaveBeenCalled()
+    expect(createDefaultMock).toHaveBeenCalledWith(config, '')
     expect(useNodeDataMock.mock.calls[0][2]).toBe('The default value')
   })
   it('should use the data provider for data', () => {
