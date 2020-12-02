@@ -28,7 +28,9 @@ export const useNodeValidation = (
   if(!ctx) throw new Error('No validation provider found. Make sure a <NodeValidationProvider /> is defined.')
   if (!ctx.nodeValidationHook) throw new Error(`Couldn't find a NodeValidationHook to use.`);
   if(!ctx.validatorRegistry) throw new Error('No validators have been defined. Please ensue <NodeValidationProvider /> has been defined correctly.')
+
   return ctx.nodeValidationHook(path, ctx.validatorRegistry);
+
 }
 
 export default function NodeValidationProvider(
