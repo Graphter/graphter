@@ -23,8 +23,6 @@ export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidato
     ...options
   };
 
-  if(options.executeOn === undefined) throw new Error(`Shouldn't happen if defaulting was done properly`)
-
   const ajv = new Ajv({
     jsonPointers: true,
     allErrors: true
@@ -38,20 +36,15 @@ export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidato
     data: any,
   ): Promise<ValidationResult> {
     const valid = validateFn(data);
-    console.log(`${config.id} value of ${JSON.stringify(data)} ${valid?'passed':'failed'} validation: ${JSON.stringify(options)}`)
+    console.debug(`${config.id} value of ${JSON.stringify(data)} ${valid?'passed':'failed'} validation: ${JSON.stringify(options)}`)
     if(valid){
       return Promise.resolve({
-        valid: true,
-        dataPaths: [ config.id ]
+        valid: true
       });
     } else {
       const result: ValidationResult = {
         valid: false,
         errorMessage: generateErrorMessage(data, options, validateFn),
-      }
-
-      if(validateFn.errors){
-        result.dataPaths = validateFn.errors.map(err => config.id + err.dataPath);
       }
 
       if(Array.isArray(options.errorDisplayMode)){
