@@ -35,6 +35,7 @@ describe('<ListRenderer />', () => {
     baseModelConfig = {
       id: 'page',
       name: 'Page',
+      type: 'object',
       children: [
         { id: 'id', type: 'number' },
         { id: 'somethingElse', type: 'string'},
