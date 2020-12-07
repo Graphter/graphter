@@ -1,6 +1,7 @@
 import { JsonSchemaValidatorOptions } from "./JsonSchemaValidatorOptions";
 import {
-  NodeConfig, ValidationErrorDisplayMode,
+  NodeConfig,
+  ValidationErrorDisplayMode,
   ValidationExecutionStage,
   ValidationResult
 } from "@graphter/core";

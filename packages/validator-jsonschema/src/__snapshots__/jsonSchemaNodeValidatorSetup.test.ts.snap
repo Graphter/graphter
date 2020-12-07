@@ -1,10 +1,15 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`JsonSchemaPropertyValidator should default options correctly 1`] = `
-Array [
-  "INLINE",
-  "SUMMARY",
-]
-`;
+exports[`jsonSchemaNodeValidatorSetup should return the correct result when data is valid 1`] = `Promise {}`;
 
-exports[`JsonSchemaPropertyValidator should error when no schema is provided 1`] = `"Schema option is required by JsonSchemaValidator"`;
+exports[`jsonSchemaNodeValidatorSetup should return the correct result when did is not valid 1`] = `Promise {}`;
+
+exports[`jsonSchemaNodeValidatorSetup should use sensible defaults 1`] = `
+Object {
+  "errorDisplayMode": Array [
+    "INLINE",
+    "SUMMARY",
+  ],
+  "schema": Object {},
+}
+`;
