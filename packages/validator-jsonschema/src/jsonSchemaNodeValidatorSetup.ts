@@ -10,12 +10,6 @@ import Ajv from "ajv";
 export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidatorOptions){
   if(!options || !options.schema) throw new Error(`Schema option is required by JsonSchemaValidator`);
   options = {
-    executeOn: [
-      ValidationExecutionStage.CLIENT_CREATE,
-      ValidationExecutionStage.CLIENT_UPDATE,
-      ValidationExecutionStage.SERVER_UPDATE,
-      ValidationExecutionStage.SERVER_UPDATE
-    ],
     errorDisplayMode: [
       ValidationErrorDisplayMode.INLINE,
       ValidationErrorDisplayMode.SUMMARY

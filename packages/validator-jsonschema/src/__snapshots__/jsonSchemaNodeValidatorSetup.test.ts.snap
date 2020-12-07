@@ -2,15 +2,6 @@
 
 exports[`JsonSchemaPropertyValidator should default options correctly 1`] = `
 Array [
-  "CLIENT_CREATE",
-  "CLIENT_UPDATE",
-  "SERVER_UPDATE",
-  "SERVER_UPDATE",
-]
-`;
-
-exports[`JsonSchemaPropertyValidator should default options correctly 2`] = `
-Array [
   "INLINE",
   "SUMMARY",
 ]

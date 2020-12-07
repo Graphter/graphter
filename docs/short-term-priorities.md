@@ -8,14 +8,14 @@
 1. Generator
 1. E2E tests ✅
 1. Unit tests:
-    1. Full coverage of stable packages:
-        1. JsonSchema validator
-    1. Minimal coverage of more volatile elements
-        1. Component Lib ✅
-    1. Judgement for everything in between
+    1. JsonSchema validator ✅
+    1. Component Lib
+    1. Renderer
 
 ## Milestone 1.
 
+1. List
+1. Search
 1. Local storage service
 1. 
 
@@ -26,6 +26,7 @@
     1. Migration
     
 ## Backlog
+1. Full range of validation stages
 1. Read/Write node renderer modes
 1. Display node renderer
 1. Basic node renderers:
