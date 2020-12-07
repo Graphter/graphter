@@ -4,13 +4,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some Name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -21,13 +21,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -38,13 +38,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -55,13 +55,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -72,13 +72,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -89,13 +89,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some Name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -106,13 +106,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -123,13 +123,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>
@@ -140,13 +140,13 @@ exports[`<ListItem /> when no paths are passed in should look for a property cal
 <div>
   <span
     class="title"
-    data-testid="item-title"
+    data-testid="title"
   >
     Some name
   </span>
   <span
     class="subtext"
-    data-testid="item-subtext"
+    data-testid="subtext"
   >
     Some descriptive text
   </span>

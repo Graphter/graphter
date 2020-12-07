@@ -13,8 +13,9 @@ export default function ListNodeRenderer(
     ErrorDisplayComponent
   }: NodeRendererProps
 ) {
+  if(!config) throw new Error(`<ListNodeRenderer /> component at '${path.join('/')}' is missing config`)
   if (!originalNodeData) originalNodeData = createDefault(config, [])
-  if(!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays`)
+  if(!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
   if (!config.children || !config.children.length) throw new Error(`'${config.type}' renderer must have at least one child config`)
   if (config.children.length > 1) throw new Error('Only one child list type is currently supported')
 
@@ -72,7 +73,7 @@ function DefaultExistingItemWrapper(
   }: DefaultExistingItemWrapperProps
 ) {
   return (
-    <div className={s.defaultItemWrapper}>
+    <div className={s.defaultItemWrapper} data-testid='item'>
       {children}
       <button
         type='button'

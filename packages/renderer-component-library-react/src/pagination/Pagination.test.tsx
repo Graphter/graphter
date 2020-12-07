@@ -1,24 +1,25 @@
 import React from "react";
-import { act, render, within, fireEvent } from '@testing-library/react';
-import { screen } from '@testing-library/dom'
+import { render } from '@testing-library/react';
 import Pagination from "./Pagination";
 
 
 describe(`<Pagination />`, () => {
   it(`should render the correct number of clickable pages`, () => {
-    const { container } = render(<Pagination skip={0} take={10} count={21} onChange={() => {}}/>);
-    expect(screen.getAllByTestId('page').length).toBe(2);
+    const { getAllByText } = render(<Pagination
+      page={0}
+      size={10}
+      count={21}
+      renderPageItem={({ page}) => <div key={page}>item</div>}/>);
+    expect(getAllByText('item').length).toBe(3);
   });
   it(`should display the correct page as current`, () => {
-    const { container } = render(<Pagination skip={10} take={10} count={21} onChange={() => {}}/>);
-    expect(screen.getByTestId('current-page').textContent).toBe('2');
-  });
-  it(`should call the callback function when a new page is selected`, () => {
-    const mockCallback = jest.fn();
-    const { container } = render(<Pagination skip={10} take={10} count={21} onChange={mockCallback}/>);
-    const pages = screen.getByTestId('pages');
-    fireEvent.click(within(pages).getByText('1'));
-    expect(mockCallback).toHaveBeenCalledWith(0, 10);
+    const itemMock = jest.fn()
+    const { container } = render(<Pagination
+      page={2}
+      size={10}
+      count={21}
+      renderPageItem={itemMock}/>);
+    expect(itemMock).toHaveBeenCalledWith({ isCurrent: true, page: 2, size: 10 })
   });
 });
 export {};

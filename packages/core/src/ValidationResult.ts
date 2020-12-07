@@ -4,5 +4,4 @@ export interface ValidationResult {
   valid: boolean
   errorMessage?: string
   errorDisplayMode?: Array<ValidationErrorDisplayMode>
-  dataPaths?: Array<string>
 }

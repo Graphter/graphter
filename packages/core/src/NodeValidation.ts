@@ -2,6 +2,6 @@ import { ValidationExecutionStage } from "./ValidationExecutionStage";
 
 export interface NodeValidation {
   type: string,
-  executeOn: ValidationExecutionStage
+  executeOn: ValidationExecutionStage | ValidationExecutionStage[]
   options: any
 }

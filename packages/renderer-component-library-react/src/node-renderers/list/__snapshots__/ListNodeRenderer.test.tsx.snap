@@ -1,0 +1,71 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<ListNodeRenderer /> should error when more than one child config is supplied 1`] = `[Error: Only one child list type is currently supported]`;
+
+exports[`<ListNodeRenderer /> should error when no child config is supplied 1`] = `[Error: <ListNodeRenderer /> component at '/' is missing config]`;
+
+exports[`<ListNodeRenderer /> should render correctly 1`] = `
+<div>
+  <div
+    class="listNodeRenderer"
+    data-nodepath="/"
+    data-nodetype="list"
+  >
+    <div
+      class="items"
+      data-testid="items"
+    >
+      <div
+        class="defaultItemWrapper"
+        data-testid="item"
+      >
+        <input
+          data-testid="string-renderer"
+          value="item 1 value"
+        />
+        <button
+          class="button"
+          data-testid="remove-item-btn"
+          type="button"
+        >
+          Remove [-]
+        </button>
+      </div>
+      <div
+        class="defaultItemWrapper"
+        data-testid="item"
+      >
+        <input
+          data-testid="string-renderer"
+          value="item 2 value"
+        />
+        <button
+          class="button"
+          data-testid="remove-item-btn"
+          type="button"
+        >
+          Remove [-]
+        </button>
+      </div>
+    </div>
+    <div
+      class="defaultNewItemWrapper"
+      data-testid="add-item"
+    >
+      <input
+        data-testid="string-renderer"
+        value=""
+      />
+      <button
+        class="button"
+        data-testid="add-item-btn"
+        type="button"
+      >
+        Add [+]
+      </button>
+    </div>
+  </div>
+</div>
+`;
+
+exports[`<ListNodeRenderer /> should throw if non-array data is passed in 1`] = `[Error: 'list' renderer only works with arrays but got 'object']`;

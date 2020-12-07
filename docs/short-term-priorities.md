@@ -19,6 +19,12 @@
 1. Local storage service
 1. 
 
+## Milestone 2.
+
+1. Manage own configuration
+    1. Git service
+    1. Migration
+    
 ## Backlog
 1. Full range of validation stages
 1. Read/Write node renderer modes
