@@ -51,7 +51,7 @@ export function useArrayNodeData<D>(
   path: Array<PathSegment>,
   config: NodeConfig,
   originalChildData: Array<D>,
-  committed: boolean,
+  committed: boolean = true,
 ): {
   childIds: Array<string>,
   removeItem: (index: number) => void,
