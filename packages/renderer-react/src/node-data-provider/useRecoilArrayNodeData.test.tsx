@@ -29,6 +29,9 @@ function ConsumerMock(props: any){
 }
 
 describe('useRecoilArrayNodeData()', () => {
+  afterEach(() => {
+    jest.clearAllMocks()
+  })
   it('should create a set of unique child item IDs and use them for the lifetime of the hook', () => {
     nanoidMock.mockReturnValueOnce('uniqueID1a')
     nanoidMock.mockReturnValueOnce('uniqueID2a')
