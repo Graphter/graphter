@@ -3,7 +3,7 @@ import { render } from '@testing-library/react';
 
 import NodeDataProvider, { useNodeData, useArrayNodeData } from './NodeDataProvider'
 
-function MockDataConsumer(props: any) {
+function DataConsumerMock(props: any) {
   useNodeData(
     props.path,
     props.config,
@@ -12,7 +12,7 @@ function MockDataConsumer(props: any) {
   )
   return null
 }
-function MockArrayDataConsumer<D>(props: any) {
+function ArrayDataConsumerMock<D>(props: any) {
   useArrayNodeData(
     props.path,
     props.config,
@@ -44,7 +44,7 @@ describe('<NodeDataProvider />', () => {
           instanceId={'some-instance-id'}
           nodeDataHook={nodeDataHookMock}
           arrayNodeDataHook={jest.fn()} >
-          <MockDataConsumer
+          <DataConsumerMock
             path={['/']}
             config={{
               id: 'name',
@@ -69,7 +69,7 @@ describe('<NodeDataProvider />', () => {
       expect.assertions(1)
       try {
         render(
-          <MockDataConsumer
+          <DataConsumerMock
             path={['/']}
             config={{
               id: 'name',
@@ -92,7 +92,7 @@ describe('<NodeDataProvider />', () => {
             // @ts-ignore
             nodeDataHook={null}
             arrayNodeDataHook={jest.fn()} >
-            <MockDataConsumer
+            <DataConsumerMock
               path={['/']}
               config={{
                 id: 'name',
@@ -116,7 +116,7 @@ describe('<NodeDataProvider />', () => {
           instanceId={'some-instance-id'}
           nodeDataHook={jest.fn()}
           arrayNodeDataHook={arrayNodeDataHookMock} >
-          <MockArrayDataConsumer
+          <ArrayDataConsumerMock
             path={['/']}
             config={{
               id: 'tags',
@@ -141,7 +141,7 @@ describe('<NodeDataProvider />', () => {
       expect.assertions(1)
       try {
         render(
-          <MockArrayDataConsumer
+          <ArrayDataConsumerMock
             path={['/']}
             config={{
               id: 'tags',
@@ -164,7 +164,7 @@ describe('<NodeDataProvider />', () => {
             nodeDataHook={jest.fn()}
             // @ts-ignore
             arrayNodeDataHook={null} >
-            <MockArrayDataConsumer
+            <ArrayDataConsumerMock
               path={['/']}
               config={{
                 id: 'tags',
@@ -187,7 +187,7 @@ describe('<NodeDataProvider />', () => {
             instanceId={'some-instance-id'}
             nodeDataHook={jest.fn()}
             arrayNodeDataHook={jest.fn()} >
-            <MockArrayDataConsumer
+            <ArrayDataConsumerMock
               path={['/']}
               config={{
                 id: 'tags',

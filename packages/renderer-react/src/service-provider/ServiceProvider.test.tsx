@@ -7,7 +7,7 @@ import { screen } from '@testing-library/dom'
 describe(`<DataProvider />`, () => {
   let mockService: Service;
 
-  function MockConsumer() {
+  function ConsumerMock() {
     const service = useService();
     service.get('model-id', 'instance-id' );
     return null;
@@ -50,14 +50,14 @@ describe(`<DataProvider />`, () => {
 
     it(`should error when no provider is declared`, () => {
       expect(() => (
-        render(<MockConsumer />)
+        render(<ConsumerMock />)
       )).toThrowErrorMatchingSnapshot();
     });
 
     it(`should return the service passed to the provider`, () => {
       render(
         <ServiceProvider service={mockService}>
-          <MockConsumer/>
+          <ConsumerMock/>
         </ServiceProvider>
       );
       expect(mockService.get).toHaveBeenCalledWith('model-id', 'instance-id')
