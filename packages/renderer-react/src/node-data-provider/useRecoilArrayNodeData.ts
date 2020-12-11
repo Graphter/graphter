@@ -26,8 +26,6 @@ export const useRecoilArrayNodeData: ArrayNodeDataHook = (
 
   const [ childIds, setChildIds ] = useRecoilNodeData(path, config, originalChildIds, committed)
 
-
-
   return {
     childIds,
     removeItem: (index: number) => {
