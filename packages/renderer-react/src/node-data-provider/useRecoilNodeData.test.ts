@@ -43,6 +43,9 @@ describe('useRecoilNodeData()', () => {
     when(propDataStoreMock.get)
       .calledWith(['/'])
       .mockReturnValue('The result')
+    when(useRecoilStateMock)
+      .calledWith('The result')
+      .mockReturnValue('The recoil result')
     const result = useRecoilNodeData(
       ['/'],
       {
@@ -51,7 +54,7 @@ describe('useRecoilNodeData()', () => {
       },
       'Bob',
       true)
-    expect(useRecoilStateMock).toHaveBeenCalledWith('The result')
+    expect(result).toBe('The recoil result')
   })
 })
 
