@@ -3,7 +3,8 @@ import NodeValidationProvider, { useNodeValidation } from "./NodeValidationProvi
 export default NodeValidationProvider
 
 export {
-  useNodeValidation
+  useNodeValidation,
 }
 
 export * from './useRecoilNodeValidation'
+export * from './useRecoilAggregateNodeValidation'

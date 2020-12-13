@@ -11,6 +11,7 @@ import {
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import modelDataStore from "../store/modelDataStore";
+import ValidationSummary from "./ValidationSummary";
 
 export interface NodeEditRendererProps {
   config: NodeConfig
@@ -39,7 +40,6 @@ export default function NodeEditRenderer(
   if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')}/>;
 
   nodeRendererStore.registerAll(typeRegistry)
-
 
   const service = useService();
 
@@ -78,6 +78,8 @@ export default function NodeEditRenderer(
   const registration = nodeRendererStore.get(config.type)
   const TypeRenderer = registration.renderer
 
+  const path = [config.id, editingId !== undefined ? editingId : 'new']
+
   return (
     <div className={s.editRenderer}>
 
@@ -97,12 +99,14 @@ export default function NodeEditRenderer(
 
         <TypeRenderer
             committed={true}
-            path={[config.id, editingId !== undefined ? editingId : 'new']}
+            path={path}
             config={config}
             originalNodeData={startingData}
             options={registration.options}
             ErrorDisplayComponent={ErrorDisplayComponent}
         />
+
+        <ValidationSummary path={path} />
 
         <div className={s.controls}>
           <button type='submit' data-testid='save' className={s.save}>Save</button>

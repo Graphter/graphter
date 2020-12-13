@@ -1,9 +1,16 @@
 import propDataStore from "../store/propDataStore";
-import { useRecoilValue } from "recoil";
-import { useEffect, useMemo, useState } from "react";
-import { NodeValidatorRegistration, PathSegment, ValidationExecutionStage, ValidationResult } from "@graphter/core";
+import { useRecoilState, useRecoilValue } from "recoil";
+import { useEffect, useMemo } from "react";
+import {
+  NodeValidator,
+  NodeValidatorRegistration,
+  PathSegment,
+  ValidationExecutionStage,
+  ValidationResult
+} from "@graphter/core";
 import { NodeValidation } from "@graphter/core";
-import { NodeValidationHook } from "./NodeValidationProvider";
+import validationDataStore from "../store/validationDataStore";
+import { NodeValidationHook } from "./NodeValidationHook";
 
 export const useRecoilNodeValidation: NodeValidationHook = (
   path: Array<PathSegment>,
@@ -18,12 +25,21 @@ export const useRecoilNodeValidation: NodeValidationHook = (
   const onChangeValidators = useMemo(() => {
     if(!config.validation) return null
     let validations:Array<NodeValidation> = Array.isArray(config.validation) ? config.validation : [ config.validation ]
-    return validations
-      .filter(validation => validation.executeOn.includes(ValidationExecutionStage.CHANGE))
-      .map(validation => validatorRegistry.find(validator => validator.type === validation.type)?.validatorSetup(validation.options))
+    return validations.flatMap<NodeValidator>(validation => {
+      if(!validation.executeOn.includes(ValidationExecutionStage.CHANGE)) return []
+      const registration = validatorRegistry.find(validator => validator.type === validation.type)
+      if(!registration) return []
+      return [registration.validatorSetup(validation.options)]
+    })
   }, [ config ])
 
-  const [ validationResults, setValidationResults ] = useState<Array<ValidationResult>>([])
+  if(!onChangeValidators) return []
+
+  if(!validationDataStore.has(path)){
+    validationDataStore.set(path, config, [])
+  }
+  const validationState = validationDataStore.get(path)
+  const [ nodeValidationData, setNodeValidationData ] = useRecoilState(validationState)
 
   useEffect(() => {
     if(onChangeValidators) {
@@ -43,12 +59,16 @@ export const useRecoilNodeValidation: NodeValidationHook = (
           if(c !== undefined) a.push(c)
           return a
         }, [])
-        setValidationResults(flattenedValidationResults)
+        setNodeValidationData({
+          path,
+          config,
+          results: flattenedValidationResults
+        })
       })()
     }
   }, [ propData ])
 
-  return validationResults
+  return nodeValidationData.results
 }
 
 export default useRecoilNodeValidation

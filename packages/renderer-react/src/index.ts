@@ -11,7 +11,11 @@ import NodeDataProvider, {
 import ServiceProvider from './service-provider'
 import propDataStore from "./store/propDataStore"
 import nodeRendererStore from "./store/nodeRendererStore"
-import NodeValidationProvider, { useRecoilNodeValidation, useNodeValidation } from './node-validation-provider'
+import NodeValidationProvider, {
+  useRecoilNodeValidation,
+  useRecoilAggregateNodeValidation,
+  useNodeValidation
+} from './node-validation-provider'
 
 export {
   ListRenderer,
@@ -28,6 +32,7 @@ export {
   useRecoilArrayNodeData,
   NodeValidationProvider,
   useRecoilNodeValidation,
+  useRecoilAggregateNodeValidation,
   useNodeValidation
 }
 

@@ -4,8 +4,6 @@ import { useParams, useHistory } from "react-router-dom";
 import querystring from 'query-string';
 import { useLocation } from "react-router";
 import {
-  ValidationResultsProvider,
-  ValidationSummary,
   NodeEditRenderer
 } from "@graphter/renderer-react";
 import {
@@ -19,7 +17,8 @@ import {
   useRecoilNodeData,
   useRecoilArrayNodeData,
   NodeValidationProvider,
-  useRecoilNodeValidation
+  useRecoilNodeValidation,
+  useRecoilAggregateNodeValidation
 } from "@graphter/renderer-react";
 import { RecoilRoot } from "recoil";
 import { registerJsonSchemaValidatorSetup } from "@graphter/validator-jsonschema";
@@ -36,6 +35,7 @@ export function ExampleEdit({config, listUri}) {
       <NodeValidationProvider
         instanceId={editingId}
         nodeValidationHook={useRecoilNodeValidation}
+        aggregateNodeValidationHook={useRecoilAggregateNodeValidation}
         validatorRegistry={[
           registerJsonSchemaValidatorSetup()
         ]}
