@@ -4,7 +4,15 @@ import { useParams, useHistory } from "react-router-dom";
 import querystring from 'query-string';
 import { useLocation } from "react-router";
 import {
-  NodeEditRenderer
+  NodeDataProvider,
+  useRecoilNodeData,
+  useRecoilArrayNodeData,
+  NodeValidationProvider,
+  useRecoilNodeValidation,
+  useRecoilAggregateNodeValidation,
+  NodeEditRenderer,
+  useRecoilTreeData,
+  useRecoilTreePaths
 } from "@graphter/renderer-react";
 import {
   ErrorPanel,
@@ -12,14 +20,6 @@ import {
   registerObjectNodeRenderer,
   registerListNodeRenderer
 } from "@graphter/renderer-component-library-react";
-import {
-  NodeDataProvider,
-  useRecoilNodeData,
-  useRecoilArrayNodeData,
-  NodeValidationProvider,
-  useRecoilNodeValidation,
-  useRecoilAggregateNodeValidation
-} from "@graphter/renderer-react";
 import { RecoilRoot } from "recoil";
 import { registerJsonSchemaValidatorSetup } from "@graphter/validator-jsonschema";
 
@@ -44,6 +44,8 @@ export function ExampleEdit({config, listUri}) {
           <NodeDataProvider
             instanceId={editingId}
             nodeDataHook={useRecoilNodeData}
+            treeDataHook={useRecoilTreeData}
+            treePathsHooks={useRecoilTreePaths}
             arrayNodeDataHook={useRecoilArrayNodeData}
             config={config}
           >

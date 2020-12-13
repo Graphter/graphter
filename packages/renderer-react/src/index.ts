@@ -4,9 +4,13 @@ import NodeEditRenderer from "./edit-renderer/NodeEditRenderer"
 import ValidationSummary from './edit-renderer/ValidationSummary'
 import NodeDataProvider, {
   useRecoilNodeData,
+  useRecoilTreeData,
+  useRecoilTreePaths,
+  useRecoilArrayNodeData,
   useNodeData,
+  useTreeData,
+  useTreePaths,
   useArrayNodeData,
-  useRecoilArrayNodeData
 } from "./node-data-provider";
 import ServiceProvider from './service-provider'
 import propDataStore from "./store/propDataStore"
@@ -27,13 +31,17 @@ export {
   nodeRendererStore,
   NodeDataProvider,
   useRecoilNodeData,
+  useRecoilTreeData,
+  useRecoilTreePaths,
   useNodeData,
+  useTreeData,
+  useTreePaths,
   useArrayNodeData,
   useRecoilArrayNodeData,
   NodeValidationProvider,
   useRecoilNodeValidation,
   useRecoilAggregateNodeValidation,
-  useNodeValidation
+  useNodeValidation,
 }
 
 export * from './list-renderer'

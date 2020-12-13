@@ -12,6 +12,7 @@ import {
 import nodeRendererStore from "../store/nodeRendererStore"
 import modelDataStore from "../store/modelDataStore";
 import ValidationSummary from "./ValidationSummary";
+import { useTreeData } from "../node-data-provider/NodeDataProvider";
 
 export interface NodeEditRendererProps {
   config: NodeConfig
@@ -46,10 +47,10 @@ export default function NodeEditRenderer(
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
   const [ startingData, setStartingData ] = useState<any>(undefined);
-  const save = useRecoilCallback(({ snapshot }) => async () => {
-    const model = await snapshot.getPromise(modelDataStore.get(typeof editingId === 'undefined' ? 'new' : editingId, config))
-    console.log('saving model ', model)
-  })
+
+  const save = useTreeData((treeData) => {
+    console.log('saving model ', treeData)
+  }, [ config.id, editingId === undefined ? 'new' : editingId ])
 
   useEffect(() => {
     (async () => {

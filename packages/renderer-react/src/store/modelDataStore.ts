@@ -5,7 +5,7 @@
  */
 import { RecoilValueReadOnly, selector } from "recoil";
 import propDataStore from "./propDataStore";
-import { JsonType, NodeConfig, PathSegment } from "@graphter/core";
+import { JsonType, PathSegment } from "@graphter/core";
 import * as nodeRendererStore from "./nodeRendererStore";
 
 const modelDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
@@ -15,8 +15,8 @@ const modelKeySalt = 'c2c87429-dabf-4ea0-b2e1-6e7a6262bc11'
 const descendentPathKeySalt = '04ea4750-019b-446d-87f4-c025f837ab7f'
 
 export default {
-  get: (instanceId: string | number, config: NodeConfig) => {
-    const key = `model-${config.id}-${instanceId}-${modelKeySalt}`
+  get: (path: Array<PathSegment>) => {
+    const key = `model-${path.join(modelKeySalt)}`
     let modelDataSelector = modelDataMap[key]
     if(modelDataSelector) return modelDataSelector
 
@@ -47,7 +47,7 @@ export default {
             return get(nodeState)
           }
         }
-        return getNodeData([ config.id, instanceId ])
+        return getNodeData(path)
       }
     });
 

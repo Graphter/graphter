@@ -2,11 +2,15 @@ import React, { createContext, useContext, useMemo } from 'react';
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { nanoid } from "nanoid";
 import useRecoilArrayNodeData from "./useRecoilArrayNodeData";
+import { useRecoilCallback } from "recoil";
+import modelDataStore from "../store/modelDataStore";
 
 interface DataProviderProps {
-  instanceId: string | number,
-  nodeDataHook: NodeDataHook,
-  arrayNodeDataHook: ArrayNodeDataHook,
+  instanceId: string | number
+  nodeDataHook: NodeDataHook
+  arrayNodeDataHook: ArrayNodeDataHook
+  treeDataHook: TreeDataHook
+  treePathsHook: TreePathsHook
   children: any
 }
 
@@ -29,6 +33,14 @@ export interface ArrayNodeDataHook {
     removeItem: (index: number) => void,
     commitItem: (index: number) => void
   }
+}
+export interface TreeDataHook {
+  (
+    fn: (data: any) => void, path: Array<PathSegment>
+  ): () => void
+}
+export interface TreePathsHook {
+  (path: Array<PathSegment>): Array<Array<PathSegment>>
 }
 
 const Context = createContext<{
@@ -62,6 +74,17 @@ export function useArrayNodeData<D>(
   if(!Array.isArray(originalChildData)) throw new Error(`'${config.type}' renderer only works with arrays`)
 
   return ctx.arrayNodeDataHook(path, config, originalChildData, committed)
+}
+
+export function useTreeData(fn: (data: any) => void, path: Array<PathSegment>): () => void {
+  return useRecoilCallback(({ snapshot }) => async () => {
+    const tree = await snapshot.getPromise(modelDataStore.get(path))
+    fn(tree)
+  })
+}
+
+export function useTreePaths(path: Array<PathSegment>){
+
 }
 
 export default function NodeDataProvider(
