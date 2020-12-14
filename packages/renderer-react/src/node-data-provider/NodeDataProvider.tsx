@@ -1,9 +1,5 @@
 import React, { createContext, useContext, useMemo } from 'react';
 import { NodeConfig, PathSegment } from "@graphter/core";
-import { nanoid } from "nanoid";
-import useRecoilArrayNodeData from "./useRecoilArrayNodeData";
-import { useRecoilCallback, useRecoilValue } from "recoil";
-import modelDataStore from "../store/modelDataStore";
 
 interface DataProviderProps {
   instanceId: string | number

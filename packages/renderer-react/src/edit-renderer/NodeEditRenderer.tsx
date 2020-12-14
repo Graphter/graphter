@@ -10,7 +10,6 @@ import {
   NodeRendererRegistration,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
-import modelDataStore from "../store/modelDataStore";
 import ValidationSummary from "./ValidationSummary";
 import { useTreeData } from "../node-data-provider/NodeDataProvider";
 

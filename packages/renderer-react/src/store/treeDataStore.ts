@@ -8,19 +8,19 @@ import propDataStore from "./propDataStore";
 import { JsonType, PathSegment } from "@graphter/core";
 import * as nodeRendererStore from "./nodeRendererStore";
 
-const modelDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
+const treeDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
 const descendentPathDataMap: { [key: string]: RecoilValueReadOnly<Array<Array<PathSegment>>> } = {};
 
 const modelKeySalt = 'c2c87429-dabf-4ea0-b2e1-6e7a6262bc11'
 const descendentPathKeySalt = '04ea4750-019b-446d-87f4-c025f837ab7f'
 
 export default {
-  get: (path: Array<PathSegment>) => {
+  getDescendentData: (path: Array<PathSegment>) => {
     const key = `model-${path.join(modelKeySalt)}`
-    let modelDataSelector = modelDataMap[key]
-    if(modelDataSelector) return modelDataSelector
+    let treeDataSelector = treeDataMap[key]
+    if(treeDataSelector) return treeDataSelector
 
-    modelDataMap[key] = modelDataSelector = selector<any>({
+    treeDataMap[key] = treeDataSelector = selector<any>({
       key: key,
       get: ({ get }) => {
         function getNodeData(path: Array<PathSegment>){
@@ -51,7 +51,7 @@ export default {
       }
     });
 
-    return modelDataSelector
+    return treeDataSelector
   },
 
   getDescendentPaths: (path: Array<PathSegment>): RecoilValueReadOnly<Array<Array<PathSegment>>> => {

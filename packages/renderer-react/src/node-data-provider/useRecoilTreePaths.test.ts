@@ -1,20 +1,20 @@
 import { useRecoilValue } from "recoil";
-import modelDataStore from "../store/modelDataStore";
+import treeDataStore from "../store/treeDataStore";
 import { useRecoilTreePaths } from './useRecoilTreePaths'
 import { when } from "jest-when";
 
 jest.mock('recoil')
-jest.mock('../store/modelDataStore')
+jest.mock('../store/treeDataStore')
 
 const useRecoilValueMock = useRecoilValue as jest.Mock<any>
-const modelDataStoreMock = modelDataStore as jest.Mocked<any>
+const treeDataStoreMock = treeDataStore as jest.Mocked<any>
 
 describe('useRecoilTreePaths', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
   it('should return descendent paths', () => {
-    when(modelDataStoreMock.getDescendentPaths)
+    when(treeDataStoreMock.getDescendentPaths)
       .calledWith(['0'])
       .mockReturnValueOnce({ some: 'state' })
     when(useRecoilValueMock)
