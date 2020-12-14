@@ -1,11 +1,19 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<NodeDataProvider /> useArrayNodeData should error if no hook is supplied to the provider 1`] = `"Couldn't find an ArrayNodeDataHook or context to use."`;
+exports[`<NodeDataProvider /> when using useArrayNodeData should error if no hook is supplied to the provider 1`] = `"Couldn't find an ArrayNodeDataHook or context to use."`;
 
-exports[`<NodeDataProvider /> useArrayNodeData should error if no provider is defined 1`] = `"Couldn't find an ArrayNodeDataHook or context to use."`;
+exports[`<NodeDataProvider /> when using useArrayNodeData should error if no provider is defined 1`] = `"Couldn't find an ArrayNodeDataHook or context to use."`;
 
-exports[`<NodeDataProvider /> useArrayNodeData should error if original data is not an array 1`] = `"'list' renderer only works with arrays"`;
+exports[`<NodeDataProvider /> when using useArrayNodeData should error if original data is not an array 1`] = `"'list' renderer only works with arrays"`;
 
 exports[`<NodeDataProvider /> when using useNodeData should error if no hook is supplied to the provider 1`] = `"Couldn't find a NodeDataHook or context to use."`;
 
 exports[`<NodeDataProvider /> when using useNodeData should error if no provider is defined 1`] = `"Couldn't find a NodeDataHook or context to use."`;
+
+exports[`<NodeDataProvider /> when using useTreeData should error if no hook is supplied to the provider 1`] = `"Couldn't find a TreeDataHook or context to use."`;
+
+exports[`<NodeDataProvider /> when using useTreeData should error if no provider is defined 1`] = `"Couldn't find a TreeDataHook or context to use."`;
+
+exports[`<NodeDataProvider /> when using useTreePaths should error if no hook is supplied to the provider 1`] = `"Couldn't find a TreePathsHook or context to use."`;
+
+exports[`<NodeDataProvider /> when using useTreePaths should error if no provider is defined 1`] = `"Couldn't find a TreePathsHook or context to use."`;
