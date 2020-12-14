@@ -1,18 +1,18 @@
-import React from 'react';
+import React  from 'react';
 import s from './ValidationSummary.pcss';
 import { PathSegment } from "@graphter/core";
-import modelDataStore from "../store/modelDataStore";
 import { useAggregateNodeValidation } from "../node-validation-provider/NodeValidationProvider";
-import { useRecoilValue } from "recoil";
+import { useTreePaths } from "../node-data-provider";
 
 export interface ValidationSummaryProps {
   path: Array<PathSegment>
 }
 
 export default function ValidationSummary({ path }: ValidationSummaryProps){
-  const descendentPathsState = modelDataStore.getDescendentPaths(path)
-  const descendentPaths = useRecoilValue(descendentPathsState)
+
+  const descendentPaths = useTreePaths(path)
   const aggregatedValidationData = useAggregateNodeValidation(descendentPaths)
+
   return (
     <div className={s.validationSummary}>
       {aggregatedValidationData.map((validationData, i) => {

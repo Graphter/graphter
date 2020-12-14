@@ -45,7 +45,7 @@ export function ExampleEdit({config, listUri}) {
             instanceId={editingId}
             nodeDataHook={useRecoilNodeData}
             treeDataHook={useRecoilTreeData}
-            treePathsHooks={useRecoilTreePaths}
+            treePathsHook={useRecoilTreePaths}
             arrayNodeDataHook={useRecoilArrayNodeData}
             config={config}
           >
