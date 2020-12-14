@@ -26,9 +26,12 @@ export default {
         function getNodeData(path: Array<PathSegment>){
           const nodeConfig = propDataStore.getConfig(path)
           const nodeRenderer = nodeRendererStore.get(nodeConfig.type)
+          const state = propDataStore.get(path)
+          const data = get(state)
           if(!nodeRenderer) throw new Error(`No renderer for '${nodeConfig.id}' node of type '${nodeConfig.type}'`)
           if(nodeRenderer.jsonType === JsonType.ARRAY){
             if(!nodeConfig.children) throw new Error(`'${nodeConfig.id}' seems to be an array type but has no child config. At least one is required.`)
+
             const nodeChildStates = propDataStore.getAll(path)
             const childData: Array<any> = nodeChildStates
               .map((childState, i) => {
@@ -43,8 +46,7 @@ export default {
               return a
             }, {})
           } else {
-            const nodeState = propDataStore.get(path)
-            return get(nodeState)
+            return data
           }
         }
         return getNodeData(path)
@@ -60,7 +62,7 @@ export default {
     if(descendentPathSelector) return descendentPathSelector
     descendentPathDataMap[key] = descendentPathSelector = selector<any>({
       key: key,
-      get: ({get}) => {
+      get: ({ get }) => {
         function recordChildPaths(
           path: Array<PathSegment>,
           descendentPaths: Array<Array<PathSegment>> = []
@@ -68,11 +70,15 @@ export default {
           descendentPaths.push(path)
           const nodeConfig = propDataStore.getConfig(path)
           const nodeRenderer = nodeRendererStore.get(nodeConfig.type)
+          const state = propDataStore.get(path)
+          get(state) // Required to keep array data in sync
           if(!nodeRenderer) throw new Error(`No renderer for '${nodeConfig.id}' node of type '${nodeConfig.type}'`)
           if(nodeRenderer.jsonType === JsonType.ARRAY){
             if(!nodeConfig.children) throw new Error(`'${nodeConfig.id}' seems to be an array type but has no child config. At least one is required.`)
             const nodeChildStates = propDataStore.getAll(path)
-            nodeChildStates.forEach((_ , i) => recordChildPaths([...path, i], descendentPaths))
+            nodeChildStates.forEach((childIdState , i) => {
+              recordChildPaths([...path, i], descendentPaths)
+            })
           } else if(nodeRenderer.jsonType === JsonType.OBJECT){
             if(!nodeConfig.children) throw new Error(`'${nodeConfig.id}' seems to be an object type but has no child config. At least one is required.`)
             nodeConfig.children.forEach(childConfig => recordChildPaths([...path, childConfig.id], descendentPaths))
