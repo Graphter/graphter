@@ -23,17 +23,20 @@ export const has = (path: Array<PathSegment>): boolean => {
 export const set = (
   path: Array<PathSegment>,
   config: NodeConfig,
+  value: any,
   results: Array<ValidationResult>
 ) => {
   if(!path.length) throw new Error('path argument must have at least one element')
   const key = generateValidationKey(path)
+  const validationData: NodeValidationData = {
+    path,
+    config,
+    value,
+    results
+  }
   validationStateMap.set(key, atom({
     key: key,
-    default: {
-      path,
-      config,
-      results
-    }
+    default: validationData
   }))
 }
 

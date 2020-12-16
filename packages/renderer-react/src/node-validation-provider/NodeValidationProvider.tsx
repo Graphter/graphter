@@ -21,7 +21,7 @@ const Context = createContext<{
 
 export const useNodeValidation = (
   path: Array<PathSegment>
-): Array<ValidationResult> => {
+): NodeValidationData => {
   const ctx = useContext(Context);
   if(!ctx) throw new Error('No validation provider found. Make sure a <NodeValidationProvider /> is defined.')
   if (!ctx.nodeValidationHook) throw new Error(`Couldn't find a NodeValidationHook to use.`);

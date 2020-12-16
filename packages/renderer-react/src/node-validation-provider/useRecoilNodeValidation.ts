@@ -11,17 +11,23 @@ import {
 import { NodeValidation } from "@graphter/core";
 import validationDataStore from "../store/validationDataStore";
 import { NodeValidationHook } from "./NodeValidationHook";
+import NodeValidationData from "./NodeValidationData";
 
 export const useRecoilNodeValidation: NodeValidationHook = (
   path: Array<PathSegment>,
   validatorRegistry: Array<NodeValidatorRegistration>
 ) => {
-  if(!propDataStore.has(path)) return []
+  const validationData: NodeValidationData = {
+    path,
+    results: [],
+  }
+  if(!propDataStore.has(path)) return validationData
   const propDataState = propDataStore.get(path)
-  if(!propDataState) return []
+  if(!propDataState) return validationData
   const propData = useRecoilValue(propDataState)
+  validationData.value = propData
   const config = propDataStore.getConfig(path)
-
+  validationData.config = config
   const onChangeValidators = useMemo(() => {
     if(!config.validation) return null
     let validations:Array<NodeValidation> = Array.isArray(config.validation) ? config.validation : [ config.validation ]
@@ -33,10 +39,10 @@ export const useRecoilNodeValidation: NodeValidationHook = (
     })
   }, [ config ])
 
-  if(!onChangeValidators) return []
+  if(!onChangeValidators) return validationData
 
   if(!validationDataStore.has(path)){
-    validationDataStore.set(path, config, [])
+    validationDataStore.set(path, config, propData, [])
   }
   const validationState = validationDataStore.get(path)
   const [ nodeValidationData, setNodeValidationData ] = useRecoilState(validationState)
@@ -62,13 +68,14 @@ export const useRecoilNodeValidation: NodeValidationHook = (
         setNodeValidationData({
           path,
           config,
+          value: propData,
           results: flattenedValidationResults
         })
       })()
     }
   }, [ propData ])
 
-  return nodeValidationData.results
+  return nodeValidationData
 }
 
 export default useRecoilNodeValidation
