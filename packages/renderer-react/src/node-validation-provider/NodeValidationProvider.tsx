@@ -40,7 +40,7 @@ export const useAggregateNodeValidation = (
   return ctx.aggregateNodeValidationHook(paths);
 }
 
-export default function NodeValidationProvider(
+export function NodeValidationProvider(
   {
     instanceId,
     nodeValidationHook,

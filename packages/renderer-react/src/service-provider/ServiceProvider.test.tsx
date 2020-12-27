@@ -1,8 +1,8 @@
 import React from 'react';
 import ServiceProvider, {useService} from "./ServiceProvider";
-import {Service} from "./Service";
 import { act, render, within } from '@testing-library/react';
 import { screen } from '@testing-library/dom'
+import { Service } from "@graphter/core";
 
 describe(`<DataProvider />`, () => {
   let mockService: Service;

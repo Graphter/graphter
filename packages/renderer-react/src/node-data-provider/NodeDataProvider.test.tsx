@@ -52,10 +52,6 @@ describe('<NodeDataProvider />', () => {
       )
       expect(nodeDataHookMock).toHaveBeenCalledWith(
         ['/'],
-        {
-          id: 'name',
-          type: 'string'
-        },
         'The Name',
         true
       )
@@ -222,6 +218,7 @@ describe('<NodeDataProvider />', () => {
       useTreeData(
         props.fn,
         props.path,
+        props.config
       )
       return null
     }
@@ -238,12 +235,18 @@ describe('<NodeDataProvider />', () => {
           <TreeDataConsumerMock
             path={['/']}
             fn={callbackFn}
+            config={{
+              id: 'some-node'
+            }}
           />
         </NodeDataProvider>
       )
       expect(treeDataHookMock).toHaveBeenCalledWith(
         callbackFn,
-        ['/']
+        ['/'],
+        {
+          id: 'some-node'
+        }
       )
     })
     it('should error if no provider is defined', () => {

@@ -6,7 +6,6 @@ import NodeDataProvider from "./node-data-provider";
 import ServiceProvider from './service-provider'
 import nodeRendererStore from "./store/nodeRendererStore"
 import pathConfigStore from './store/pathConfigStore'
-import NodeValidationProvider from './node-validation-provider'
 
 export {
   ListRenderer,
@@ -17,7 +16,6 @@ export {
   nodeRendererStore,
   pathConfigStore,
   NodeDataProvider,
-  NodeValidationProvider,
 }
 
 export * from './list-renderer'
