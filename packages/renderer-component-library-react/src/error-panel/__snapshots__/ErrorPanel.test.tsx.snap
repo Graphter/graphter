@@ -7,5 +7,3 @@ exports[`<ErrorPanel /> should display a default message if no error message is 
 exports[`<ErrorPanel /> should display a string error message 1`] = `"some string error message"`;
 
 exports[`<ErrorPanel /> should display an Error error message 1`] = `"some Error error message"`;
-
-exports[`<ErrorPanel /> should display the error message 1`] = `"some error message"`;

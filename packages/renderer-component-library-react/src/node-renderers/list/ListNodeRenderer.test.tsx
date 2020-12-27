@@ -201,7 +201,7 @@ describe('<ListNodeRenderer />', () => {
     />);
     expect(queryByTestId('add-item')).not.toBeNull()
   })
-  it('should add new items and reset the new item renderer', () => {
+  it('should commit a new item when the "add" button is selected', () => {
     const commitItemMock = jest.fn()
     useArrayNodeDataMock.mockImplementation(() => ({
       childIds: [ '1', '2' ],
@@ -240,7 +240,6 @@ describe('<ListNodeRenderer />', () => {
       fireEvent.click(getByTestId('add-item-btn'))
     })
     expect(commitItemMock).toHaveBeenCalledWith(2)
-    expect(addItemContainerQueries.queryByDisplayValue('')).not.toBeNull()
   })
   it.each([0, 1])
   ('should remove an item at the correct location (%s) when the remove ui is clicked', (index) => {
