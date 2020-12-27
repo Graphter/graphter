@@ -29,7 +29,8 @@
   },
   "include": [
     "src/**/*",
-    "src/**/*.pcss"
+    "src/**/*.pcss",
+    "__mocks__/**/*"
   ],
   "exclude": [
     "node_modules"

@@ -18,6 +18,7 @@
     "@babel/preset-env": "^7.9.0",
     "@babel/preset-react": "^7.9.4",
     "@graphter/core": "file:../../packages/core",
+    "@graphter/recoil-state-provider": "file:../../packages/recoil-state-provider",
     "@graphter/renderer-component-library-react": "file:../../packages/renderer-component-library-react",
     "@graphter/renderer-react": "file:../../packages/renderer-react",
     "@graphter/theme": "file:../../packages/theme",

@@ -2,7 +2,7 @@ import React, { createContext, useContext } from 'react';
 import { NodeValidatorRegistration, PathSegment, ValidationResult } from "@graphter/core";
 import { NodeValidationHook } from "./NodeValidationHook";
 import { AggregateNodeValidationHook } from "./AggregateNodeValidationHook";
-import NodeValidationData from "./NodeValidationData";
+import { NodeValidationData } from "./NodeValidationData";
 
 interface DataProviderProps {
   instanceId: string | number,

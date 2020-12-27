@@ -3,7 +3,6 @@ import s from './NodeEditRenderer.pcss';
 import { isEmpty } from "../util/id";
 import { useService } from "../service-provider/ServiceProvider";
 import DefaultError from "../default-error";
-import { useRecoilCallback } from 'recoil';
 import {
   NodeConfig,
   ErrorRendererProps,
@@ -11,7 +10,7 @@ import {
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
-import { useTreeData } from "../node-data-provider/NodeDataProvider";
+import { useTreeData } from "../node-data-provider";
 
 export interface NodeEditRendererProps {
   config: NodeConfig
@@ -47,9 +46,11 @@ export default function NodeEditRenderer(
   const [ error, setError ] = useState<Error>();
   const [ startingData, setStartingData ] = useState<any>(undefined);
 
-  const save = useTreeData((treeData) => {
-    console.log('saving model ', treeData)
-  }, [ config.id, editingId === undefined ? 'new' : editingId ])
+  // const save = useTreeData((treeData) => {
+  //   console.log('saving model ', treeData)
+  // }, [ config.id, editingId === undefined ? 'new' : editingId ])
+
+  const save = () => {}
 
   useEffect(() => {
     (async () => {

@@ -1,0 +1,55 @@
+{
+  "name": "@graphter/recoil-state-provider",
+  "version": "0.0.1",
+  "description": "",
+  "main": "dist/index.js",
+  "module": "dist/index.es.js",
+  "files": [
+    "dist"
+  ],
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "rollup -c",
+    "start": "rollup -c -w",
+    "prepare": "npm run build"
+  },
+  "author": "Jonathan Pritchard",
+  "license": "ISC",
+  "peerDependencies": {
+    "react": "^16.13.1",
+    "recoil": "^0.1.2",
+    "@graphter/renderer-react": "file:../renderer-react"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "@babel/core": "^7.9.0",
+    "@babel/plugin-proposal-export-default-from": "^7.8.3",
+    "@babel/preset-env": "^7.9.0",
+    "@babel/preset-stage-0": "^7.8.3",
+    "@graphter/core": "file:../core",
+    "@rollup/plugin-json": "^4.0.3",
+    "@testing-library/react": "^11.2.2",
+    "@types/jest": "^25.2.1",
+    "@types/jest-when": "^2.7.2",
+    "@types/react": "^16.9.49",
+    "ajv": "^6.12.2",
+    "eslint": "^6.8.0",
+    "jest": "^25.5.4",
+    "jest-when": "^3.0.1",
+    "nanoid": "^3.1.20",
+    "react": "^17.0.1",
+    "recoil": "^0.1.2",
+    "rollup": "^2.2.0",
+    "rollup-plugin-babel": "^4.4.0",
+    "rollup-plugin-commonjs": "^10.1.0",
+    "rollup-plugin-json": "^4.0.0",
+    "rollup-plugin-node-resolve": "^5.2.0",
+    "rollup-plugin-peer-deps-external": "^2.2.2",
+    "rollup-plugin-typescript2": "^0.26.0",
+    "ts-jest": "^25.3.1",
+    "typescript": "^3.8.3"
+  },
+  "publishConfig": {
+    "access": "public"
+  }
+}

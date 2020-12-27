@@ -31,7 +31,7 @@ export default {
     }
   ],
   plugins: [
-    // For debugging: { load(id) {console.log(id)} },
+    //{ load(id) {console.log(id)} }, // For debugging build process
     external(externals),
     typescriptPlugin({
       typescript
@@ -46,18 +46,6 @@ export default {
       plugins: [ '@babel/plugin-proposal-export-default-from' ]
     }),
     resolve(),
-    commonjs({
-      namedExports: {
-        'recoil': [
-          'RecoilRoot',
-          'useRecoilState',
-          'useRecoilValue',
-          'useResetRecoilState',
-          'useRecoilValueLoadable',
-          'useRecoilCallback',
-          'atom',
-          'selector' ]
-      }
-    })
+    commonjs()
   ]
 }

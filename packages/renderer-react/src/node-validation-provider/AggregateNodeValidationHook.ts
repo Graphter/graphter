@@ -1,4 +1,4 @@
-import NodeValidationData from "./NodeValidationData";
+import { NodeValidationData } from "./NodeValidationData";
 import { PathSegment } from "@graphter/core";
 
 export interface AggregateNodeValidationHook {

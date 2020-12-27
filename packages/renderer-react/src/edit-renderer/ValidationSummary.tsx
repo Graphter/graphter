@@ -1,4 +1,4 @@
-import React  from 'react';
+import React, { useEffect, useState } from 'react';
 import s from './ValidationSummary.pcss';
 import { PathSegment } from "@graphter/core";
 import { useAggregateNodeValidation } from "../node-validation-provider/NodeValidationProvider";
@@ -9,10 +9,8 @@ export interface ValidationSummaryProps {
 }
 
 export default function ValidationSummary({ path }: ValidationSummaryProps){
-
   const descendentPaths = useTreePaths(path)
   const aggregatedValidationData = useAggregateNodeValidation(descendentPaths)
-
   return (
     <div className={s.validationSummary}>
       {aggregatedValidationData.map((validationData, i) => {

@@ -6,3 +6,4 @@
 /examples/kitchen-sink/dist/*
 /packages/validator-jsonschema/dist/*
 /examples/kitchen-sink/cypress/videos/*
+/packages/recoil-state-provider/dist/*

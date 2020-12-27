@@ -10,6 +10,9 @@ export function registerStringNodeRenderer(options?: StringNodeRendererOptions):
   return {
     type: options?.type || 'string',
     jsonType: JsonType.STRING,
+    getRenderedData: async (path, getNodeValue) => {
+      return await getNodeValue(path)
+    },
     renderer: StringNodeRenderer,
     options
   }

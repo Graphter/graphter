@@ -14,7 +14,7 @@ export {
   useArrayNodeData
 }
 
-export * from './useRecoilNodeData'
-export * from './useRecoilArrayNodeData'
-export * from './useRecoilTreeData'
-export * from './useRecoilTreePaths'
+export * from './ArrayNodeDataHook'
+export * from './NodeDataHook'
+export * from './TreeDataHook'
+export * from './TreePathsHook'
