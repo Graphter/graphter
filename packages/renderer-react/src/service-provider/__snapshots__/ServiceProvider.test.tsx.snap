@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<DataProvider />  when using useService should error when no provider is declared 1`] = `"Couldn't find API service. Make sure you've declared a DataProvider and passed it a valid service."`;

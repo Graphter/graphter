@@ -1,12 +1,11 @@
 import { atom, RecoilState } from "recoil";
-import { NodeConfig, PathSegment } from "@graphter/core";
+import { PathSegment } from "@graphter/core";
 import { nanoid } from "nanoid";
 
 interface PropDataStateMeta {
   state: RecoilState<any>,
   deleted: boolean,
   committed: boolean,
-  config: NodeConfig,
   default: any
 }
 
@@ -36,15 +35,8 @@ export const getAll = (
     .map(node => node.meta?.state as RecoilState<any>)
 }
 
-export const getConfig = (path: Array<PathSegment>): NodeConfig => {
-  const pathNode = getPathNode(path)
-  if(!pathNode.meta) throw new Error(`Couldn't find state at ${path.join('/')}`)
-  return pathNode.meta.config
-}
-
 export const set = (
   path: Array<PathSegment>,
-  config: NodeConfig,
   committed: boolean,
   originalValue?: any
 ) => {
@@ -58,7 +50,6 @@ export const set = (
     }),
     deleted: false,
     committed,
-    config,
     default: originalValue
   }
 }
@@ -95,12 +86,13 @@ export const remove = (path: Array<string | number>) => {
   if(!path || !path.length) throw new Error('Path of at least one segment is required')
   const clonedPath = [...path]
   const removeSegment = clonedPath.splice(-1, 1)[0]
+
   const parentNode = getPathNode(clonedPath)
   if(!parentNode) throw new Error(`Missing ancestor trying to set ${path.join('/')}`)
   if(!parentNode.children) throw new Error(`No children at ${path.join('/')} to remove`)
   typeof removeSegment === 'string' ?
     parentNode.children = parentNode.children
-      .filter(childNode => childNode.meta?.config.id !== removeSegment) :
+      .filter(childNode => childNode.id !== removeSegment) :
     parentNode.children.splice(removeSegment, 1)
 }
 
@@ -132,6 +124,5 @@ export default {
   set,
   commitItem,
   has,
-  remove,
-  getConfig
+  remove
 }

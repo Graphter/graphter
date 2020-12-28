@@ -18,15 +18,6 @@ exports[`<ListRenderer /> should display an appropriate error when no list rende
 </div>
 `;
 
-exports[`<ListRenderer /> should display an appropriate error when no pagination renderer is provided 1`] = `
-<div
-  data-testid="error"
->
-  error: 
-  Missing Pagination control
-</div>
-`;
-
 exports[`<ListRenderer /> should display an appropriate error when service can't load data 1`] = `
 <div
   data-testid="error"

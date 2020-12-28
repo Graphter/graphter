@@ -3,14 +3,14 @@ import s from './NodeEditRenderer.pcss';
 import { isEmpty } from "../util/id";
 import { useService } from "../service-provider/ServiceProvider";
 import DefaultError from "../default-error";
-import { useRecoilCallback } from 'recoil';
 import {
   NodeConfig,
   ErrorRendererProps,
   NodeRendererRegistration,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
-import modelDataStore from "../store/modelDataStore";
+import ValidationSummary from "./ValidationSummary";
+import { useTreeData } from "../node-data-provider";
 
 export interface NodeEditRendererProps {
   config: NodeConfig
@@ -40,16 +40,18 @@ export default function NodeEditRenderer(
 
   nodeRendererStore.registerAll(typeRegistry)
 
-
   const service = useService();
 
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
   const [ startingData, setStartingData ] = useState<any>(undefined);
-  const save = useRecoilCallback(({ snapshot }) => async () => {
-    const model = await snapshot.getPromise(modelDataStore.get(typeof editingId === 'undefined' ? 'new' : editingId, config))
-    console.log('saving model ', model)
-  })
+
+  const save = useTreeData(
+    (treeData) => {
+      console.log('saving model ', treeData)
+    },
+    [ config.id, editingId === undefined ? 'new' : editingId ],
+    config)
 
   useEffect(() => {
     (async () => {
@@ -74,9 +76,11 @@ export default function NodeEditRenderer(
     })()
   }, [ editingId ]);
 
-  if(!startingData) return null
+  if (!startingData) return null
   const registration = nodeRendererStore.get(config.type)
   const TypeRenderer = registration.renderer
+
+  const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
 
   return (
     <div className={s.editRenderer}>
@@ -86,27 +90,31 @@ export default function NodeEditRenderer(
       {loading && <div className={s.editRenderer} data-testid='loading'>loading...</div>}
 
       <form onSubmit={e => {
-          e.preventDefault();
-          (async () => {
-            await save()
-          })()
-        }} data-testid='form'>
+        e.preventDefault();
+        (async () => {
+          await save()
+        })()
+      }} data-testid='form'>
 
         <h1 className={s.name}>{config.name}</h1>
         {config.description && <p>{config.description}</p>}
 
         <TypeRenderer
-            committed={true}
-            path={[config.id, editingId !== undefined ? editingId : 'new']}
-            config={config}
-            originalNodeData={startingData}
-            options={registration.options}
-            ErrorDisplayComponent={ErrorDisplayComponent}
+          committed={true}
+          path={path}
+          config={config}
+          originalNodeData={startingData}
+          options={registration.options}
+          ErrorDisplayComponent={ErrorDisplayComponent}
         />
+
+        <ValidationSummary path={path}/>
 
         <div className={s.controls}>
           <button type='submit' data-testid='save' className={s.save}>Save</button>
-          <button type='button' data-testid='cancel' className={s.cancel} onClick={() => cancel(config.id, editingId)}>Cancel</button>
+          <button type='button' data-testid='cancel' className={s.cancel}
+                  onClick={() => cancel(config.id, editingId)}>Cancel
+          </button>
         </div>
       </form>
     </div>

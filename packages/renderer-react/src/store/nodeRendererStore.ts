@@ -1,4 +1,4 @@
-import { NodeRendererRegistration } from "@graphter/core";
+import { NodeRendererRegistration, NodeRendererStore } from "@graphter/core";
 
 const nodeRendererMap: { [key: string]: NodeRendererRegistration } = {};
 
@@ -16,8 +16,11 @@ export const get = (nodeType: string): NodeRendererRegistration => {
   }
   return registration
 }
-export default {
+
+const nodeRendererStore: NodeRendererStore = {
   register,
   registerAll,
   get
 }
+
+export default nodeRendererStore

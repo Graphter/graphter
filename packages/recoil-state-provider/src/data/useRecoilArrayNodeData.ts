@@ -1,8 +1,8 @@
-import { ArrayNodeDataHook } from "./NodeDataProvider";
-import propDataStore from "../store/propDataStore";
 import { nanoid } from "nanoid";
 import { useMemo } from "react";
-import useRecoilNodeData from "./useRecoilNodeData";
+import { useRecoilNodeData } from "./useRecoilNodeData";
+import propDataStore from "../store/propDataStore";
+import { ArrayNodeDataHook } from "@graphter/renderer-react";
 
 /**
  * TODO: Split out into separate recoil package if successful
@@ -24,9 +24,7 @@ export const useRecoilArrayNodeData: ArrayNodeDataHook = (
     })
   }, [])
 
-  const [ childIds, setChildIds ] = useRecoilNodeData(path, config, originalChildIds, committed)
-
-
+  const [ childIds, setChildIds ] = useRecoilNodeData(path, originalChildIds, committed)
 
   return {
     childIds,
@@ -46,5 +44,3 @@ export const useRecoilArrayNodeData: ArrayNodeDataHook = (
     }
   }
 }
-
-export default useRecoilArrayNodeData

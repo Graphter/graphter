@@ -28,8 +28,15 @@ function StringNodeRenderer(
           if(!touched) setTouched(true)
           setNodeData && setNodeData(e.currentTarget.value);
         }} />
-      {touched && validationResults && validationResults.map((result, i) => (
-        result.valid ? null : <div className={s.error} key={i} data-testid='validation-error'>{result.errorMessage}</div>
+      {touched &&
+      validationResults &&
+      validationResults.value === nodeData &&
+      validationResults.results.map((result, i) => (
+        result.valid ? null : (
+          <div className={s.error} key={i} data-testid='validation-error'>
+            {result.errorMessage}
+          </div>
+        )
       ))}
     </>
   )

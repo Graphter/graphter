@@ -11,15 +11,3 @@ exports[`<StringRenderer /> should render correctly 1`] = `
   />
 </div>
 `;
-
-exports[`<StringRenderer /> should render correctly when no description is available 1`] = `
-<div>
-  <input
-    class="input"
-    data-nodepath="/"
-    data-nodetype="string"
-    type="text"
-    value="some-data"
-  />
-</div>
-`;

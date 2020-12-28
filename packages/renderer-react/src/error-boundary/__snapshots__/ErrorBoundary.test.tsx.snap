@@ -17,11 +17,3 @@ exports[`<ErrorBoundary /> should display string errors with the defined rendere
   This is a string error
 </div>
 `;
-
-exports[`<ErrorBoundary /> should display the error with the defined renderer 1`] = `
-<div
-  data-testid="mock-error"
->
-  This is an error
-</div>
-`;

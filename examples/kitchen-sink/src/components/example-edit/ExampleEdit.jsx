@@ -4,9 +4,7 @@ import { useParams, useHistory } from "react-router-dom";
 import querystring from 'query-string';
 import { useLocation } from "react-router";
 import {
-  ValidationResultsProvider,
-  ValidationSummary,
-  NodeEditRenderer
+  NodeEditRenderer,
 } from "@graphter/renderer-react";
 import {
   ErrorPanel,
@@ -14,15 +12,8 @@ import {
   registerObjectNodeRenderer,
   registerListNodeRenderer
 } from "@graphter/renderer-component-library-react";
-import {
-  NodeDataProvider,
-  useRecoilNodeData,
-  useRecoilArrayNodeData,
-  NodeValidationProvider,
-  useRecoilNodeValidation
-} from "@graphter/renderer-react";
-import { RecoilRoot } from "recoil";
 import { registerJsonSchemaValidatorSetup } from "@graphter/validator-jsonschema";
+import { RecoilStateProvider } from "@graphter/recoil-state-provider";
 
 export function ExampleEdit({config, listUri}) {
   const {id} = useParams();
@@ -33,49 +24,36 @@ export function ExampleEdit({config, listUri}) {
   const editingId = parseInt(id)
   return (
     <div className={s.exampleEdit}>
-      <NodeValidationProvider
-        instanceId={editingId}
-        nodeValidationHook={useRecoilNodeValidation}
-        validatorRegistry={[
-          registerJsonSchemaValidatorSetup()
-        ]}
-      >
-        <RecoilRoot>
-          <NodeDataProvider
-            instanceId={editingId}
-            nodeDataHook={useRecoilNodeData}
-            arrayNodeDataHook={useRecoilArrayNodeData}
-            config={config}
-          >
-            <NodeEditRenderer
-              config={config}
-              editingId={editingId}
-              errorRenderer={ErrorPanel}
-              typeRegistry={[
-                registerStringNodeRenderer(),
-                registerObjectNodeRenderer(),
-                registerListNodeRenderer(),
-                {
-                  type: 'multiline-string',
-                  renderer: ({propData, setPropDataValue, propertyConfig, validationResults}) => {
-                    return (
-                      <div>
-                        <label htmlFor={propertyConfig.id}>{propertyConfig.name}</label>
-                        {propertyConfig.description && <p>{propertyConfig.description}</p>}
-                        <textarea id={propertyConfig.id} value={propData} onChange={(e) => {
-                          setPropDataValue(e.currentTarget.value);
-                        }}/>
-                      </div>
-                    );
-                  }
-                }
-              ]}
-              cancel={() => history.push(backUri)}
-              onSaved={() => history.push(backUri)}
-            />
-          </NodeDataProvider>
-        </RecoilRoot>
-      </NodeValidationProvider>
+      <RecoilStateProvider instanceId={editingId} validatorRegistry={[
+        registerJsonSchemaValidatorSetup()
+      ]}>
+        <NodeEditRenderer
+          config={config}
+          editingId={editingId}
+          errorRenderer={ErrorPanel}
+          typeRegistry={[
+            registerStringNodeRenderer(),
+            registerObjectNodeRenderer(),
+            registerListNodeRenderer(),
+            {
+              type: 'multiline-string',
+              renderer: ({propData, setPropDataValue, propertyConfig, validationResults}) => {
+                return (
+                  <div>
+                    <label htmlFor={propertyConfig.id}>{propertyConfig.name}</label>
+                    {propertyConfig.description && <p>{propertyConfig.description}</p>}
+                    <textarea id={propertyConfig.id} value={propData} onChange={(e) => {
+                      setPropDataValue(e.currentTarget.value);
+                    }}/>
+                  </div>
+                );
+              }
+            }
+          ]}
+          cancel={() => history.push(backUri)}
+          onSaved={() => history.push(backUri)}
+        />
+      </RecoilStateProvider>
     </div>
   )
 }

@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { JsonType } from "@graphter/core";
 
 export const useArrayNodeData = jest.fn(() => {
   return {
@@ -19,9 +18,8 @@ export const useNodeData = jest.fn(() => {
 export const useNodeValidation = jest.fn().mockResolvedValue([])
 
 export const nodeRendererStore = {
-  get: jest.fn(() => ({
+  get: jest.fn((nodeType: string) => ({
     type: 'string',
-    jsonType: JsonType.STRING,
     renderer: ({originalNodeData}: any) => {
       const [ value, setValue ] = useState(originalNodeData || '')
       return (

@@ -1,13 +1,13 @@
 import React from 'react';
 import ServiceProvider, {useService} from "./ServiceProvider";
-import {Service} from "./Service";
 import { act, render, within } from '@testing-library/react';
 import { screen } from '@testing-library/dom'
+import { Service } from "@graphter/core";
 
 describe(`<DataProvider />`, () => {
   let mockService: Service;
 
-  function MockConsumer() {
+  function ConsumerMock() {
     const service = useService();
     service.get('model-id', 'instance-id' );
     return null;
@@ -50,14 +50,14 @@ describe(`<DataProvider />`, () => {
 
     it(`should error when no provider is declared`, () => {
       expect(() => (
-        render(<MockConsumer />)
+        render(<ConsumerMock />)
       )).toThrowErrorMatchingSnapshot();
     });
 
     it(`should return the service passed to the provider`, () => {
       render(
         <ServiceProvider service={mockService}>
-          <MockConsumer/>
+          <ConsumerMock/>
         </ServiceProvider>
       );
       expect(mockService.get).toHaveBeenCalledWith('model-id', 'instance-id')

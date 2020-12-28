@@ -17,7 +17,7 @@ export default {
           executeOn: AllValidationExecutionStages,
           displayMode: [ 'INLINE', 'SUMMARY', 'MODAL' ],
           options: {
-            error: 'Must be at least 1 character long',
+            error: 'Must be at least 1 character longss',
             schema: {
               "minLength": 1
             },

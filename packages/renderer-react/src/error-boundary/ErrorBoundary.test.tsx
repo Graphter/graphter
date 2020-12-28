@@ -1,7 +1,7 @@
 import React, {ComponentType} from 'react';
 import { act, render, within } from '@testing-library/react';
 import { screen } from '@testing-library/dom'
-import ErrorBoundary, {ErrorRendererProps} from "./ErrorBoundary";
+import ErrorBoundary from "./ErrorBoundary";
 import DefaultError from "../default-error";
 
 describe(`<ErrorBoundary />`, () => {

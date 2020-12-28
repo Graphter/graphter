@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`node should error if no default value is defined 1`] = `"A default value is required by the 'some-id' model"`;

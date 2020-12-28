@@ -37,7 +37,7 @@ describe(`<StringRenderer />`, () => {
       type: 'string',
       default: 'The default value'
     }
-    const { getByDisplayValue } = render(<StringRenderer
+    render(<StringRenderer
       config={config}
       originalNodeData={undefined}
       committed={true}
@@ -63,21 +63,39 @@ describe(`<StringRenderer />`, () => {
     />);
     expect(queryByDisplayValue('The data provider value')).toBeInTheDocument()
   })
-  it('should show validation results when touched', () => {
+  it('should show validation errors when touched', () => {
+    const config = {
+      id: 'name',
+      name: 'Name',
+      description: 'The name',
+      type: 'string',
+      default: 'The default value'
+    }
     useNodeDataMock.mockReturnValue([ 'The data provider value', () => {} ])
-    useNodeValidationMock.mockReturnValue([
-      {
-        errorMessage: 'Some validation error message'
-      }
-    ])
+    useNodeValidationMock.mockReturnValueOnce({
+      path: [ 'name' ],
+      config,
+      value: 'The original value',
+      results: [
+        {
+          valid: true,
+          errorMessage: 'Some validation error message'
+        }
+      ]
+    })
+    useNodeValidationMock.mockReturnValueOnce({
+      path: [ 'name' ],
+      config,
+      value: 'The data provider value',
+      results: [
+        {
+          valid: false,
+          errorMessage: 'Some validation error message'
+        }
+      ]
+    })
     const { getByDisplayValue, queryByText } = render(<StringRenderer
-      config={{
-        id: 'name',
-        name: 'Name',
-        description: 'The name',
-        type: 'string',
-        default: 'The default value'
-      }}
+      config={config}
       originalNodeData={'The original value'}
       committed={true}
       path={['/']}
@@ -107,6 +125,57 @@ describe(`<StringRenderer />`, () => {
       path={['/']}
     />);
     expect(queryByText('Some validation error message')).not.toBeInTheDocument()
+  })
+  it('should not show validation errors that do not match the current input (e.g. because async validation)', () => {
+    const config = {
+      id: 'name',
+      name: 'Name',
+      description: 'The name',
+      type: 'string',
+      default: 'The default value'
+    }
+    useNodeDataMock.mockReturnValue([ 'The data provider value', () => {} ])
+    const originalResult = {
+      path: [ 'name' ],
+      config,
+      value: 'The original value',
+      results: [
+        {
+          valid: true,
+          errorMessage: 'Some validation error message'
+        }
+      ]
+    }
+    useNodeValidationMock.mockReturnValueOnce(originalResult)
+    useNodeValidationMock.mockReturnValueOnce(originalResult)
+    let { getByDisplayValue, queryByText, rerender } = render(<StringRenderer
+      config={config}
+      originalNodeData={'The original value'}
+      committed={true}
+      path={['/']}
+    />);
+    act(() => {
+      fireEvent.change(getByDisplayValue('The data provider value'), { target: { value: '' }})
+    })
+    expect(queryByText('Some validation error message')).not.toBeInTheDocument()
+    useNodeValidationMock.mockReturnValueOnce({
+      path: [ 'name' ],
+      config,
+      value: 'The data provider value',
+      results: [
+        {
+          valid: false,
+          errorMessage: 'Some validation error message'
+        }
+      ]
+    })
+    rerender(<StringRenderer
+      config={config}
+      originalNodeData={'The original value'}
+      committed={true}
+      path={['/']}
+    />)
+    expect(queryByText('Some validation error message')).toBeInTheDocument()
   })
 })
 
