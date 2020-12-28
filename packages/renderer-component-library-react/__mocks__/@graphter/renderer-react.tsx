@@ -18,7 +18,7 @@ export const useNodeData = jest.fn(() => {
 export const useNodeValidation = jest.fn().mockResolvedValue([])
 
 export const nodeRendererStore = {
-  get: jest.fn(() => ({
+  get: jest.fn((nodeType: string) => ({
     type: 'string',
     renderer: ({originalNodeData}: any) => {
       const [ value, setValue ] = useState(originalNodeData || '')

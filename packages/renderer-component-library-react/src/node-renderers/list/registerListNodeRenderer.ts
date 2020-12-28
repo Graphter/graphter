@@ -17,7 +17,7 @@ export function registerListNodeRenderer(options: ListNodeRendererOptions): Node
       const childIds = await getNodeValue<Array<string>>(path)
       return Promise.all(childIds.map((childId:string, i: number) => {
         const childPath = [ ...path, i ]
-        const childConfig = pathConfigStore.get(path)
+        const childConfig = pathConfigStore.get(childPath)
         if(!childConfig) throw new Error(`Couldn't find config for child node at path '${childPath.join('/')}'`)
         const childRenderer = nodeRendererStore.get(childConfig.type)
         return childRenderer.getRenderedData(childPath, getNodeValue)

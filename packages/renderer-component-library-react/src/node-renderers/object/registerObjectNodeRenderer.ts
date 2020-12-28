@@ -16,15 +16,22 @@ export function registerObjectNodeRenderer(options: ObjectNodeRendererOptions): 
     ) => {
       const config = pathConfigStore.get(path)
       if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
-      if(!config.children) throw new Error(`${type} type '${config.id}' has no children configured. At least one is required.`)
-      return config.children?.reduce<{ [key: string]: any }>(async (a, c) => {
-        const childPath = [ ...path, c.id ]
-        const childConfig = pathConfigStore.get(path)
+      if(!config.children || !config.children.length) throw new Error(`${type} type '${config.id}' has no children configured. At least one is required.`)
+
+      const childValues = await Promise.all(config.children.map(child => {
+        const childPath = [ ...path, child.id ]
+        const childConfig = pathConfigStore.get(childPath)
         if(!childConfig) throw new Error(`Couldn't find config for child node at path '${childPath.join('/')}'`)
         const childRenderer = nodeRendererStore.get(childConfig.type)
-        a[c.id] = await childRenderer.getRenderedData(childPath, getNodeValue)
+        return childRenderer.getRenderedData(childPath, getNodeValue)
+          .then(value => ({ key: child.id, value }))
+      }))
+      const reFormedObject = childValues.reduce<{ [key: string]: any }>((a, c) => {
+        a[c.key] = c.value
         return a
       }, {})
+      console.info(`Reformed ${childValues.length} child values for node '${config.id}'`, reFormedObject)
+      return reFormedObject
     },
     getPaths: async (
       path: Array<PathSegment>,
@@ -32,7 +39,7 @@ export function registerObjectNodeRenderer(options: ObjectNodeRendererOptions): 
     ) => {
       const config = pathConfigStore.get(path)
       if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
-      if(!config.children) throw new Error(`${type} type '${config.id}' has no children configured. At least one is required.`)
+      if(!config.children || !config.children.length) throw new Error(`${type} type '${config.id}' has no children configured. At least one is required.`)
       const promises = config.children.map(async child => {
         const childPath = [ ...path, child.id ]
         const childConfig = pathConfigStore.get(childPath)
@@ -43,7 +50,7 @@ export function registerObjectNodeRenderer(options: ObjectNodeRendererOptions): 
       })
       const results = await Promise.all(promises)
       const paths = results.flat()
-      console.log(`Found ${paths.length} paths for tree starting from '${path.join('/')}'`, paths)
+      console.info(`Found ${paths.length} paths for tree starting from '${path.join('/')}'`, paths)
       return paths
     },
     renderer: ObjectNodeRenderer,
