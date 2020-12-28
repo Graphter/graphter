@@ -9,9 +9,9 @@
 1. E2E tests ✅
 1. Unit tests:
     1. JsonSchema validator ✅
-    1. Component Lib ✅
+    1. Component Lib
     1. Recoil State Provider
-    1. Renderer
+    1. Renderer ✅
 
 ## Milestone 1.
 
