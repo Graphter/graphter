@@ -7,17 +7,17 @@ import NodeDataProvider, { useNodeData, useArrayNodeData, useTreeData, useTreePa
 describe('<NodeDataProvider />', () => {
 
   it('should render children', () => {
-    const { queryByTestId } = render(
+    const { queryByText } = render(
       <NodeDataProvider
         instanceId={'some-instance-id'}
         nodeDataHook={jest.fn()}
         treeDataHook={jest.fn()}
         treePathsHook={jest.fn()}
         arrayNodeDataHook={jest.fn()} >
-        <div data-testid='some-child-component'>Some child component</div>
+        <div>Some child component</div>
       </NodeDataProvider>
     )
-    expect(queryByTestId('some-child-component')).not.toBeNull();
+    expect(queryByText('Some child component')).not.toBeNull();
   })
 
   describe('when using useNodeData', () => {
@@ -57,8 +57,7 @@ describe('<NodeDataProvider />', () => {
       )
     })
     it('should error if no provider is defined', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <DataConsumerMock
             path={['/']}
@@ -70,13 +69,10 @@ describe('<NodeDataProvider />', () => {
             committed={true}
           />
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
     it('should error if no hook is supplied to the provider', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <NodeDataProvider
             instanceId={'some-instance-id'}
@@ -96,9 +92,7 @@ describe('<NodeDataProvider />', () => {
             />
           </NodeDataProvider>
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
   })
 
@@ -143,8 +137,7 @@ describe('<NodeDataProvider />', () => {
       )
     })
     it('should error if no provider is defined', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <ArrayDataConsumerMock
             path={['/']}
@@ -156,13 +149,10 @@ describe('<NodeDataProvider />', () => {
             committed={true}
           />
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
     it('should error if no hook is supplied to the provider', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <NodeDataProvider
             instanceId={'some-instance-id'}
@@ -182,13 +172,10 @@ describe('<NodeDataProvider />', () => {
             />
           </NodeDataProvider>
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
     it('should error if original data is not an array', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <NodeDataProvider
             instanceId={'some-instance-id'}
@@ -207,9 +194,7 @@ describe('<NodeDataProvider />', () => {
             />
           </NodeDataProvider>
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
   })
 
@@ -250,8 +235,7 @@ describe('<NodeDataProvider />', () => {
       )
     })
     it('should error if no provider is defined', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <TreeDataConsumerMock
             path={['/']}
@@ -263,13 +247,10 @@ describe('<NodeDataProvider />', () => {
             committed={true}
           />
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
     it('should error if no hook is supplied to the provider', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <NodeDataProvider
             instanceId={'some-instance-id'}
@@ -289,9 +270,7 @@ describe('<NodeDataProvider />', () => {
             />
           </NodeDataProvider>
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
   })
 
@@ -321,8 +300,7 @@ describe('<NodeDataProvider />', () => {
       )
     })
     it('should error if no provider is defined', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <TreePathsConsumerMock
             path={['/']}
@@ -334,13 +312,10 @@ describe('<NodeDataProvider />', () => {
             committed={true}
           />
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
     it('should error if no hook is supplied to the provider', () => {
-      expect.assertions(1)
-      try {
+      expect(() => {
         render(
           <NodeDataProvider
             instanceId={'some-instance-id'}
@@ -360,9 +335,7 @@ describe('<NodeDataProvider />', () => {
             />
           </NodeDataProvider>
         )
-      } catch(err) {
-        expect(err.message).toMatchSnapshot()
-      }
+      }).toThrowErrorMatchingSnapshot()
     })
   })
 
