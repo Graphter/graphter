@@ -5,7 +5,7 @@
  */
 import { RecoilValueReadOnly, selector } from "recoil";
 import propDataStore from "./propDataStore";
-import { JsonType, PathSegment } from "@graphter/core";
+import { PathSegment } from "@graphter/core";
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
 
 const treeDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};

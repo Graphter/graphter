@@ -1,6 +1,5 @@
 import ObjectNodeRenderer from "./ObjectNodeRenderer";
 import { NodeRendererRegistration, PathSegment } from "@graphter/core";
-import { JsonType } from "@graphter/core";
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
 
 export interface ObjectNodeRendererOptions {
@@ -11,7 +10,6 @@ export function registerObjectNodeRenderer(options: ObjectNodeRendererOptions): 
   const type = options?.type || 'object'
   return {
     type: type,
-    jsonType: JsonType.OBJECT,
     getRenderedData: async (
       path: Array<PathSegment>,
       getNodeValue: (path: Array<PathSegment>) => Promise<any>

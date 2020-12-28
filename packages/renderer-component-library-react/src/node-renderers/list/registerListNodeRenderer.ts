@@ -1,6 +1,5 @@
 import ListNodeRenderer from "./ListNodeRenderer";
 import { NodeRendererRegistration, PathSegment } from "@graphter/core";
-import { JsonType } from "@graphter/core";
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
 
 export interface ListNodeRendererOptions {
@@ -11,7 +10,6 @@ export function registerListNodeRenderer(options: ListNodeRendererOptions): Node
   const type = options?.type || 'list'
   return {
     type,
-    jsonType: JsonType.ARRAY,
     getRenderedData: async (path, getNodeValue) => {
       const config = pathConfigStore.get(path)
       if(!config) throw new Error(`Couldn't find config for path ${path.join('/')}`)

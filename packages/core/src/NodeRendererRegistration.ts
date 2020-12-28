@@ -1,11 +1,9 @@
 import { ComponentType } from "react";
 import { NodeRendererProps } from "./NodeRendererProps";
-import { JsonType } from "./JsonType";
 import { PathSegment } from "./PathSegment";
 
 export interface NodeRendererRegistration {
   type: string;
-  jsonType: JsonType
   getRenderedData: GetRenderedDataFn
   getPaths?: (
     path: Array<PathSegment>,
