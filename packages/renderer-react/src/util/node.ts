@@ -1,4 +1,5 @@
 import { NodeConfig } from "@graphter/core";
+import clone from "rfdc";
 
 export function createDefault(config: NodeConfig, fallbackValue: any = undefined): any{
   const defaultType = typeof config.default;
@@ -10,5 +11,5 @@ export function createDefault(config: NodeConfig, fallbackValue: any = undefined
   } else if(defaultType === 'function'){
     return config.default()
   }
-  return config.default
+  return clone()(config.default)
 }
