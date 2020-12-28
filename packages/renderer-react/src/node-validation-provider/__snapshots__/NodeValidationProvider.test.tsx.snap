@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<NodeValidationProvider /> when using useAggregateNodeValidation should throw an error if an aggregate node validation hook has not been defined 1`] = `"Couldn't find a aggregateNodeValidationHook to use."`;
+
+exports[`<NodeValidationProvider /> when using useAggregateNodeValidation should throw an error if the provider is not present in the component hierarchy 1`] = `"No validation provider found. Make sure a <NodeValidationProvider /> is defined."`;
+
+exports[`<NodeValidationProvider /> when using useNodeValidation hook should throw an error if a node validation hook has not been defined 1`] = `"Couldn't find a NodeValidationHook to use."`;
+
+exports[`<NodeValidationProvider /> when using useNodeValidation hook should throw an error if a validator registry is not present 1`] = `"No validators have been defined. Please ensue <NodeValidationProvider /> has been defined correctly."`;
+
+exports[`<NodeValidationProvider /> when using useNodeValidation hook should throw an error if the provider is not present in the component hierarchy 1`] = `"No validation provider found. Make sure a <NodeValidationProvider /> is defined."`;
