@@ -61,10 +61,9 @@ describe('getChildPaths()', () => {
       .calledWith(['page', 'author'])
       .mockResolvedValueOnce('Joe Bloggs')
     const result = await getChildPaths(['page'], getNodeValueMock)
-    expect(result).toEqual({
-      title: 'The Page Title',
-      author: 'Joe Bloggs'
-    })
+    expect(result).toEqual([
+      ["page", "title"], ["page", "author"]
+    ])
   })
 })
 
