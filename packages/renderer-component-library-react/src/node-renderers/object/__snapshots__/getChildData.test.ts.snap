@@ -1,0 +1,11 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getChildData() should error if parent config is not found 1`] = `"Couldn't find config for node at path 'page'"`;
+
+exports[`getChildData() should error if the parent has no children (i.e. []) are configured 1`] = `"object type 'page' has no children configured. At least one is required."`;
+
+exports[`getChildData() should error if the parent has no children (i.e. []) configured 1`] = `"object type 'page' has no children configured. At least one is required."`;
+
+exports[`getChildData() should error if the parent has no children (i.e. null) are configured 1`] = `"object type 'page' has no children configured. At least one is required."`;
+
+exports[`getChildData() should error if the parent has no children (i.e. null) configured 1`] = `"object type 'page' has no children configured. At least one is required."`;
