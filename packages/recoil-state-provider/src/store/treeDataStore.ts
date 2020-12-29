@@ -23,14 +23,18 @@ export default {
     treeDataMap[key] = treeDataSelector = selector<any>({
       key: key,
       get: ({ get }) => {
+        const getNodeValue = (path:Array<PathSegment>) => {
+          const state = propDataStore.get(path)
+          return Promise.resolve(get(state))
+        }
         const config = pathConfigStore.get(path)
         if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
-        return renderer.getRenderedData(path, (path:Array<PathSegment>) => {
-          const state = propDataStore.get(path)
-          return get(state)
-        })
+
+        return renderer.getChildData ?
+          renderer.getChildData(path, getNodeValue) :
+          getNodeValue(path)
       }
     });
 
@@ -48,8 +52,8 @@ export default {
         if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
-        if(!renderer.getPaths) return [ config.id ]
-        const paths = renderer.getPaths(path, (path:Array<PathSegment>) => {
+        if(!renderer.getChildPaths) return [ config.id ]
+        const paths = renderer.getChildPaths(path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
