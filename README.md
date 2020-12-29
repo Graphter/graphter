@@ -42,6 +42,7 @@ Your data is not so special. Graphter allows humans to manage _any_ data structu
 Start throwing different data management scenarios at it and iterating as stresses are found and remedied.
 
 For example:
+1. CMS
 1. CRM
 1. Risk assessment workflows 
 1. Inventory management
@@ -50,7 +51,7 @@ For example:
 1. Media library management
 
 ## Long term
-Provide managed solutions of the open source tooling.
+Provide managed cloud solutions on top of the open source tooling.
     
 ## Contributing
 See [Contributing Docs](./docs/contributing.md)
