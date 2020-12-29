@@ -71,7 +71,6 @@ describe('useRecoilArrayNodeData()', () => {
     )
     expect(useRecoilNodeDataMock).toHaveBeenCalledWith(
       ['/'],
-      {},
       [ 'unique-id-1-a', 'unique-id-2-a' ],
       true
     )
