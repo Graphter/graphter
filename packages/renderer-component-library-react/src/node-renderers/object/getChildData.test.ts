@@ -57,21 +57,22 @@ describe('getChildData()', () => {
       id: 'page',
       type: 'object',
       children: [
-        {
-          id: 'title',
-          type: 'string'
-        }
+        { id: 'title', type: 'string' },
+        { id: 'author', type: 'string' }
       ]
     })
     when(nodeRendererStoreMock.get)
       .calledWith('string')
-      .mockReturnValueOnce({ })
+      .mockReturnValue({ })
     when(getNodeValueMock)
       .calledWith(['page', 'title'])
       .mockResolvedValueOnce('The Page Title')
+      .calledWith(['page', 'author'])
+      .mockResolvedValueOnce('Joe Bloggs')
     const result = await getChildData(['page'], getNodeValueMock)
     expect(result).toEqual({
-      title: 'The Page Title'
+      title: 'The Page Title',
+      author: 'Joe Bloggs'
     })
   })
 })
