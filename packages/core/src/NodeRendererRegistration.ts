@@ -3,19 +3,23 @@ import { NodeRendererProps } from "./NodeRendererProps";
 import { PathSegment } from "./PathSegment";
 
 export interface NodeRendererRegistration {
-  type: string;
-  getRenderedData: GetRenderedDataFn
-  getPaths?: (
-    path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => Promise<T>
-  ) => Promise<Array<Array<PathSegment>>>
-  renderer: ComponentType<NodeRendererProps>;
-  options?: any;
+  type: string
+  getChildData?: GetChildDataFn
+  getChildPaths?: GetChildPathsFn
+  renderer: ComponentType<NodeRendererProps>
+  options?: any
 }
 
-export interface GetRenderedDataFn {
+export interface GetChildDataFn {
   (
     path: Array<PathSegment>,
     getNodeValue: <T>(path: Array<PathSegment>) => Promise<T>
   ): Promise<any>
+}
+
+export interface GetChildPathsFn {
+  (
+    path: Array<PathSegment>,
+    getNodeValue: <T>(path: Array<PathSegment>) => Promise<T>
+  ): Promise<Array<Array<PathSegment>>>
 }
