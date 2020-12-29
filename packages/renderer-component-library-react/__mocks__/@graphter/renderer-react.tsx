@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { PathSegment } from "@graphter/core";
 
 export const useArrayNodeData = jest.fn(() => {
   return {
@@ -29,3 +30,8 @@ export const nodeRendererStore = {
   }))
 }
 export const createDefault = jest.fn()
+
+export const pathConfigStore = {
+  get: jest.fn(),
+  set: jest.fn()
+}
