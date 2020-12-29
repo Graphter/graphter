@@ -4,8 +4,6 @@ import NodeEditRenderer from "./edit-renderer/NodeEditRenderer"
 import ValidationSummary from './edit-renderer/ValidationSummary'
 import NodeDataProvider from "./node-data-provider";
 import ServiceProvider from './service-provider'
-import nodeRendererStore from "./store/nodeRendererStore"
-import pathConfigStore from './store/pathConfigStore'
 
 export {
   ListRenderer,
@@ -13,11 +11,11 @@ export {
   NodeEditRenderer,
   ServiceProvider,
   ValidationSummary,
-  nodeRendererStore,
-  pathConfigStore,
   NodeDataProvider,
 }
 
+export * from "./store/nodeRendererStore"
+export * from './store/pathConfigStore'
 export * from './list-renderer'
 export * from './edit-renderer'
 export * from './util/node'
