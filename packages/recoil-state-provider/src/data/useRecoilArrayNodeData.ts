@@ -1,7 +1,7 @@
 import { nanoid } from "nanoid";
 import { useMemo } from "react";
 import { useRecoilNodeData } from "./useRecoilNodeData";
-import propDataStore from "../store/propDataStore";
+import { propDataStore } from "../store/propDataStore";
 import { ArrayNodeDataHook } from "@graphter/renderer-react";
 
 /**

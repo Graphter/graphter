@@ -1,5 +1,5 @@
 import { useRecoilState } from "recoil";
-import propDataStore from "../store/propDataStore";
+import { propDataStore } from "../store/propDataStore";
 import { NodeDataHook } from "@graphter/renderer-react";
 
 /**

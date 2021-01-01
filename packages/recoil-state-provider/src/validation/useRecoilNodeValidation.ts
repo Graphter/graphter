@@ -8,7 +8,7 @@ import {
   ValidationResult
 } from "@graphter/core";
 import { NodeValidation } from "@graphter/core";
-import propDataStore from "../store/propDataStore";
+import { propDataStore } from "../store/propDataStore";
 import validationDataStore from "../store/validationDataStore";
 import { NodeValidationData, NodeValidationHook } from "@graphter/renderer-react";
 import { pathConfigStore } from "@graphter/renderer-react";
