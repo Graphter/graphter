@@ -3,7 +3,7 @@ import { useRecoilNodeData } from "./useRecoilNodeData"
 import { useRecoilState } from "recoil";
 import { act, fireEvent, render } from "@testing-library/react"
 import { when } from 'jest-when'
-import propDataStore from "../store/propDataStore";
+import { propDataStore } from "../store/propDataStore";
 
 jest.mock('recoil')
 jest.mock('../store/propDataStore')
