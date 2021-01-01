@@ -1,5 +1,6 @@
 import { atom } from "recoil";
 import { nanoid } from "nanoid";
+import PropDataStore from "./propDataStore";
 
 jest.mock('nanoid')
 jest.mock('recoil')
@@ -15,7 +16,7 @@ atomMock.mockImplementation((options) => {
 nanoidMock.mockReturnValue('some-random-guid')
 
 describe('propDataStore', () => {
-  let propDataStore: any
+  let propDataStore: PropDataStore
   beforeEach(async() => {
     jest.isolateModules(async () => {
       propDataStore = require('./propDataStore')

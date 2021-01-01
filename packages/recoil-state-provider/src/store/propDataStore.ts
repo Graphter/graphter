@@ -138,7 +138,20 @@ function checkPathArg(path: Array<PathSegment>){
   if(!path || !path.length) throw new Error('Path of at least one segment is required')
 }
 
-export default {
+export interface PropDataStore {
+  get: (path: Array<PathSegment>) => RecoilState<any>
+  getAll: (path: Array<PathSegment>) => Array<RecoilState<any>>
+  set: (
+    path: Array<PathSegment>,
+    committed: boolean,
+    originalValue?: any
+  ) => void
+  commitItem: (path: Array<PathSegment>) => void
+  has: (path: Array<string | number>) => boolean
+  remove: (path: Array<PathSegment>) => void
+}
+
+export const propDataStore: PropDataStore = {
   get,
   getAll,
   set,
@@ -146,3 +159,5 @@ export default {
   has,
   remove
 }
+
+export default PropDataStore
