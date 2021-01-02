@@ -14,17 +14,21 @@
     1. Renderer ✅
 
 ## Milestone 1.
-
 1. List
 1. Search
+1. Save
 1. Local storage service
-1. 
 
 ## Milestone 2.
-
 1. Manage own configuration
     1. Git service
     1. Migration
+   
+## Milestone 3.
+1. Infer configuration from sample data
+
+## Milestone 4. 
+1. Basic public website (live)
     
 ## Backlog
 1. Full range of validation stages
@@ -33,6 +37,7 @@
 1. Basic node renderers:
     1. HTML Text
     1. Dropdown
+       
     1. Radio
     1. Checkbox
     1. Date

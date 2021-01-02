@@ -3,7 +3,7 @@ import { useRecoilArrayNodeData } from "./useRecoilArrayNodeData"
 import { useRecoilNodeData } from './useRecoilNodeData'
 import { nanoid } from 'nanoid'
 import { act, fireEvent, render } from "@testing-library/react"
-import propDataStore from "../store/propDataStore";
+import { propDataStore } from "../store/propDataStore";
 
 jest.mock('nanoid')
 jest.mock('./useRecoilNodeData')
@@ -71,7 +71,6 @@ describe('useRecoilArrayNodeData()', () => {
     )
     expect(useRecoilNodeDataMock).toHaveBeenCalledWith(
       ['/'],
-      {},
       [ 'unique-id-1-a', 'unique-id-2-a' ],
       true
     )

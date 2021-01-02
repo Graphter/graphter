@@ -1,22 +1,22 @@
-/**
- * WARNING: this file is being used directly in various places in the react renderer
- * which is against the principle that the renderer should be agnostic of state management choices.
- * TODO: refactor access to this module through a standardised interface
- */
 import { RecoilValueReadOnly, selector } from "recoil";
-import propDataStore from "./propDataStore";
 import { PathSegment } from "@graphter/core";
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
+import { propDataStore } from "./propDataStore";
 
 const treeDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
 const descendentPathDataMap: { [key: string]: RecoilValueReadOnly<Array<Array<PathSegment>>> } = {};
 
-const modelKeySalt = 'c2c87429-dabf-4ea0-b2e1-6e7a6262bc11'
+const treeKeySalt = 'c2c87429-dabf-4ea0-b2e1-6e7a6262bc11'
 const descendentPathKeySalt = '04ea4750-019b-446d-87f4-c025f837ab7f'
 
-export default {
+export interface TreeDataStore {
+  getDescendentData: (path: Array<PathSegment>) => RecoilValueReadOnly<any>
+  getDescendentPaths: (path: Array<PathSegment>) => RecoilValueReadOnly<Array<Array<PathSegment>>>
+}
+
+const treeDataStore: TreeDataStore = {
   getDescendentData: (path: Array<PathSegment>) => {
-    const key = `model-${path.join(modelKeySalt)}`
+    const key = `tree-from-${path.join(treeKeySalt)}`
     let treeDataSelector = treeDataMap[key]
     if(treeDataSelector) return treeDataSelector
 
@@ -47,20 +47,22 @@ export default {
     if(descendentPathSelector) return descendentPathSelector
     descendentPathDataMap[key] = descendentPathSelector = selector<any>({
       key: key,
-      get: ({ get }) => {
+      get: async ({ get }) => {
         const config = pathConfigStore.get(path)
         if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
-        if(!renderer.getChildPaths) return [ config.id ]
-        const paths = renderer.getChildPaths(path, (path:Array<PathSegment>) => {
+        if(!renderer.getChildPaths) return [ [ config.id ] ]
+        const childPaths = await renderer.getChildPaths(path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
-        return paths
+        return [ [config.id], ...childPaths ]
       }
     })
     return descendentPathSelector
 
   }
 }
+
+export default treeDataStore

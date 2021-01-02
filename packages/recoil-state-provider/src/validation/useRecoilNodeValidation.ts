@@ -8,7 +8,7 @@ import {
   ValidationResult
 } from "@graphter/core";
 import { NodeValidation } from "@graphter/core";
-import propDataStore from "../store/propDataStore";
+import { propDataStore } from "../store/propDataStore";
 import validationDataStore from "../store/validationDataStore";
 import { NodeValidationData, NodeValidationHook } from "@graphter/renderer-react";
 import { pathConfigStore } from "@graphter/renderer-react";
@@ -23,7 +23,6 @@ export const useRecoilNodeValidation: NodeValidationHook = (
   }
   if(!propDataStore.has(path)) return validationData
   const propDataState = propDataStore.get(path)
-  if(!propDataState) return validationData
   const propData = useRecoilValue(propDataState)
   validationData.value = propData
   const config = pathConfigStore.get(path)

@@ -15,31 +15,7 @@ export const get = (path: Array<PathSegment>): RecoilState<NodeValidationData> =
   return state
 }
 
-export const has = (path: Array<PathSegment>): boolean => {
-  return validationStateMap.has(generateValidationKey(path))
-}
-
-export const set = (
-  path: Array<PathSegment>,
-  config: NodeConfig,
-  value: any,
-  results: Array<ValidationResult>
-) => {
-  if(!path.length) throw new Error('path argument must have at least one element')
-  const key = generateValidationKey(path)
-  const validationData: NodeValidationData = {
-    path,
-    config,
-    value,
-    results
-  }
-  validationStateMap.set(key, atom({
-    key: key,
-    default: validationData
-  }))
-}
-
-export const getAggregate = (paths: Array<Array<PathSegment>>): RecoilValueReadOnly<Array<NodeValidationData>> => {
+export const getAll = (paths: Array<Array<PathSegment>>): RecoilValueReadOnly<Array<NodeValidationData>> => {
   const key = `aggregate-validations-${paths.map(path => path.join(pathSegmentKeySalt)).join(pathKeySalt)}`
   if(aggregateValidationsStateMap.has(key)){
     const aggregateValidations = aggregateValidationsStateMap.get(key)
@@ -67,9 +43,47 @@ export const getAggregate = (paths: Array<Array<PathSegment>>): RecoilValueReadO
   return aggregateValidations
 }
 
-export default {
+export const has = (path: Array<PathSegment>): boolean => {
+  return validationStateMap.has(generateValidationKey(path))
+}
+
+export const set = (
+  path: Array<PathSegment>,
+  config: NodeConfig,
+  value: any,
+  results: Array<ValidationResult>
+) => {
+  if(!path || !path.length) throw new Error('path argument is required')
+  const key = generateValidationKey(path)
+  const validationData: NodeValidationData = {
+    path,
+    config,
+    value,
+    results
+  }
+  validationStateMap.set(key, atom({
+    key: key,
+    default: validationData
+  }))
+}
+
+export interface ValidationDataStore{
+  get: (path: Array<PathSegment>) => RecoilState<NodeValidationData>
+  getAll: (paths: Array<Array<PathSegment>>) => RecoilValueReadOnly<Array<NodeValidationData>>
+  has: (path: Array<PathSegment>) => boolean
+  set: (
+    path: Array<PathSegment>,
+    config: NodeConfig,
+    value: any,
+    results: Array<ValidationResult>
+  ) => void
+}
+
+const validationDataStore: ValidationDataStore = {
   get,
-  getAll: getAggregate,
+  getAll,
   has,
   set
 }
+
+export default validationDataStore

@@ -1,0 +1,53 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`treeDataStore getDescendentData() should error if config is missing for the starting node 1`] = `"Couldn't find config for node at path 'page'"`;
+
+exports[`treeDataStore getDescendentData() should error if no renderer is found for the starting node 1`] = `"Couldn't find renderer for type 'unicorn'"`;
+
+exports[`treeDataStore getDescendentData() should return a selector that resolves the descendent tree structure 1`] = `
+<div>
+  <div>
+    "the-child-data"
+  </div>
+</div>
+`;
+
+exports[`treeDataStore getDescendentData() should skip descendent data resolution if the starting node does not implement a getChildData() function 1`] = `
+<div>
+  <div>
+    the-page-value
+  </div>
+</div>
+`;
+
+exports[`treeDataStore getDescendentPaths should error if config is missing for the starting node 1`] = `
+<div>
+  <div>
+    {"state":"hasError","contents":{}}
+  </div>
+</div>
+`;
+
+exports[`treeDataStore getDescendentPaths should error if no renderer is found for the starting node 1`] = `
+<div>
+  <div>
+    {"state":"hasError","contents":{}}
+  </div>
+</div>
+`;
+
+exports[`treeDataStore getDescendentPaths should return a selector that resolves the descendent paths 1`] = `
+<div>
+  <div>
+    [["page"],["page","title"],["page","author"]]
+  </div>
+</div>
+`;
+
+exports[`treeDataStore getDescendentPaths should skip descendent path resolution if the starting node does not implement a getChildPaths() function 1`] = `
+<div>
+  <div>
+    [["page"]]
+  </div>
+</div>
+`;

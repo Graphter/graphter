@@ -1,0 +1,29 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`propDataStore commitItem() should error if no path (i.e. []) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore commitItem() should error if no path (i.e. null) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore get() should error if no path (i.e. []) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore get() should error if no path (i.e. null) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore get() should error if no state is found 1`] = `"Couldn't find state at page"`;
+
+exports[`propDataStore getAll() should error if no path (i.e. []) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore getAll() should error if no path (i.e. null) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore getAll() should error if node has no children 1`] = `"Couldn't find child state at page"`;
+
+exports[`propDataStore has() should error if no path (i.e. []) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore has() should error if no path (i.e. null) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore remove() should error if no path (i.e. []) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore remove() should error if no path (i.e. null) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore set() should error if no path (i.e. []) is supplied 1`] = `"Path of at least one segment is required"`;
+
+exports[`propDataStore set() should error if no path (i.e. null) is supplied 1`] = `"Path of at least one segment is required"`;

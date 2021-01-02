@@ -1,3 +1,7 @@
+/***
+ * TODO: This module makes some pretty nasty data mutations. Fix that.
+ */
+
 import { atom, RecoilState } from "recoil";
 import { PathSegment } from "@graphter/core";
 import { nanoid } from "nanoid";
@@ -20,6 +24,7 @@ const propStateNodeTree: Array<Node> = []
 export const get = (
   path: Array<PathSegment>
 ): RecoilState<any> => {
+  checkPathArg(path)
   const pathNode = getPathNode(path)
   if(!pathNode.meta) throw new Error(`Couldn't find state at ${path.join('/')}`)
   return pathNode.meta.state
@@ -28,6 +33,7 @@ export const get = (
 export const getAll = (
   path: Array<PathSegment>
 ): Array<RecoilState<any>> => {
+  checkPathArg(path)
   const pathNode = getPathNode(path)
   if(!pathNode.children) throw new Error(`Couldn't find child state at ${path.join('/')}`)
   return Array.from(pathNode.children.values())
@@ -40,8 +46,8 @@ export const set = (
   committed: boolean,
   originalValue?: any
 ) => {
-  if(!path || !path.length) throw new Error('Path of at least one segment is required')
-  console.log(`Setting ${path.join('/')} = ${originalValue} [committed=${committed}`)
+  checkPathArg(path)
+  console.info(`Setting ${path.join('/')} = ${originalValue} [committed=${committed}]`)
   const node = getPathNode(path)
   node.meta = {
     state: atom({
@@ -54,17 +60,27 @@ export const set = (
   }
 }
 
+/***
+ * The "committed" flag in Graphter is used to demarcate draft tree additions. For example
+ * the "add item" ui for a list before the "Add [+]" button is pressed.
+ *
+ * In future we'll likely have to integrate this function with node modification history or
+ * versioning to allow us to track tree modifications as well as additions. For example a
+ * renderer may want to allow changes and then provide a Save/Cancel button to commit or
+ * discard the tree changes
+ * @param path
+ */
 export const commitItem = (
   path: Array<PathSegment>
 ) => {
-  if(!path || !path.length) throw new Error('Path of at least one segment is required')
+  checkPathArg(path)
   const node = getPathNode(path)
   if(!node.meta) throw new Error('Node is missing meta. Should never happen')
   node.meta.committed = true
 }
 
 export const has = (path: Array<string | number>): boolean => {
-  if(!path || !path.length) throw new Error('Path of at least one segment is required')
+  checkPathArg(path)
   let node: Node | undefined = {
     id: null,
     meta: null,
@@ -82,23 +98,23 @@ export const has = (path: Array<string | number>): boolean => {
   return true
 }
 
-export const remove = (path: Array<string | number>) => {
-  if(!path || !path.length) throw new Error('Path of at least one segment is required')
+export const remove = (path: Array<PathSegment>) => {
+  checkPathArg(path)
   const clonedPath = [...path]
   const removeSegment = clonedPath.splice(-1, 1)[0]
 
   const parentNode = getPathNode(clonedPath)
   if(!parentNode) throw new Error(`Missing ancestor trying to set ${path.join('/')}`)
   if(!parentNode.children) throw new Error(`No children at ${path.join('/')} to remove`)
-  typeof removeSegment === 'string' ?
-    parentNode.children = parentNode.children
-      .filter(childNode => childNode.id !== removeSegment) :
-    parentNode.children.splice(removeSegment, 1)
+  const indexToRemove = typeof removeSegment === 'number' ?
+    removeSegment :
+    parentNode.children
+      .findIndex(childNode => childNode.id !== removeSegment)
+  parentNode.children.splice(indexToRemove, 1)
 }
 
-const getPathNode = (path: Array<string | number>) => {
+const getPathNode = (path: Array<PathSegment>) => {
   return path.reduce<Node>((a, c) => {
-    if(!a) return a
     if(!a.children) a.children = []
     let node = typeof c === 'string' ?
       a.children.find(node => node.id === c) :
@@ -118,7 +134,24 @@ const getPathNode = (path: Array<string | number>) => {
   }, { id: null, meta: null, children: propStateNodeTree })
 }
 
-export default {
+function checkPathArg(path: Array<PathSegment>){
+  if(!path || !path.length) throw new Error('Path of at least one segment is required')
+}
+
+export interface PropDataStore {
+  get: (path: Array<PathSegment>) => RecoilState<any>
+  getAll: (path: Array<PathSegment>) => Array<RecoilState<any>>
+  set: (
+    path: Array<PathSegment>,
+    committed: boolean,
+    originalValue?: any
+  ) => void
+  commitItem: (path: Array<PathSegment>) => void
+  has: (path: Array<string | number>) => boolean
+  remove: (path: Array<PathSegment>) => void
+}
+
+export const propDataStore: PropDataStore = {
   get,
   getAll,
   set,
@@ -126,3 +159,5 @@ export default {
   has,
   remove
 }
+
+export default PropDataStore

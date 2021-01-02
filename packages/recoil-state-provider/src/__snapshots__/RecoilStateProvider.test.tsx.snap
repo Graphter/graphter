@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<RecoilStateProvider /> should correctly set up Recoil state management 1`] = `
+<div>
+  <div>
+    <div>
+      <div>
+        Some child
+      </div>
+    </div>
+  </div>
+</div>
+`;

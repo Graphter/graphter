@@ -13,8 +13,8 @@ describe('useRecoilNodeData()', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
-  it('return a callback providing tree data integrated from the provided path', async () => {
-    when(treeDataStoreMock.get)
+  it('return a callback providing integrated tree data for the descendents of a node', async () => {
+    when(treeDataStoreMock.getDescendentData)
       .calledWith(['/'])
       .mockReturnValueOnce({
         some: 'state'

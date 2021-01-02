@@ -1,0 +1,41 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`validationDataStore get() should error if no validation data has been set yet 1`] = `"No validation state for 'page' found in the store"`;
+
+exports[`validationDataStore getAll() should return a selector that aggregates results for all the supplied paths 1`] = `
+Array [
+  Object {
+    "config": Object {
+      "id": "page",
+      "type": "object",
+    },
+    "path": Array [
+      "page",
+    ],
+    "results": Array [
+      Object {
+        "errorMessage": "Some page error",
+        "valid": false,
+      },
+    ],
+  },
+  Object {
+    "config": Object {
+      "id": "title",
+      "type": "string",
+    },
+    "path": Array [
+      "page",
+      "title",
+    ],
+    "results": Array [
+      Object {
+        "errorMessage": "Some title error",
+        "valid": false,
+      },
+    ],
+  },
+]
+`;
+
+exports[`validationDataStore set() should error if no path is supplied 1`] = `"path argument is required"`;

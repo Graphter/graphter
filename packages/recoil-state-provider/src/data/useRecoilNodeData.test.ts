@@ -3,7 +3,7 @@ import { useRecoilNodeData } from "./useRecoilNodeData"
 import { useRecoilState } from "recoil";
 import { act, fireEvent, render } from "@testing-library/react"
 import { when } from 'jest-when'
-import propDataStore from "../store/propDataStore";
+import { propDataStore } from "../store/propDataStore";
 
 jest.mock('recoil')
 jest.mock('../store/propDataStore')
@@ -21,18 +21,10 @@ describe('useRecoilNodeData()', () => {
       .mockReturnValue(false)
     useRecoilNodeData(
       ['/'],
-      {
-        id: 'name',
-        type: 'string'
-      },
       'Bob',
       true)
     expect(propDataStoreMock.set).toHaveBeenCalledWith(
       ['/'],
-      {
-        id: 'name',
-        type: 'string'
-      },
       true,
       'Bob')
   })
@@ -48,10 +40,6 @@ describe('useRecoilNodeData()', () => {
       .mockReturnValue('The recoil result')
     const result = useRecoilNodeData(
       ['/'],
-      {
-        id: 'name',
-        type: 'string'
-      },
       'Bob',
       true)
     expect(result).toBe('The recoil result')
