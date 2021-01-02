@@ -50,8 +50,7 @@ export default function NodeEditRenderer(
     (treeData) => {
       console.log('saving model ', treeData)
     },
-    [ config.id, editingId === undefined ? 'new' : editingId ],
-    config)
+    [ config.id, editingId === undefined ? 'new' : editingId ])
 
   useEffect(() => {
     (async () => {

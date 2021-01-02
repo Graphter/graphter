@@ -54,11 +54,10 @@ export function useArrayNodeData<D>(
 
 export const useTreeData:TreeDataHook = (
   fn: (data: any) => void,
-  path: Array<PathSegment>,
-  config: NodeConfig) => {
+  path: Array<PathSegment>) => {
   const ctx = useContext(Context)
   if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataHook or context to use.`)
-  return ctx.treeDataHook(fn, path, config)
+  return ctx.treeDataHook(fn, path)
 }
 
 export const useTreePaths:TreePathsHook = (path: Array<PathSegment>) => {
