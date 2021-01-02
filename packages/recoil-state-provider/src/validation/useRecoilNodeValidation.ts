@@ -23,7 +23,6 @@ export const useRecoilNodeValidation: NodeValidationHook = (
   }
   if(!propDataStore.has(path)) return validationData
   const propDataState = propDataStore.get(path)
-  if(!propDataState) return validationData
   const propData = useRecoilValue(propDataState)
   validationData.value = propData
   const config = pathConfigStore.get(path)
