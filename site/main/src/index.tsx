@@ -1,12 +1,27 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import './index.css';
-import App from './App';
+import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
+import Landing from "./components/Landing/Landing";
+import ManageData from "./components/Demo/ManageData";
+import ManageConfig from "./components/Demo/ManageConfig";
 
 ReactDOM.render(
   <React.StrictMode>
-    <App />
+    <Router>
+      <Switch>
+        <Route path='/demo/data*'>
+          <ManageData />
+        </Route>
+        <Route path='/demo/config*'>
+          <ManageConfig />
+        </Route>
+        <Route path='/'>
+          <Landing />
+        </Route>
+      </Switch>
+    </Router>
   </React.StrictMode>,
   document.getElementById('root')
 );

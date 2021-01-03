@@ -16,11 +16,26 @@
     "typescript": "^4.0.3",
     "web-vitals": "^0.2.4"
   },
+  "devDependencies": {
+    "@craco/craco": "^6.0.0",
+    "@graphter/core": "file:../../packages/core",
+    "@graphter/recoil-state-provider": "file:../../packages/recoil-state-provider",
+    "@graphter/renderer-component-library-react": "file:../../packages/renderer-component-library-react",
+    "@graphter/renderer-react": "file:../../packages/renderer-react",
+    "@graphter/theme": "file:../../packages/theme",
+    "@graphter/validator-jsonschema": "file:../../packages/validator-jsonschema",
+    "@types/antd": "^1.0.0",
+    "@types/react-router-dom": "^5.1.7",
+    "antd": "^4.9.4",
+    "craco-antd": "^1.19.0",
+    "react-router-dom": "^5.2.0",
+    "source-map-loader": "^2.0.0"
+  },
   "scripts": {
-    "start": "react-scripts start",
-    "build": "react-scripts build",
-    "test": "react-scripts test",
-    "eject": "react-scripts eject"
+    "start": "craco start",
+    "build": "craco build",
+    "test": "craco test",
+    "eject": "craco eject"
   },
   "eslintConfig": {
     "extends": [
