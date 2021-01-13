@@ -41,5 +41,5 @@ function StringNodeRenderer(
     </>
   )
 }
-StringNodeRenderer.type = 'string'
+
 export default StringNodeRenderer
