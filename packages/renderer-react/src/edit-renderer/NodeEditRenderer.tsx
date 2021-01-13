@@ -19,7 +19,6 @@ export interface NodeEditRendererProps {
   onSaved?: (modelId: string, instance: any) => void
   cancel: (modelId: string | undefined, instance: any) => void
   typeRegistry: Array<NodeRendererRegistration>
-  children: any
 }
 
 export default function NodeEditRenderer(
@@ -29,8 +28,7 @@ export default function NodeEditRenderer(
     errorRenderer,
     onSaved,
     cancel,
-    typeRegistry,
-    children
+    typeRegistry
   }: NodeEditRendererProps) {
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
@@ -77,7 +75,7 @@ export default function NodeEditRenderer(
 
   if (!startingData) return null
   const registration = nodeRendererStore.get(config.type)
-  const TypeRenderer = registration.renderer
+  const TypeRenderer = registration.Renderer
 
   const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
 

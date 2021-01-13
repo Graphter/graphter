@@ -22,7 +22,7 @@ export default function ListNodeRenderer(
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
   if (!childRendererRegistration) return null
-  const ChildTypeRenderer = childRendererRegistration.renderer
+  const ChildTypeRenderer = childRendererRegistration.Renderer
 
   const {
     childIds,

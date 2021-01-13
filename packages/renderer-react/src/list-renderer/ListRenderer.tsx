@@ -11,24 +11,9 @@ export interface ListRendererProps {
   config: NodeConfig
   renderItem: ({ item, index}: RenderItemProps) => ReactNode
   renderPagination?: ({ count }: RenderPaginationProps) => ReactNode
-  validator?: (data: any) => ValidationResult
   errorRenderer?: ComponentType<{ err: Error | string }>
   page?: number
   size?: number
-}
-
-interface ValidationResult {
-  errors: Array<PropertyValidationErrors>
-}
-
-interface PropertyValidationErrors {
-  id: any,
-  messages: Array<string>
-}
-
-interface ErrorProps{
-  title: string,
-  message: string
 }
 
 export default function ListRenderer(
@@ -36,7 +21,6 @@ export default function ListRenderer(
     config,
     renderItem,
     renderPagination,
-    validator,
     errorRenderer,
     page,
     size }: ListRendererProps): any {
@@ -76,6 +60,7 @@ export default function ListRenderer(
       { error && <ErrorDisplayComponent err={error} /> }
       { loading && <div>loading...</div> }
       <div data-testid='list'>
+
       {items.map((item, i) => (
         renderItem && (
           <ErrorBoundary
@@ -85,6 +70,7 @@ export default function ListRenderer(
           </ErrorBoundary>)
         ))}
       </div>
+
       {renderPagination && (
         <ErrorBoundary errorRenderer={ErrorDisplayComponent}>
           {renderWithErrorHandling(() => renderPagination({count}))}

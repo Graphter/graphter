@@ -1,19 +1,19 @@
 import React from "react";
 import { act, render, fireEvent } from '@testing-library/react';
 import * as graphterRenderer from "@graphter/renderer-react";
-import StringRenderer from "./StringNodeRenderer";
+import StringNodeRenderer from "./StringNodeRenderer";
 
 const useNodeDataMock = graphterRenderer.useNodeData as  jest.Mock<any>
 const useNodeValidationMock = graphterRenderer.useNodeValidation as  jest.Mock<any>
 const createDefaultMock = graphterRenderer.createDefault as jest.Mock<any>
 
-describe(`<StringRenderer />`, () => {
+describe(`<StringNodeRenderer />`, () => {
   afterEach(() => {
     useNodeDataMock.mockClear()
   })
   it(`should render correctly`, () => {
     useNodeDataMock.mockReturnValue([ 'some-data', () => {} ])
-    const { container } = render(<StringRenderer
+    const { container } = render(<StringNodeRenderer
       config={{
         id: 'name',
         name: 'Name',
@@ -37,7 +37,7 @@ describe(`<StringRenderer />`, () => {
       type: 'string',
       default: 'The default value'
     }
-    render(<StringRenderer
+    render(<StringNodeRenderer
       config={config}
       originalNodeData={undefined}
       committed={true}
@@ -49,7 +49,7 @@ describe(`<StringRenderer />`, () => {
   })
   it('should use the data provider for data', () => {
     useNodeDataMock.mockReturnValue([ 'The data provider value', () => {} ])
-    const { queryByDisplayValue } = render(<StringRenderer
+    const { queryByDisplayValue } = render(<StringNodeRenderer
       config={{
         id: 'name',
         name: 'Name',
@@ -94,7 +94,7 @@ describe(`<StringRenderer />`, () => {
         }
       ]
     })
-    const { getByDisplayValue, queryByText } = render(<StringRenderer
+    const { getByDisplayValue, queryByText } = render(<StringNodeRenderer
       config={config}
       originalNodeData={'The original value'}
       committed={true}
@@ -112,7 +112,7 @@ describe(`<StringRenderer />`, () => {
         errorMessage: 'Some validation error message'
       }
     ])
-    const { queryByText } = render(<StringRenderer
+    const { queryByText } = render(<StringNodeRenderer
       config={{
         id: 'name',
         name: 'Name',
@@ -148,7 +148,7 @@ describe(`<StringRenderer />`, () => {
     }
     useNodeValidationMock.mockReturnValueOnce(originalResult)
     useNodeValidationMock.mockReturnValueOnce(originalResult)
-    let { getByDisplayValue, queryByText, rerender } = render(<StringRenderer
+    let { getByDisplayValue, queryByText, rerender } = render(<StringNodeRenderer
       config={config}
       originalNodeData={'The original value'}
       committed={true}
@@ -169,7 +169,7 @@ describe(`<StringRenderer />`, () => {
         }
       ]
     })
-    rerender(<StringRenderer
+    rerender(<StringNodeRenderer
       config={config}
       originalNodeData={'The original value'}
       committed={true}

@@ -6,7 +6,7 @@ describe('registerStringNodeRenderer()', () => {
     expect(result.type).toBe('string')
     expect(result.getChildData).toBeUndefined()
     expect(result.getChildPaths).toBeUndefined()
-    expect(result.renderer).toBe(StringNodeRenderer)
+    expect(result.Renderer).toBe(StringNodeRenderer)
     expect(result.options).toBeUndefined()
   })
   it('should override the type if supplied in options', async () => {

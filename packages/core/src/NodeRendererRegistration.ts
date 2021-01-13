@@ -6,7 +6,7 @@ export interface NodeRendererRegistration {
   type: string
   getChildData?: GetChildDataFn
   getChildPaths?: GetChildPathsFn
-  renderer: ComponentType<NodeRendererProps>
+  Renderer: ComponentType<NodeRendererProps>
   options?: any
 }
 

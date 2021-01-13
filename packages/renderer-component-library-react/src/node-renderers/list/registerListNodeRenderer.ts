@@ -12,7 +12,7 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     type: options?.type || 'list',
     getChildData,
     getChildPaths,
-    renderer: ListNodeRenderer,
+    Renderer: ListNodeRenderer,
     options
   }
 }

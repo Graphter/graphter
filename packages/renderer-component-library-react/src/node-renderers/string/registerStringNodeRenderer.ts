@@ -8,7 +8,7 @@ export interface StringNodeRendererOptions {
 export function registerStringNodeRenderer(options?: StringNodeRendererOptions): NodeRendererRegistration {
   return {
     type: options?.type || 'string',
-    renderer: StringNodeRenderer,
+    Renderer: StringNodeRenderer,
     options
   }
 }

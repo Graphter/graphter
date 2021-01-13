@@ -2,11 +2,12 @@ import React, { Fragment } from 'react'
 import * as R from 'ramda';
 import s from './ListItemRenderer.pcss';
 import { RenderItemProps } from "@graphter/renderer-react";
+import { PathSegment } from "@graphter/core";
 
 export interface ListItemRendererProps extends RenderItemProps {
-  idPath?: Array<string>,
-  titlePath?: Array<string>,
-  subtextPath?: Array<string>
+  idPath?: Array<PathSegment>,
+  titlePath?: Array<PathSegment>,
+  subtextPath?: Array<PathSegment>
 }
 
 export default function ListItemRenderer({  idPath, item, titlePath, subtextPath }: ListItemRendererProps){

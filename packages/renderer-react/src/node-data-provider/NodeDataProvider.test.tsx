@@ -202,8 +202,7 @@ describe('<NodeDataProvider />', () => {
     function TreeDataConsumerMock(props: any) {
       useTreeData(
         props.fn,
-        props.path,
-        props.config
+        props.path
       )
       return null
     }

@@ -20,7 +20,7 @@ export default function ObjectNodeRenderer(
       {config.children && config.children.map((childConfig, i) => {
         const childRendererRegistration = nodeRendererStore.get(childConfig.type)
         if (!childRendererRegistration) return null
-        const ChildTypeRenderer = childRendererRegistration.renderer
+        const ChildTypeRenderer = childRendererRegistration.Renderer
         return (
           <DefaultPropertyWrapper config={childConfig} key={childConfig.id}>
             <ChildTypeRenderer

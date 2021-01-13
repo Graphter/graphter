@@ -13,7 +13,7 @@ export function registerObjectNodeRenderer(options?: ObjectNodeRendererOptions):
     type: type,
     getChildData,
     getChildPaths,
-    renderer: ObjectNodeRenderer,
+    Renderer: ObjectNodeRenderer,
     options
   }
 }
