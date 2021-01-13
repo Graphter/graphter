@@ -10,7 +10,7 @@ const Context = createContext<Service | null>(null);
 
 export function useService(): Service {
   const service = useContext(Context);
-  if(!service) throw new Error(`Couldn't find API service. Make sure you've declared a DataProvider and passed it a valid service.`);
+  if(!service) throw new Error(`Couldn't find API service. Make sure you've declared a ServiceProvider and passed it a valid service.`);
   return service;
 }
 
