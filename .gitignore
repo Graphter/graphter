@@ -7,3 +7,4 @@
 /packages/validator-jsonschema/dist/*
 /examples/kitchen-sink/cypress/videos/*
 /packages/recoil-state-provider/dist/*
+/site/config-manager/.eslintcache
