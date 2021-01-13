@@ -1,5 +1,5 @@
 {
-  "name": "main",
+  "name": "config-manager",
   "version": "0.1.0",
   "private": true,
   "dependencies": {
@@ -24,10 +24,15 @@
     "@graphter/renderer-react": "file:../../packages/renderer-react",
     "@graphter/theme": "file:../../packages/theme",
     "@graphter/validator-jsonschema": "file:../../packages/validator-jsonschema",
-    "@types/antd": "^1.0.0",
+    "@types/classnames": "^2.2.11",
+    "@types/jest-when": "^2.7.2",
     "@types/react-router-dom": "^5.1.7",
-    "antd": "^4.9.4",
+    "antd": "^4.10.0",
+    "classnames": "^2.2.6",
     "craco-antd": "^1.19.0",
+    "duplicate-package-checker-webpack-plugin": "^3.0.0",
+    "jest-when": "^3.1.0",
+    "query-string": "^6.13.8",
     "react-router-dom": "^5.2.0",
     "source-map-loader": "^2.0.0"
   },

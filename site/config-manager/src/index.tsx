@@ -3,24 +3,12 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import { Route, BrowserRouter as Router, Switch } from "react-router-dom";
 import reportWebVitals from './reportWebVitals';
-import Landing from "./components/Landing/Landing";
-import ManageData from "./components/Demo/ManageData";
-import ManageConfig from "./components/Demo/ManageConfig";
+import App from "./App";
 
 ReactDOM.render(
   <React.StrictMode>
     <Router>
-      <Switch>
-        <Route path='/demo/data*'>
-          <ManageData />
-        </Route>
-        <Route path='/demo/config*'>
-          <ManageConfig />
-        </Route>
-        <Route path='/'>
-          <Landing />
-        </Route>
-      </Switch>
+      <App />
     </Router>
   </React.StrictMode>,
   document.getElementById('root')

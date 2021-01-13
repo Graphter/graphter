@@ -1,6 +1,7 @@
 // Official documentation available at: https://github.com/FormAPI/craco-antd
 
 const path = require("path");
+const DuplicatePackageCheckerPlugin = require('duplicate-package-checker-webpack-plugin');
 
 module.exports = {
   webpack: {
@@ -9,7 +10,10 @@ module.exports = {
       'recoil': path.resolve('./node_modules/@graphter/recoil-state-provider/node_modules/recoil'),
       '@graphter/renderer-react': path.resolve('./node_modules/@graphter/renderer-react/dist'),
       'safe-buffer': path.resolve('./node_modules/safe-buffer')
-    }
+    },
+    plugins: [
+      new DuplicatePackageCheckerPlugin(),
+    ]
   },
   plugins: [
     {
@@ -18,9 +22,6 @@ module.exports = {
         customizeTheme: {
           "@primary-color": "#1DA57A"
         },
-        lessLoaderOptions: {
-          noIeCompat: true
-        }
       }
     }
   ]
