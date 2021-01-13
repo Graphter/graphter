@@ -8,7 +8,7 @@ import { Pagination } from "@graphter/renderer-component-library-react";
 import cs from 'classnames'
 import { Link } from "react-router-dom";
 import s from './List.module.css'
-import { useListing } from "@graphter/renderer-react";
+//import { useListing } from "@graphter/renderer-react";
 
 export default function List(){
   const { search } = useLocation();
@@ -17,12 +17,12 @@ export default function List(){
   const page = query.page === null ? 0 : parseInt(Array.isArray(query.page) ? query.page[0] : query.page) || 1;
   const size = query.size === null ? 10 : parseInt(Array.isArray(query.size) ? query.size[0] : query.size) || 10;
 
-  const {
-    items,
-    loading,
-    count,
-    error
-  } = useListing(configConfig, page, size)
+  // const {
+  //   items,
+  //   loading,
+  //   count,
+  //   error
+  // } = useListing(configConfig, page, size)
 
   return (
     <ListRenderer
