@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`<IdNodeRenderer /> should render correctly 1`] = `
+<div>
+  <input
+    class="input"
+    data-nodepath="/"
+    data-nodetype="id"
+    type="text"
+    value="some-data"
+  />
+</div>
+`;
