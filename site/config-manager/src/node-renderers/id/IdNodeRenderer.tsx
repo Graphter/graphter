@@ -4,8 +4,8 @@ import { createDefault, useNodeData, useNodeValidation } from "@graphter/rendere
 import s from './IdNodeRenderer.module.css'
 import { nanoid } from 'nanoid'
 
-const filterRegExp = /[^a-z0-9\-]/
-const filterRegExpGlobal = /[^a-z0-9\-]/g
+const filterRegExp = /[^a-z0-9-]/
+const filterRegExpGlobal = /[^a-z0-9-]/g
 
 function IdNodeRenderer(
   {
@@ -46,7 +46,6 @@ function IdNodeRenderer(
         )
       )}
       {touched &&
-      validationResults.value === nodeData &&
       validationResults.results.map((result, i) => (
         result.valid ? null : (
           <div className={s.error} key={i} data-testid='validation-error'>
