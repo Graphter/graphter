@@ -6,6 +6,7 @@ import {
   ValidationResult
 } from "@graphter/core";
 import generateErrorMessage from "./generateErrorMessage";
+import ajvKeywords from "ajv-keywords";
 import Ajv from "ajv";
 
 export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidatorOptions){
@@ -19,9 +20,10 @@ export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidato
   };
 
   const ajv = new Ajv({
-    jsonPointers: true,
+    jsPropertySyntax: true,
     allErrors: true
   });
+  ajvKeywords(ajv)
   const validateFn = ajv.compile(options.schema);
 
 
