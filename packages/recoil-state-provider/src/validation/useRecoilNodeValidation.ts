@@ -1,6 +1,7 @@
 import { useRecoilState, useRecoilValue } from "recoil";
 import { useEffect, useMemo } from "react";
 import {
+  NodeConfig,
   NodeValidator,
   NodeValidatorRegistration,
   PathSegment,
@@ -28,17 +29,7 @@ export const useRecoilNodeValidation: NodeValidationHook = (
   const config = pathConfigStore.get(path)
   if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}' for validation`)
   validationData.config = config
-  const onChangeValidators = useMemo(() => {
-    if(!config.validation) return null
-    let validations:Array<NodeValidation> = Array.isArray(config.validation) ? config.validation : [ config.validation ]
-    return validations.flatMap<NodeValidator>(validation => {
-      if(!validation.executeOn.includes(ValidationExecutionStage.CHANGE)) return []
-      const registration = validatorRegistry.find(validator => validator.type === validation.type)
-      if(!registration) return []
-      return [registration.validatorSetup(validation.options)]
-    })
-  }, [ config ])
-
+  const onChangeValidators = getChangeValidators(config, validatorRegistry)
   if(!onChangeValidators) return validationData
 
   if(!validationDataStore.has(path)){
@@ -55,6 +46,7 @@ export const useRecoilNodeValidation: NodeValidationHook = (
             return validator(
               ValidationExecutionStage.CHANGE,
               config,
+              path,
               propData
             )
           }
@@ -76,4 +68,20 @@ export const useRecoilNodeValidation: NodeValidationHook = (
   }, [ propData ])
 
   return nodeValidationData
+}
+
+function getChangeValidators(
+  config: NodeConfig,
+  validatorRegistry: Array<NodeValidatorRegistration>
+){
+  return useMemo(() => {
+    if(!config.validation) return null
+    let validations:Array<NodeValidation> = Array.isArray(config.validation) ? config.validation : [ config.validation ]
+    return validations.flatMap<NodeValidator>(validation => {
+      if(!validation.executeOn.includes(ValidationExecutionStage.CHANGE)) return []
+      const registration = validatorRegistry.find(validator => validator.type === validation.type)
+      if(!registration) return []
+      return [ registration.validatorSetup(validation.options) ]
+    })
+  }, [ config ])
 }
