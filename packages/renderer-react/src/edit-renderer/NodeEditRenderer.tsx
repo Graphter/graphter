@@ -38,7 +38,7 @@ export default function NodeEditRenderer(
 
   nodeRendererStore.registerAll(typeRegistry)
 
-  const service = useService();
+  const service = useService(config);
 
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
@@ -56,7 +56,7 @@ export default function NodeEditRenderer(
         setLoading(false);
       } else {
         try {
-          const getResult = await service.get(config.id, editingId);
+          const getResult = await service.get(editingId);
           setLoading(false);
           if (!getResult.item) {
             setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`));

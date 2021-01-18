@@ -27,7 +27,7 @@ export default function ListRenderer(
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
   if(!config) return <ErrorDisplayComponent err={new Error('Model configuration is required')} />;
 
-  const service = useService();
+  const service = useService(config);
 
   const [ count, setCount ] = useState(0);
   const [ items, setItems ] = useState<Array<any>>([]);
@@ -41,7 +41,7 @@ export default function ListRenderer(
       try {
         const take = size || 10;
         const skip = page ? (page - 1) * take : 0;
-        listResult = await service.list(config.id, skip, take);
+        listResult = await service.list(skip, take);
       } catch(err){
         setLoading(false);
         setError(err);
