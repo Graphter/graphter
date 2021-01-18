@@ -1,20 +1,23 @@
 import React from "react";
 import { RecoilStateProvider } from "@graphter/recoil-state-provider";
 import { registerJsonSchemaValidatorSetup } from "@graphter/validator-jsonschema";
-import { useLocation } from "react-router";
-import { Route, Switch } from "react-router-dom";
+import { Route, Switch, useParams } from "react-router-dom";
 import List from "../List/List";
 import { ServiceProvider } from "@graphter/renderer-react";
 import { configService } from "../../services/configService";
 import Edit from "../Edit/Edit";
+import registerIdUniquenessValidator from "../../validators/registerIdUniquenessValidator";
 
 export default function ManageConfig(){
-  const location = useLocation();
+  const { id } = useParams<{ id: string }>();
   return (
-    <RecoilStateProvider instanceId={''} validatorRegistry={[
-      registerJsonSchemaValidatorSetup()
+    <RecoilStateProvider instanceId={id} validatorRegistry={[
+      registerJsonSchemaValidatorSetup(),
+      registerIdUniquenessValidator()
     ]}>
-      <ServiceProvider service={configService}>
+      <ServiceProvider serviceRegistry={[
+        { id: 'config', service: configService }
+      ]}>
         <Switch>
           <Route path='/:id'>
             <Edit />
