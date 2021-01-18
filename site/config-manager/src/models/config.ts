@@ -1,9 +1,9 @@
-import { AllValidationExecutionStages } from "@graphter/core";
+import { AllValidationExecutionStages, NodeConfig } from "@graphter/core";
 
-export default {
+const config:NodeConfig = {
   id: 'config',
   name: 'Graphter Config',
-  descriptions: 'The configuration that drives Graphter models',
+  description: 'The configuration that drives Graphter models',
   type: 'object',
   children: [
     {
@@ -16,13 +16,45 @@ export default {
           type: 'json-schema',
           executeOn: AllValidationExecutionStages,
           options: {
+            error: 'An ID is required',
+            schema: {
+              "minLength": 1
+            },
+          }
+        },
+        {
+          type: 'json-schema',
+          executeOn: AllValidationExecutionStages,
+          options: {
             error: 'Only lowercase alphanumeric and hyphen characters are allowed in IDs',
             schema: {
               'type': 'string',
-              'regexp': '/^[a-z0-9-]*$/',
+              'regexp': '/^[a-z0-9]*$/',
             },
           }
+        },
+        {
+          type: 'id-uniqueness',
+          executeOn: AllValidationExecutionStages,
         }
+      ]
+    },
+    {
+      id: 'name',
+      name: 'Name',
+      description: 'The model name',
+      type: 'string',
+      validation: [
+        {
+          type: 'json-schema',
+          executeOn: AllValidationExecutionStages,
+          options: {
+            error: 'An ID is required',
+            schema: {
+              "minLength": 1
+            },
+          }
+        },
       ]
     }
   ],
@@ -30,3 +62,5 @@ export default {
 
   ],
 }
+
+export default config
