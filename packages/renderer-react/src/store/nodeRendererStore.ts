@@ -16,11 +16,16 @@ const get = (nodeType: string): NodeRendererRegistration => {
   }
   return registration
 }
+const getAll = (): NodeRendererRegistration[] => {
+  return Object.entries(nodeRendererMap)
+    .map(([, value]) => value)
+}
 
 export const nodeRendererStore: NodeRendererStore = {
   register,
   registerAll,
-  get
+  get,
+  getAll
 }
 
 export default nodeRendererStore
