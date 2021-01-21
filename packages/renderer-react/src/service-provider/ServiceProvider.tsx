@@ -22,11 +22,11 @@ export function getService(id: string): Service {
   return service
 }
 
-export function useService(config: NodeConfig): Service {
+export function useService(id: string): Service {
   const serviceMap = useContext(Context)
   if(!serviceMap) throw new Error(`Couldn't find the API service registry. Make sure you've declared a <ServiceProvider /> and passed it a valid service.`)
-  const service = serviceMap.get(config.id)
-  if(!service) throw new Error(`Missing a service to handle '${config.id}' data`)
+  const service = serviceMap.get(id)
+  if(!service) throw new Error(`Missing a service to handle '${id}' data`)
   return service
 }
 

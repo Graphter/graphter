@@ -8,10 +8,7 @@ describe(`<DataProvider />`, () => {
   let mockService: Service;
 
   function ConsumerMock() {
-    const service = useService({
-      id: 'model-id',
-      type: 'string'
-    });
+    const service = useService('model-id');
     service.get('instance-id');
     return null;
   }
