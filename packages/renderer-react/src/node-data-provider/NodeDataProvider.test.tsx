@@ -227,10 +227,7 @@ describe('<NodeDataProvider />', () => {
       )
       expect(treeDataHookMock).toHaveBeenCalledWith(
         callbackFn,
-        ['/'],
-        {
-          id: 'some-node'
-        }
+        ['/']
       )
     })
     it('should error if no provider is defined', () => {
