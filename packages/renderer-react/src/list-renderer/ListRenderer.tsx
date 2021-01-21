@@ -27,7 +27,7 @@ export default function ListRenderer(
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
   if(!config) return <ErrorDisplayComponent err={new Error('Model configuration is required')} />;
 
-  const service = useService(config);
+  const service = useService(config.id);
 
   const [ count, setCount ] = useState(0);
   const [ items, setItems ] = useState<Array<any>>([]);

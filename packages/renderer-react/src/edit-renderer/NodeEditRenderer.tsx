@@ -38,7 +38,7 @@ export default function NodeEditRenderer(
 
   nodeRendererStore.registerAll(typeRegistry)
 
-  const service = useService(config);
+  const service = useService(config.id);
 
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
