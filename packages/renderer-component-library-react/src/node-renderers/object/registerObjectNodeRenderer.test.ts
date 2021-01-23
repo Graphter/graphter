@@ -6,11 +6,10 @@ import { registerObjectNodeRenderer } from "./registerObjectNodeRenderer";
 describe('registerObjectNodeRenderer()', () => {
   it('should return the correct registration', async () => {
     const result = registerObjectNodeRenderer()
-    expect(result.type).toBe('object')
+    expect(result).toMatchSnapshot()
     expect(result.getChildData).toBe(getChildData)
     expect(result.getChildPaths).toBe(getChildPaths)
-    expect(result.renderer).toBe(ObjectNodeRenderer)
-    expect(result.options).toBeUndefined()
+    expect(result.Renderer).toBe(ObjectNodeRenderer)
   })
   it('should override the type if supplied in options', async () => {
     const result = registerObjectNodeRenderer({ type: 'custom-object' })

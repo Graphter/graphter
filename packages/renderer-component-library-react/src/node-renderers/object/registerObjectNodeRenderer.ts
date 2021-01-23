@@ -11,6 +11,8 @@ export function registerObjectNodeRenderer(options?: ObjectNodeRendererOptions):
   const type = options?.type || 'object'
   return {
     type: type,
+    name: 'Object',
+    description: 'Manage complex nested structures',
     getChildData,
     getChildPaths,
     Renderer: ObjectNodeRenderer,
