@@ -10,4 +10,5 @@ export interface NodeConfig {
   validation?: NodeValidation | Array<NodeValidation>
   identifier?: boolean
   default?: any | Function
+  options?: any
 }
