@@ -4,6 +4,8 @@ import { PathSegment } from "./PathSegment";
 
 export interface NodeRendererRegistration {
   type: string
+  name: string
+  description?: string
   getChildData?: GetChildDataFn
   getChildPaths?: GetChildPathsFn
   Renderer: ComponentType<NodeRendererProps>
