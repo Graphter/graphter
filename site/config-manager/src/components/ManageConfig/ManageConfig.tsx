@@ -7,6 +7,7 @@ import { ServiceProvider } from "@graphter/renderer-react";
 import { configService } from "../../services/configService";
 import Edit from "../Edit/Edit";
 import registerIdUniquenessValidator from "../../validators/registerIdUniquenessValidator";
+import { nodeRendererService } from "../../services/nodeRendererService";
 
 export default function ManageConfig(){
   const { id } = useParams<{ id: string }>();
@@ -16,7 +17,8 @@ export default function ManageConfig(){
       registerIdUniquenessValidator()
     ]}>
       <ServiceProvider serviceRegistry={[
-        { id: 'config', service: configService }
+        { id: 'config', service: configService },
+        { id: 'node-renderer', service: nodeRendererService }
       ]}>
         <Switch>
           <Route path='/:id'>
