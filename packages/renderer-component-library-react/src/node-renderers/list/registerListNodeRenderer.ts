@@ -10,6 +10,8 @@ export interface ListNodeRendererOptions {
 export function registerListNodeRenderer(options?: ListNodeRendererOptions): NodeRendererRegistration {
   return {
     type: options?.type || 'list',
+    name: 'List',
+    description: 'Manage lists of data',
     getChildData,
     getChildPaths,
     Renderer: ListNodeRenderer,

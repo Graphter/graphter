@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`registerListNodeRenderer() should return the correct registration 1`] = `
+Object {
+  "Renderer": [Function],
+  "description": "Manage lists of data",
+  "getChildData": [Function],
+  "getChildPaths": [Function],
+  "name": "List",
+  "options": undefined,
+  "type": "list",
+}
+`;
