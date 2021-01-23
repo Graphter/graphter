@@ -13,6 +13,7 @@ import { useState } from "react";
 import { useNodeData } from "@graphter/renderer-react";
 import { registerIdNodeRenderer } from "../../node-renderers/id";
 import { registerDataSelectNodeRenderer } from "../../node-renderers/data-select";
+import { registerConditionalNodeRenderer } from "../../node-renderers/conditional";
 
 export default function Edit(){
   const { id } = useParams<{ id: string }>();
@@ -37,7 +38,6 @@ export default function Edit(){
               if(isNew) originalNodeData = createDefault(config, '')
               const [ touched, setTouched ] = useState(false)
               const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-              const validationResults = useNodeValidation(path)
               const htmlId = path.join('-')
               return (
                 <div>
@@ -52,7 +52,8 @@ export default function Edit(){
             }
           },
           registerIdNodeRenderer(),
-          registerDataSelectNodeRenderer()
+          registerDataSelectNodeRenderer(),
+          registerConditionalNodeRenderer()
         ]}
         cancel={() => history.push(backUri)}
         onSaved={() => history.push(backUri)}

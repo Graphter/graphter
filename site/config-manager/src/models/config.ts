@@ -76,6 +76,27 @@ const config:NodeConfig = {
         keyPath: [ 'type' ],
         valuePath: [ 'name' ]
       }
+    },
+    {
+      id: 'children',
+      type: 'conditional',
+      children: [
+        {
+          id: 'object',
+          name: 'Object',
+          description: 'The object properties',
+          type: 'string',
+          children: [ ],
+          validation: [ ]
+        }
+      ],
+      validation: [ ],
+      options: {
+        localTargetPath: ['type'],
+        branches: [
+          { condition: 'object', childId: 'object' }
+        ]
+      }
     }
   ],
   validation: [
