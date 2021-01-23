@@ -8,6 +8,8 @@ export interface IdNodeRendererOptions {
 export function registerIdNodeRenderer(options?: IdNodeRendererOptions): NodeRendererRegistration {
   return {
     type: options?.type || 'id',
+    name: 'ID',
+    description: 'Manage a human readable and web-friendly ID',
     Renderer: IdNodeRenderer,
     options
   }
