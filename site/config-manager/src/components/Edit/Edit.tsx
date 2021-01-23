@@ -12,11 +12,12 @@ import { useNodeValidation } from "@graphter/renderer-react";
 import { useState } from "react";
 import { useNodeData } from "@graphter/renderer-react";
 import { registerIdNodeRenderer } from "../../node-renderers/id";
+import { registerDataSelectNodeRenderer } from "../../node-renderers/data-select";
 
 export default function Edit(){
   const { id } = useParams<{ id: string }>();
   const history = useHistory();
-  const backUri = `/demo/config`
+  const backUri = `/`
   return (
     <>
       <NodeEditRenderer
@@ -29,6 +30,8 @@ export default function Edit(){
           registerListNodeRenderer(),
           {
             type: 'multiline-string',
+            name: 'Long text',
+            description: 'Manage larger, multi-line plain text',
             Renderer: ({ config, originalNodeData, committed, path, ErrorDisplayComponent }) => {
               const isNew = typeof originalNodeData === 'undefined'
               if(isNew) originalNodeData = createDefault(config, '')
@@ -48,7 +51,8 @@ export default function Edit(){
               );
             }
           },
-          registerIdNodeRenderer()
+          registerIdNodeRenderer(),
+          registerDataSelectNodeRenderer()
         ]}
         cancel={() => history.push(backUri)}
         onSaved={() => history.push(backUri)}
