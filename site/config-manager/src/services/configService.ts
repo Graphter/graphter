@@ -1,37 +1,32 @@
-import { GetResult, PathSegment, Service } from "@graphter/core";
+import { NodeConfig, Service } from "@graphter/core";
 
-import pageConfig from '../models/page'
-
-const configs: GetResult[] = [
+const configs: NodeConfig[] = [
   {
-    item: {
-      id: 'page',
-      name: 'Page'
-    },
-    version: 1
+    id: 'page',
+    name: 'Page',
+    type: 'object'
   },
   {
-    item: {
-      id: 'author',
-      name: 'Author'
-    },
-    version: 2
+    id: 'author',
+    name: 'Author',
+    type: 'string'
   }
 ]
 
-
-export const configService: Service =  {
-  list: (skip: number, take: number) => {
+export const configService: Service = {
+  list: (skip?: number, take?: number) => {
+    skip = skip || 0
+    take = take || configs.length
     return Promise.resolve({
-      items: configs.map(config => config.item),
+      items: configs.slice(skip, take + skip),
       count: 1,
       skip: 0,
       take: 10
     })
   },
   get: async (id: string | number) => {
-    return Promise.resolve(configs.find(config => config.item.id === id) || {
-      item: null
+    return Promise.resolve({
+      item: configs.find(config => config.id === id) || null
     })
   },
   save: (id: string | number, data: any) => {
