@@ -56,6 +56,26 @@ const config:NodeConfig = {
           }
         },
       ]
+    },
+    {
+      id: 'description',
+      name: 'Description',
+      description: 'A description of the model',
+      type: 'string',
+      validation: [ ]
+    },
+    {
+      id: 'type',
+      name: 'Type',
+      description: 'The type of data',
+      type: 'data-select',
+      children: [ ],
+      validation: [ ],
+      options: {
+        service: 'node-renderer',
+        keyPath: [ 'type' ],
+        valuePath: [ 'name' ]
+      }
     }
   ],
   validation: [
