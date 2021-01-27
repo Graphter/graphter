@@ -5,22 +5,23 @@
  *
  * Summary: wait until more battle tested before promotion
  */
-import React, { useEffect, useMemo, useState } from "react";
+import React, { ComponentType, useEffect, useMemo, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
 import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './DataSelectNodeRenderer.module.css'
 import { useService } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
 import { getValue } from "@graphter/renderer-react";
+import { setupNodeRenderer } from "@graphter/renderer-react";
 
-function DataSelectNodeRenderer(
+const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalNodeData,
     committed = true,
     path
   }: NodeRendererProps
-){
+) => {
   if(!config.options?.service) throw new Error('Data select renderer requires a service ID')
   const keyPathValidation = pathUtils.validate(config.options?.keyPath)
   if(!keyPathValidation.valid) throw new Error(`Invalid key path: ${keyPathValidation.reason}`)
@@ -46,7 +47,7 @@ function DataSelectNodeRenderer(
       setLoading(false)
     })()
   }, [])
-
+  console.log(options?.map(option => option.key).join(', '))
   return (
     <>
       <select
@@ -60,11 +61,11 @@ function DataSelectNodeRenderer(
         value={nodeData}
       >
         {loading && (
-          <option key='loading' disabled>Loading...</option>
+          <option disabled>Loading...</option>
         )}
         {options && options.map(option => {
           return (
-            <option value={option.key}>{option.value}</option>
+            <option key={option.key} value={option.key}>{option.value}</option>
           )
         })}
       </select>
@@ -80,6 +81,6 @@ function DataSelectNodeRenderer(
       ))}
     </>
   )
-}
+})
 
 export default DataSelectNodeRenderer
