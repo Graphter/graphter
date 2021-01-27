@@ -1,16 +1,12 @@
-import React, { useMemo } from "react";
+import React, { ComponentType, useMemo } from "react";
 import { NodeConfig, NodeRendererProps, NodeRendererRegistration } from "@graphter/core";
 import { useNodeData } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
-import stringify from 'fast-json-stable-stringify'
 import { nodeRendererStore } from "@graphter/renderer-react";
+import { getMatchingConfig } from "./getMatchingConfig";
+import { setupNodeRenderer } from "@graphter/renderer-react";
 
-interface Branch {
-  condition: string | ((data: any) => boolean)
-  childId: string
-}
-
-function ConditionalNodeRenderer(
+const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalNodeData,
@@ -18,21 +14,16 @@ function ConditionalNodeRenderer(
     path,
     ErrorDisplayComponent,
   }: NodeRendererProps
-){
+) => {
   if(!Array.isArray((config.options?.branches))) throw new Error('Conditional renderers need branch options')
   if(!config.children?.length) throw new Error('At least one child config is required')
-  const pathValidation = pathUtils.validate(config.options.localTargetPath)
+  const pathValidation = pathUtils.validate(config.options.siblingPath)
   if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
-
-  const targetPath = [path[0], path[1], ...config.options.localTargetPath]
+  const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const [ targetNodeData ] = useNodeData(targetPath, config, originalNodeData, committed)
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
-    const matchingBranch = config.options.branches.find((branch: Branch) => typeof branch.condition === 'function' ?
-      branch.condition(targetNodeData) :
-      stringify(targetNodeData) === stringify(branch.condition))
-    if(!matchingBranch) return null
-    const matchingChildConfig = config.children?.find(childConfig => childConfig.id === matchingBranch.childId)
-    if(!matchingChildConfig) throw new Error(`Matching branch child ID '${matchingBranch.childId}' does not match a child config`)
+    const matchingChildConfig = getMatchingConfig(config, targetNodeData)
+    if(!matchingChildConfig) return null
     const rendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
     if(!rendererRegistration) return null
     return [ matchingChildConfig, rendererRegistration ]
@@ -47,12 +38,12 @@ function ConditionalNodeRenderer(
       <matchingChildRendererRegistration.Renderer
         committed={committed}
         config={matchingChildConfig}
-        path={path}
+        path={[ ...path, matchingChildConfig.id ]}
         originalNodeData={originalNodeData}
         options={matchingChildRendererRegistration.options}
         ErrorDisplayComponent={ErrorDisplayComponent} />
     </>
   )
-}
+})
 
 export default ConditionalNodeRenderer
