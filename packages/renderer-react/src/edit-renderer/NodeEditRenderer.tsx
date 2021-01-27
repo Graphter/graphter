@@ -11,7 +11,6 @@ import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useTreeData } from "../node-data-provider";
 import { useConfig } from "../config-provider";
-import DataOutput from "../DataOutput";
 
 export interface NodeEditRendererProps {
   configId: string
