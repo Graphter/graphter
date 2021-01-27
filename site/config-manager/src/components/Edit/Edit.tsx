@@ -1,5 +1,4 @@
 import { NodeEditRenderer } from "@graphter/renderer-react";
-import configConfig from '../../models/config'
 import {
   ErrorPanel,
   registerStringNodeRenderer,
@@ -8,7 +7,6 @@ import {
 } from "@graphter/renderer-component-library-react";
 import { useParams, useHistory } from "react-router-dom";
 import { createDefault } from "@graphter/renderer-react";
-import { useNodeValidation } from "@graphter/renderer-react";
 import { useState } from "react";
 import { useNodeData } from "@graphter/renderer-react";
 import { registerIdNodeRenderer } from "../../node-renderers/id";
@@ -22,7 +20,7 @@ export default function Edit(){
   return (
     <>
       <NodeEditRenderer
-        config={configConfig}
+        configId={'config'}
         editingId={id}
         errorRenderer={ErrorPanel}
         typeRegistry={[
