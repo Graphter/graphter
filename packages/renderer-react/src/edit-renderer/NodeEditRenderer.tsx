@@ -1,19 +1,20 @@
-import React, { ComponentType, useEffect, useState } from "react";
+import React, { ComponentType, Suspense, useEffect, useState } from "react";
 import s from './NodeEditRenderer.pcss';
 import { isEmpty } from "../util/id";
 import { useService } from "../service-provider/ServiceProvider";
 import DefaultError from "../default-error";
 import {
-  NodeConfig,
   ErrorRendererProps,
   NodeRendererRegistration,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useTreeData } from "../node-data-provider";
+import { useConfig } from "../config-provider";
+import DataOutput from "../DataOutput";
 
 export interface NodeEditRendererProps {
-  config: NodeConfig
+  configId: string
   editingId?: string | number
   errorRenderer?: ComponentType<ErrorRendererProps>
   onSaved?: (modelId: string, instance: any) => void
@@ -24,7 +25,7 @@ export interface NodeEditRendererProps {
 export default function NodeEditRenderer(
   {
     editingId,
-    config,
+    configId,
     errorRenderer,
     onSaved,
     cancel,
@@ -33,12 +34,14 @@ export default function NodeEditRenderer(
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
 
-  if (!config) return <ErrorDisplayComponent err={new Error('Configuration is required')}/>;
+  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')}/>;
   if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')}/>;
 
   nodeRendererStore.registerAll(typeRegistry)
 
-  const service = useService(config.id);
+  const config = useConfig(configId)
+
+  const service = useService(configId);
 
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
@@ -48,7 +51,7 @@ export default function NodeEditRenderer(
     (treeData) => {
       console.log('saving model ', treeData)
     },
-    [ config.id, editingId === undefined ? 'new' : editingId ])
+    [ configId, editingId === undefined ? 'new' : editingId ])
 
   useEffect(() => {
     (async () => {
