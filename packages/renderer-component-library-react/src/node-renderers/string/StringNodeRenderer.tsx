@@ -1,16 +1,17 @@
-import React, { useState } from "react";
+import React, { ComponentType, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
 import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './StringNodeRenderer.pcss'
+import { setupNodeRenderer } from "@graphter/renderer-react";
 
-function StringNodeRenderer(
+const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalNodeData,
     committed = true,
     path
   }: NodeRendererProps
-){
+) => {
   const isNew = typeof originalNodeData === 'undefined'
   if(isNew) originalNodeData = createDefault(config, '')
   const [ touched, setTouched ] = useState(false)
@@ -40,6 +41,6 @@ function StringNodeRenderer(
       ))}
     </>
   )
-}
+})
 
 export default StringNodeRenderer
