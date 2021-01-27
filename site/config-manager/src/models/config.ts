@@ -29,7 +29,7 @@ const config:NodeConfig = {
             error: 'Only lowercase alphanumeric and hyphen characters are allowed in IDs',
             schema: {
               'type': 'string',
-              'regexp': '/^[a-z0-9]*$/',
+              'regexp': '/^[a-z0-9-]*$/',
             },
           }
         },
@@ -82,19 +82,38 @@ const config:NodeConfig = {
       type: 'conditional',
       children: [
         {
-          id: 'object',
-          name: 'Object',
-          description: 'The object properties',
-          type: 'string',
-          children: [ ],
+          id: 'object-properties',
+          name: 'Object properties',
+          description: 'Properties configured for the object type',
+          type: 'list',
+          children: [
+            {
+              id: 'name',
+              name: 'Name',
+              description: 'The model name',
+              type: 'string',
+              validation: [
+                {
+                  type: 'json-schema',
+                  executeOn: AllValidationExecutionStages,
+                  options: {
+                    error: 'An ID is required',
+                    schema: {
+                      "minLength": 1
+                    },
+                  }
+                },
+              ]
+            },
+          ],
           validation: [ ]
         }
       ],
       validation: [ ],
       options: {
-        localTargetPath: ['type'],
+        siblingPath: ['type'],
         branches: [
-          { condition: 'object', childId: 'object' }
+          { condition: 'object', childId: 'object-properties' }
         ]
       }
     }
