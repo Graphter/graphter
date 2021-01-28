@@ -1,7 +1,7 @@
 import ListNodeRenderer from "./ListNodeRenderer";
 import { NodeRendererRegistration } from "@graphter/core";
-import { getChildData } from "./getChildData";
-import { getChildPaths } from "./getChildPaths";
+import { getListChildData } from "./getListChildData";
+import { getListChildPaths } from "./getListChildPaths";
 
 export interface ListNodeRendererOptions {
   type: string
@@ -12,8 +12,8 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     type: options?.type || 'list',
     name: 'List',
     description: 'Manage lists of data',
-    getChildData,
-    getChildPaths,
+    getChildData: getListChildData,
+    getChildPaths: getListChildPaths,
     Renderer: ListNodeRenderer,
     options
   }

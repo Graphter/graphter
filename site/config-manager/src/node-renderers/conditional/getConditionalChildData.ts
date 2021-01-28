@@ -2,7 +2,7 @@ import { GetChildDataFn } from "@graphter/core";
 import { nodeRendererStore, pathConfigStore } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
 
-export const getConditionalChildData: GetChildDataFn = async (path, getNodeValue) => {
+export const getConditionalChildData: GetChildDataFn = (path, getNodeValue) => {
   const config = pathConfigStore.get(path)
   if (!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
   if (!config.children?.length) throw new Error(`${config.type} type '${config.id}' has no children configured. Exactly one is required.`)
@@ -10,7 +10,7 @@ export const getConditionalChildData: GetChildDataFn = async (path, getNodeValue
   if(!config.options?.siblingPath) throw new Error(`siblingPath option is required for conditional renderer.`)
 
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
-  const targetNodeData = await getNodeValue(targetPath)
+  const targetNodeData = getNodeValue(targetPath)
   const matchingChildConfig = getMatchingConfig(config, targetNodeData)
   if(!matchingChildConfig){
     const defaultType = typeof config.options.defaultValue

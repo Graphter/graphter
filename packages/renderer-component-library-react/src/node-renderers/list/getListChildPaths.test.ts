@@ -1,6 +1,6 @@
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
 
-import { getChildPaths } from "./getChildPaths";
+import { getListChildPaths } from "./getListChildPaths";
 import { when } from "jest-when";
 
 const nodeRendererStoreMock  = nodeRendererStore as jest.Mocked<any>
@@ -24,7 +24,7 @@ describe('getChildPaths()', () => {
       .mockReturnValueOnce({
         getChildPaths: () => Promise.resolve([ ['page', 1, 'title'] ])
       })
-    const result = await getChildPaths(['page'], getNodeValueMock)
+    const result = await getListChildPaths(['page'], getNodeValueMock)
     expect(result).toEqual([
       ['page', 0],
       ['page', 0, 'title'],
@@ -39,7 +39,7 @@ describe('getChildPaths()', () => {
       .mockResolvedValueOnce(['child-id-a', 'child-id-b'])
     pathConfigStoreMock.get
       .mockReturnValue(null)
-    await expect(() => getChildPaths(['page'], getNodeValueMock))
+    await expect(() => getListChildPaths(['page'], getNodeValueMock))
       .rejects.toMatchSnapshot()
   })
   it('should skip descendent path resolution when child renderer does not implement a getChildPaths() function', async () => {
@@ -54,7 +54,7 @@ describe('getChildPaths()', () => {
     when(nodeRendererStoreMock.get)
       .calledWith('string')
       .mockReturnValue({})
-    const result = await getChildPaths(['page'], getNodeValueMock)
+    const result = await getListChildPaths(['page'], getNodeValueMock)
     expect(result).toEqual([
       ['page', 0],
       ['page', 1],

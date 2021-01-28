@@ -1,9 +1,9 @@
 import { GetChildDataFn } from "@graphter/core";
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
 
-export const getChildData: GetChildDataFn = async (path, getNodeValue) => {
-  const childIds = await getNodeValue<Array<string>>(path)
-  return Promise.all(childIds.map((childId:string, i: number) => {
+export const getListChildData: GetChildDataFn = (path, getNodeValue) => {
+  const childIds = getNodeValue<Array<string>>(path)
+  return childIds.map((childId:string, i: number) => {
     const childPath = [ ...path, i ]
     const childConfig = pathConfigStore.get(childPath)
     if(!childConfig) throw new Error(`Couldn't find config for child node at path '${childPath.join('/')}'`)
@@ -11,5 +11,5 @@ export const getChildData: GetChildDataFn = async (path, getNodeValue) => {
     return childRenderer.getChildData ?
       childRenderer.getChildData(childPath, getNodeValue) :
       getNodeValue(childPath)
-  }))
+  })
 }

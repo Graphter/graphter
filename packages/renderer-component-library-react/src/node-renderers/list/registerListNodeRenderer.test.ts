@@ -1,14 +1,14 @@
 import { registerListNodeRenderer } from "./registerListNodeRenderer";
-import { getChildData } from "./getChildData";
-import { getChildPaths } from "./getChildPaths";
+import { getListChildData } from "./getChildData";
+import { getListChildPaths } from "./getChildPaths";
 import ListNodeRenderer from "./ListNodeRenderer";
 
 describe('registerListNodeRenderer()', () => {
   it('should return the correct registration', () => {
     const result = registerListNodeRenderer()
     expect(result).toMatchSnapshot()
-    expect(result.getChildData).toBe(getChildData)
-    expect(result.getChildPaths).toBe(getChildPaths)
+    expect(result.getChildData).toBe(getListChildData)
+    expect(result.getChildPaths).toBe(getListChildPaths)
     expect(result.Renderer).toBe(ListNodeRenderer)
   })
   it('should override the type if supplied in options', () => {
