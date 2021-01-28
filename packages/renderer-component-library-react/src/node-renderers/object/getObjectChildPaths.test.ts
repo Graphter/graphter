@@ -1,6 +1,6 @@
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
 
-import { getChildPaths } from "./getChildPaths";
+import { getObjectChildPaths } from "./getObjectChildPaths";
 import { when } from "jest-when";
 
 const nodeRendererStoreMock  = nodeRendererStore as jest.Mocked<any>
@@ -29,7 +29,7 @@ describe('getChildPaths()', () => {
           ['page', 'author', 'location']
         ])
       })
-    const result = await getChildPaths(['page'], jest.fn())
+    const result = await getObjectChildPaths(['page'], jest.fn())
     expect(result).toEqual([
       ['page', 'author'],
       ['page', 'author', 'name'],
@@ -39,7 +39,7 @@ describe('getChildPaths()', () => {
   it('should error if no parent config is found', async () => {
     pathConfigStoreMock.get
       .mockReturnValue(null)
-    await expect(() => getChildPaths(['page'], jest.fn()))
+    await expect(() => getObjectChildPaths(['page'], jest.fn()))
       .rejects.toMatchSnapshot()
   })
   it('should skip descendent path resolution when child renderer does not implement a getChildPaths() function', async () => {
@@ -60,7 +60,7 @@ describe('getChildPaths()', () => {
       .mockResolvedValueOnce('The Page Title')
       .calledWith(['page', 'author'])
       .mockResolvedValueOnce('Joe Bloggs')
-    const result = await getChildPaths(['page'], getNodeValueMock)
+    const result = await getObjectChildPaths(['page'], getNodeValueMock)
     expect(result).toEqual([
       ["page", "title"], ["page", "author"]
     ])

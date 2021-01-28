@@ -1,6 +1,6 @@
 import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
 import { when } from "jest-when";
-import { getChildData } from "./getChildData";
+import { getObjectChildData } from "./getObjectChildData";
 
 const nodeRendererStoreMock  = nodeRendererStore as jest.Mocked<any>
 const pathConfigStoreMock = pathConfigStore as jest.Mocked<any>
@@ -26,14 +26,14 @@ describe('getChildData()', () => {
       .mockReturnValueOnce({
         getChildData: () => Promise.resolve({ name: 'Bob', location: 'London' })
       })
-    const result = await getChildData(['page'], jest.fn())
+    const result = await getObjectChildData(['page'], jest.fn())
     expect(result).toEqual({
       author: { name: 'Bob', location: 'London' }
     })
   })
   it('should error if parent config is not found', async () => {
     pathConfigStoreMock.get.mockReturnValue(null)
-    await expect(() => getChildData(['page'], jest.fn()))
+    await expect(() => getObjectChildData(['page'], jest.fn()))
       .rejects.toThrowErrorMatchingSnapshot()
   })
   it.each([[], null])
@@ -48,7 +48,7 @@ describe('getChildData()', () => {
       .mockReturnValueOnce({
         getChildData: () => Promise.resolve({ name: 'Bob', location: 'London' })
       })
-    await expect(() => getChildData(['page'], jest.fn()))
+    await expect(() => getObjectChildData(['page'], jest.fn()))
       .rejects.toThrowErrorMatchingSnapshot()
   })
   it('should skip descendent data resolution when child renderer does not implement a getChild() function', async () => {
@@ -69,7 +69,7 @@ describe('getChildData()', () => {
       .mockResolvedValueOnce('The Page Title')
       .calledWith(['page', 'author'])
       .mockResolvedValueOnce('Joe Bloggs')
-    const result = await getChildData(['page'], getNodeValueMock)
+    const result = await getObjectChildData(['page'], getNodeValueMock)
     expect(result).toEqual({
       title: 'The Page Title',
       author: 'Joe Bloggs'

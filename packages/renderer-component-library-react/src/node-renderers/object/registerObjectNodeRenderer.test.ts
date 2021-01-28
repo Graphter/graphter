@@ -1,5 +1,5 @@
-import { getChildData } from "./getChildData";
-import { getChildPaths } from "./getChildPaths";
+import { getObjectChildData } from "./getObjectChildData";
+import { getObjectChildPaths } from "./getObjectChildPaths";
 import ObjectNodeRenderer from "./ObjectNodeRenderer";
 import { registerObjectNodeRenderer } from "./registerObjectNodeRenderer";
 
@@ -7,8 +7,8 @@ describe('registerObjectNodeRenderer()', () => {
   it('should return the correct registration', async () => {
     const result = registerObjectNodeRenderer()
     expect(result).toMatchSnapshot()
-    expect(result.getChildData).toBe(getChildData)
-    expect(result.getChildPaths).toBe(getChildPaths)
+    expect(result.getChildData).toBe(getObjectChildData)
+    expect(result.getChildPaths).toBe(getObjectChildPaths)
     expect(result.Renderer).toBe(ObjectNodeRenderer)
   })
   it('should override the type if supplied in options', async () => {
