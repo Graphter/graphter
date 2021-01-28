@@ -24,8 +24,6 @@ function MockItemRenderer ({ item }: RenderItemProps) {
   );
 }
 
-
-
 describe('<ListRenderer />', () => {
   let baseModelConfig: NodeConfig,
     mockService: any,
@@ -81,7 +79,9 @@ describe('<ListRenderer />', () => {
     mockService.list.mockResolvedValue({ items: [], count: 0, skip: 0, take: 10 });
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             renderItem={() => <div>Item</div>}
@@ -89,13 +89,15 @@ describe('<ListRenderer />', () => {
           />
         </ServiceProvider>);
     });
-    expect(mockService.list).toHaveBeenCalledWith('page', 0, 10);
+    expect(mockService.list).toHaveBeenCalledWith(0, 10);
   });
   it('should load paginated items', async () => {
     mockService.list.mockResolvedValue({ items: [], count: 0, skip: 0, take: 10 });
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             renderItem={() => <div>Item</div>}
@@ -105,7 +107,7 @@ describe('<ListRenderer />', () => {
           />
         </ServiceProvider>);
     });
-    expect(mockService.list).toHaveBeenCalledWith('page', 20, 20);
+    expect(mockService.list).toHaveBeenCalledWith(20, 20);
   });
   it('should render items using the supplied item renderer', async () => {
     mockService.list.mockResolvedValue({
@@ -123,7 +125,9 @@ describe('<ListRenderer />', () => {
 
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             renderItem={MockItemRenderer}
@@ -138,7 +142,9 @@ describe('<ListRenderer />', () => {
     mockService.list.mockResolvedValue(mockListResult);
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             renderItem={() => <div>Item</div>}
@@ -157,7 +163,9 @@ describe('<ListRenderer />', () => {
     mockService.list.mockResolvedValue(mockListResult);
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             renderItem={ErroringListItemRenderer}
@@ -176,7 +184,9 @@ describe('<ListRenderer />', () => {
     mockService.list.mockResolvedValue(mockListResult);
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             renderItem={MockItemRenderer}
@@ -191,7 +201,9 @@ describe('<ListRenderer />', () => {
     mockService.list.mockRejectedValue(new Error('Some data loading issue'));
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             renderItem={MockItemRenderer}
@@ -206,7 +218,9 @@ describe('<ListRenderer />', () => {
     mockService.list.mockResolvedValue(mockListResult);
     await act( async() => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'page', service: mockService },
+        ]}>
           <ListRenderer
             config={baseModelConfig}
             // @ts-ignore
