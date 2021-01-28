@@ -91,7 +91,7 @@ const config:NodeConfig = {
               id: 'name',
               name: 'Name',
               description: 'The model name',
-              type: 'string',
+              type: 'object',
               validation: [
                 {
                   type: 'json-schema',
