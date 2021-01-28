@@ -165,7 +165,7 @@ describe('treeDataStore', () => {
       const getChildPathsMock = jest.fn()
       when(getChildPathsMock)
         .calledWith([ 'page' ], expect.anything())
-        .mockResolvedValueOnce( [['page', 'title'], ['page', 'author']])
+        .mockReturnValueOnce( [['page', 'title'], ['page', 'author']])
       when(nodeRendererStoreMock.get)
         .calledWith('unicorn')
         .mockReturnValueOnce({

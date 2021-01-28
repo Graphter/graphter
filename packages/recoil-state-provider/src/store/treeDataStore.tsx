@@ -25,7 +25,7 @@ const treeDataStore: TreeDataStore = {
       get: ({ get }) => {
         const getNodeValue = (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
-          return Promise.resolve(get(state))
+          return get(state)
         }
         const config = pathConfigStore.get(path)
         if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
@@ -47,13 +47,13 @@ const treeDataStore: TreeDataStore = {
     if(descendentPathSelector) return descendentPathSelector
     descendentPathDataMap[key] = descendentPathSelector = selector<any>({
       key: key,
-      get: async ({ get }) => {
+      get: ({ get }) => {
         const config = pathConfigStore.get(path)
         if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
         if(!renderer.getChildPaths) return [ [ config.id ] ]
-        const childPaths = await renderer.getChildPaths(path, (path:Array<PathSegment>) => {
+        const childPaths = renderer.getChildPaths(path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
