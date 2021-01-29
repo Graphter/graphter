@@ -1,0 +1,3 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`getChildData() should error if child config is missing 1`] = `[Function]`;

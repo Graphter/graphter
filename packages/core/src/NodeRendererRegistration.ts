@@ -4,22 +4,24 @@ import { PathSegment } from "./PathSegment";
 
 export interface NodeRendererRegistration {
   type: string
+  name: string
+  description?: string
   getChildData?: GetChildDataFn
   getChildPaths?: GetChildPathsFn
-  renderer: ComponentType<NodeRendererProps>
+  Renderer: ComponentType<NodeRendererProps>
   options?: any
 }
 
 export interface GetChildDataFn {
   (
     path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => Promise<T>
-  ): Promise<any>
+    getNodeValue: <T>(path: Array<PathSegment>) => T
+  ): any
 }
 
 export interface GetChildPathsFn {
   (
     path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => Promise<T>
-  ): Promise<Array<Array<PathSegment>>>
+    getNodeValue: <T>(path: Array<PathSegment>) => T
+  ): Array<Array<PathSegment>>
 }

@@ -1,14 +1,15 @@
 import { JsonSchemaValidatorOptions } from "./JsonSchemaValidatorOptions";
 import {
-  NodeConfig,
+  NodeConfig, NodeValidator, PathSegment,
   ValidationErrorDisplayMode,
   ValidationExecutionStage,
   ValidationResult
 } from "@graphter/core";
 import generateErrorMessage from "./generateErrorMessage";
+import ajvKeywords from "ajv-keywords";
 import Ajv from "ajv";
 
-export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidatorOptions){
+export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidatorOptions): NodeValidator {
   if(!options || !options.schema) throw new Error(`Schema option is required by JsonSchemaValidator`);
   options = {
     errorDisplayMode: [
@@ -19,15 +20,17 @@ export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidato
   };
 
   const ajv = new Ajv({
-    jsonPointers: true,
+    jsPropertySyntax: true,
     allErrors: true
   });
+  ajvKeywords(ajv)
   const validateFn = ajv.compile(options.schema);
 
 
   return function execute(
     stage: ValidationExecutionStage,
     config: NodeConfig,
+    path: Array<PathSegment>,
     data: any,
   ): Promise<ValidationResult> {
     const valid = validateFn(data);

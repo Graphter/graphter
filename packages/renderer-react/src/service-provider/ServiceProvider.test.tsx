@@ -8,8 +8,8 @@ describe(`<DataProvider />`, () => {
   let mockService: Service;
 
   function ConsumerMock() {
-    const service = useService();
-    service.get('model-id', 'instance-id' );
+    const service = useService('model-id');
+    service.get('instance-id');
     return null;
   }
 
@@ -38,7 +38,9 @@ describe(`<DataProvider />`, () => {
 
   it(`should render children`, () => {
     const { container } = render(
-      <ServiceProvider service={mockService}>
+      <ServiceProvider serviceRegistry={[
+        { id: 'string', service: mockService }
+      ]}>
         <div data-testid='some-child-component'>Some child component</div>
       </ServiceProvider>
     );
@@ -56,11 +58,13 @@ describe(`<DataProvider />`, () => {
 
     it(`should return the service passed to the provider`, () => {
       render(
-        <ServiceProvider service={mockService}>
+        <ServiceProvider serviceRegistry={[
+          { id: 'model-id', service: mockService }
+        ]}>
           <ConsumerMock/>
         </ServiceProvider>
       );
-      expect(mockService.get).toHaveBeenCalledWith('model-id', 'instance-id')
+      expect(mockService.get).toHaveBeenCalledWith('instance-id')
     });
 
   });

@@ -5,8 +5,10 @@ const pathConfigMap: Map<string, NodeConfig> = new Map()
 const keySalt = '[50f4655b-e751-4e88-86e0-85b561b0fe12]'
 
 const get = (path: Array<PathSegment>) => pathConfigMap.get(path.join(keySalt))
-const set = (path: Array<PathSegment>, config: NodeConfig) =>
+const set = (path: Array<PathSegment>, config: NodeConfig) =>{
+  console.info(`Setting config '${config.id}' for path ${path.join('/')}`)
   pathConfigMap.set(path.join(keySalt), config)
+}
 
 export const pathConfigStore = {
   get,

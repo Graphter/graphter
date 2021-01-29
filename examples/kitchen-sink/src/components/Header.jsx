@@ -11,7 +11,7 @@ export default function Header({ }) {
     <header className={cs(s.header, { [s.expanded]: searchOpen })}>
       <div className={s.headerContent}>
         <div className={s.logo}>
-          <h1 className={s.text}><img src={logo} alt='Graphter' /><span className={s.logoText}> graphter</span></h1>
+          <h1 className={s.text}><a href='/pages'><img src={logo} alt='Graphter' /><span className={s.logoText}> graphter</span></a></h1>
         </div>
 
         <div className={s.searchInputContainer}>

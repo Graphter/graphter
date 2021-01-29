@@ -1,10 +1,12 @@
-import React from 'react'
+import React, { ComponentType, useState } from 'react'
 import { NodeConfig, NodeRendererProps } from "@graphter/core";
 import { nodeRendererStore, createDefault } from "@graphter/renderer-react";
 import s from './ListNodeRenderer.pcss'
 import { useArrayNodeData } from "@graphter/renderer-react";
+import { setupNodeRenderer } from "@graphter/renderer-react";
 
-export default function ListNodeRenderer(
+
+const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalNodeData,
@@ -12,17 +14,19 @@ export default function ListNodeRenderer(
     path,
     ErrorDisplayComponent
   }: NodeRendererProps
-) {
+) => {
   if(!config) throw new Error(`<ListNodeRenderer /> component at '${path.join('/')}' is missing config`)
   if (!originalNodeData) originalNodeData = createDefault(config, [])
   if(!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
   if (!config.children || !config.children.length) throw new Error(`'${config.type}' renderer must have at least one child config`)
   if (config.children.length > 1) throw new Error('Only one child list type is currently supported')
 
+  const [ showNewItemUI, setShowNewItemUI ] = useState(false)
+
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
   if (!childRendererRegistration) return null
-  const ChildTypeRenderer = childRendererRegistration.renderer
+  const ChildTypeRenderer = childRendererRegistration.Renderer
 
   const {
     childIds,
@@ -32,6 +36,8 @@ export default function ListNodeRenderer(
 
   return (
     <div className={s.listNodeRenderer} data-nodetype='list' data-nodepath={path.join('/')}>
+      <label htmlFor={config.id}>{config.name}</label>
+      {config.description && <p className={s.description}>{config.description}</p>}
       <div className={s.items} data-testid='items'>
         {childIds && childIds.map((childId: any, i: number) => {
           return (
@@ -47,19 +53,37 @@ export default function ListNodeRenderer(
             </DefaultExistingItemWrapper>
           )
         })}
+        {!childIds.length && (
+          <div>
+            Empty
+          </div>
+        )}
       </div>
-      <DefaultNewItemWrapper config={config} onAdd={() => {
-        commitItem(childIds.length)
-      }}>
-        <ChildTypeRenderer
-          path={[ ...path, childIds.length ]}
-          committed={false}
-          config={childConfig}
-          ErrorDisplayComponent={ErrorDisplayComponent} />
-      </DefaultNewItemWrapper>
+      {showNewItemUI ? (
+        <DefaultNewItemWrapper config={config} onAdd={() => {
+          setShowNewItemUI(false)
+          commitItem(childIds.length)
+        }}>
+          <ChildTypeRenderer
+            path={[ ...path, childIds.length ]}
+            committed={false}
+            config={childConfig}
+            ErrorDisplayComponent={ErrorDisplayComponent} />
+        </DefaultNewItemWrapper>
+      ) : (
+        <button
+        type='button'
+        className={s.button}
+        onClick={() => setShowNewItemUI(true)}
+        data-testid='add-item-btn'
+        >[+]</button>
+      )}
+
     </div>
   )
-}
+})
+
+export default ListNodeRenderer
 
 interface DefaultExistingItemWrapperProps {
   onRemove: () => void

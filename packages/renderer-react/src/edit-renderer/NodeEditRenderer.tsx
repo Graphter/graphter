@@ -1,46 +1,46 @@
-import React, { ComponentType, useEffect, useState } from "react";
+import React, { ComponentType, Suspense, useEffect, useState } from "react";
 import s from './NodeEditRenderer.pcss';
 import { isEmpty } from "../util/id";
 import { useService } from "../service-provider/ServiceProvider";
 import DefaultError from "../default-error";
 import {
-  NodeConfig,
   ErrorRendererProps,
   NodeRendererRegistration,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useTreeData } from "../node-data-provider";
+import { useConfig } from "../config-provider";
 
 export interface NodeEditRendererProps {
-  config: NodeConfig
+  configId: string
   editingId?: string | number
   errorRenderer?: ComponentType<ErrorRendererProps>
   onSaved?: (modelId: string, instance: any) => void
   cancel: (modelId: string | undefined, instance: any) => void
   typeRegistry: Array<NodeRendererRegistration>
-  children: any
 }
 
 export default function NodeEditRenderer(
   {
     editingId,
-    config,
+    configId,
     errorRenderer,
     onSaved,
     cancel,
-    typeRegistry,
-    children
+    typeRegistry
   }: NodeEditRendererProps) {
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
 
-  if (!config) return <ErrorDisplayComponent err={new Error('Configuration is required')}/>;
+  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')}/>;
   if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')}/>;
 
   nodeRendererStore.registerAll(typeRegistry)
 
-  const service = useService();
+  const config = useConfig(configId)
+
+  const service = useService(configId);
 
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
@@ -50,8 +50,7 @@ export default function NodeEditRenderer(
     (treeData) => {
       console.log('saving model ', treeData)
     },
-    [ config.id, editingId === undefined ? 'new' : editingId ],
-    config)
+    [ configId, editingId === undefined ? 'new' : editingId ])
 
   useEffect(() => {
     (async () => {
@@ -59,7 +58,7 @@ export default function NodeEditRenderer(
         setLoading(false);
       } else {
         try {
-          const getResult = await service.get(config.id, editingId);
+          const getResult = await service.get(editingId);
           setLoading(false);
           if (!getResult.item) {
             setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`));
@@ -78,7 +77,7 @@ export default function NodeEditRenderer(
 
   if (!startingData) return null
   const registration = nodeRendererStore.get(config.type)
-  const TypeRenderer = registration.renderer
+  const TypeRenderer = registration.Renderer
 
   const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
 

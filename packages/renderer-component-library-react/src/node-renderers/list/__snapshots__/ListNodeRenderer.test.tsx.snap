@@ -11,6 +11,16 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
     data-nodepath="/"
     data-nodetype="list"
   >
+    <label
+      for="name"
+    >
+      Name
+    </label>
+    <p
+      class="description"
+    >
+      The name
+    </p>
     <div
       class="items"
       data-testid="items"
@@ -48,22 +58,13 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
         </button>
       </div>
     </div>
-    <div
-      class="defaultNewItemWrapper"
-      data-testid="add-item"
+    <button
+      class="button"
+      data-testid="add-item-btn"
+      type="button"
     >
-      <input
-        data-testid="string-renderer"
-        value=""
-      />
-      <button
-        class="button"
-        data-testid="add-item-btn"
-        type="button"
-      >
-        Add [+]
-      </button>
-    </div>
+      [+]
+    </button>
   </div>
 </div>
 `;

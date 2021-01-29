@@ -11,24 +11,9 @@ export interface ListRendererProps {
   config: NodeConfig
   renderItem: ({ item, index}: RenderItemProps) => ReactNode
   renderPagination?: ({ count }: RenderPaginationProps) => ReactNode
-  validator?: (data: any) => ValidationResult
   errorRenderer?: ComponentType<{ err: Error | string }>
   page?: number
   size?: number
-}
-
-interface ValidationResult {
-  errors: Array<PropertyValidationErrors>
-}
-
-interface PropertyValidationErrors {
-  id: any,
-  messages: Array<string>
-}
-
-interface ErrorProps{
-  title: string,
-  message: string
 }
 
 export default function ListRenderer(
@@ -36,14 +21,13 @@ export default function ListRenderer(
     config,
     renderItem,
     renderPagination,
-    validator,
     errorRenderer,
     page,
     size }: ListRendererProps): any {
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
   if(!config) return <ErrorDisplayComponent err={new Error('Model configuration is required')} />;
 
-  const service = useService();
+  const service = useService(config.id);
 
   const [ count, setCount ] = useState(0);
   const [ items, setItems ] = useState<Array<any>>([]);
@@ -57,7 +41,7 @@ export default function ListRenderer(
       try {
         const take = size || 10;
         const skip = page ? (page - 1) * take : 0;
-        listResult = await service.list(config.id, skip, take);
+        listResult = await service.list(skip, take);
       } catch(err){
         setLoading(false);
         setError(err);
@@ -76,6 +60,7 @@ export default function ListRenderer(
       { error && <ErrorDisplayComponent err={error} /> }
       { loading && <div>loading...</div> }
       <div data-testid='list'>
+
       {items.map((item, i) => (
         renderItem && (
           <ErrorBoundary
@@ -85,6 +70,7 @@ export default function ListRenderer(
           </ErrorBoundary>)
         ))}
       </div>
+
       {renderPagination && (
         <ErrorBoundary errorRenderer={ErrorDisplayComponent}>
           {renderWithErrorHandling(() => renderPagination({count}))}

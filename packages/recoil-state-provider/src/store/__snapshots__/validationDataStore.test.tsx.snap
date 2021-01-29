@@ -39,3 +39,22 @@ Array [
 `;
 
 exports[`validationDataStore set() should error if no path is supplied 1`] = `"path argument is required"`;
+
+exports[`validationDataStore should set and get validation data 1`] = `
+Object {
+  "config": Object {
+    "id": "page",
+    "type": "object",
+  },
+  "path": Array [
+    "page",
+  ],
+  "results": Array [
+    Object {
+      "errorMessage": "Some error",
+      "valid": false,
+    },
+  ],
+  "value": "the-page-value",
+}
+`;

@@ -1,22 +1,43 @@
 import React, {createContext, useContext} from 'react';
-import { Service } from "@graphter/core";
+import { NodeConfig, PathSegment, Service } from "@graphter/core";
 
-interface DataProviderProps {
-  service: Service,
+export interface ServiceRegistration {
+  id: string,
+  service: Service
+}
+
+interface ServiceProviderProps {
+  serviceRegistry: Array<ServiceRegistration | Array<ServiceRegistration>>
   children: any
 }
 
-const Context = createContext<Service | null>(null);
+const Context = createContext<Map<PathSegment, Service> | null>(null);
 
-export function useService(): Service {
-  const service = useContext(Context);
-  if(!service) throw new Error(`Couldn't find API service. Make sure you've declared a DataProvider and passed it a valid service.`);
-  return service;
+let serviceMap: Map<PathSegment, Service>
+
+export function getService(id: string): Service {
+  if(!serviceMap) throw new Error(`Couldn't find the API service registry. Make sure you've declared a <ServiceProvider /> and passed it a valid service.`)
+  const service = serviceMap.get(id)
+  if(!service) throw new Error(`Missing a service to handle '${id}' data`)
+  return service
 }
 
-export default function ServiceProvider({ service, children }: DataProviderProps){
+export function useService(id: string): Service {
+  const serviceMap = useContext(Context)
+  if(!serviceMap) throw new Error(`Couldn't find the API service registry. Make sure you've declared a <ServiceProvider /> and passed it a valid service.`)
+  const service = serviceMap.get(id)
+  if(!service) throw new Error(`Missing a service to handle '${id}' data`)
+  return service
+}
+
+export default function ServiceProvider({ serviceRegistry, children }: ServiceProviderProps){
+  serviceMap = serviceRegistry.reduce((a, c) => {
+    if(Array.isArray(c)) c.forEach(registration => a.set(registration.id, registration.service))
+    else a.set(c.id, c.service)
+    return a
+  }, new Map<PathSegment, Service>())
   return (
-    <Context.Provider value={service}>
+    <Context.Provider value={serviceMap}>
       {children}
     </Context.Provider>
   );

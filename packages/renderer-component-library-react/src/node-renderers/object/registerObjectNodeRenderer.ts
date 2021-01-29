@@ -1,7 +1,7 @@
 import ObjectNodeRenderer from "./ObjectNodeRenderer";
 import { NodeRendererRegistration } from "@graphter/core";
-import { getChildData } from "./getChildData";
-import { getChildPaths } from "./getChildPaths";
+import { getObjectChildData } from "./getObjectChildData";
+import { getObjectChildPaths } from "./getObjectChildPaths";
 
 export interface ObjectNodeRendererOptions {
   type: string
@@ -11,9 +11,11 @@ export function registerObjectNodeRenderer(options?: ObjectNodeRendererOptions):
   const type = options?.type || 'object'
   return {
     type: type,
-    getChildData,
-    getChildPaths,
-    renderer: ObjectNodeRenderer,
+    name: 'Object',
+    description: 'Manage complex nested structures',
+    getChildData: getObjectChildData,
+    getChildPaths: getObjectChildPaths,
+    Renderer: ObjectNodeRenderer,
     options
   }
 }

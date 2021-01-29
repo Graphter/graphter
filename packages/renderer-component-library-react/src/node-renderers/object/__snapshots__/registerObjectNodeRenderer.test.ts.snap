@@ -1,0 +1,13 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`registerObjectNodeRenderer() should return the correct registration 1`] = `
+Object {
+  "Renderer": [Function],
+  "description": "Manage complex nested structures",
+  "getChildData": [Function],
+  "getChildPaths": [Function],
+  "name": "Object",
+  "options": undefined,
+  "type": "object",
+}
+`;

@@ -49,9 +49,13 @@ For example:
 1. Invoicing and timesheeting 
 1. 2D canvas systems (e.g. Mural) 
 1. Media library management
+1. Survey system
 
 ## Long term
 Provide managed cloud solutions on top of the open source tooling.
     
+## Vague ideas
+A record of [vague ideas](/docs/vague-ideas.md) for future features and goals.
+
 ## Contributing
 See [Contributing Docs](./docs/contributing.md)

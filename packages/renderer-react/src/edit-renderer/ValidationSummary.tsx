@@ -11,7 +11,11 @@ export interface ValidationSummaryProps {
 export default function ValidationSummary({ path }: ValidationSummaryProps){
   const descendentPaths = useTreePaths(path)
   const aggregatedValidationData = useAggregateNodeValidation(descendentPaths)
-  if(!aggregatedValidationData.length) return null
+  const someErrors = aggregatedValidationData
+    .some(validationData => validationData.results
+      .some(validationResult => !validationResult.valid))
+  if(!someErrors) return null
+
   return (
     <div className={s.validationSummary}>
       {aggregatedValidationData.map((validationData, i) => {

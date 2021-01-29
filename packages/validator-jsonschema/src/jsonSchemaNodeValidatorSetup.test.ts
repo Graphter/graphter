@@ -3,8 +3,10 @@ import generateErrorMessage from "./generateErrorMessage";
 
 import jsonSchemaNodeValidatorSetup from './jsonSchemaNodeValidatorSetup'
 import { ValidationExecutionStage } from "@graphter/core";
+import ajvKeywords from "ajv-keywords";
 
 jest.mock('ajv')
+jest.mock('ajv-keywords')
 jest.mock('./generateErrorMessage')
 
 const AJVMock = AJV as jest.Mocked<any>
@@ -31,6 +33,7 @@ describe('jsonSchemaNodeValidatorSetup', () => {
     const execute = await jsonSchemaNodeValidatorSetup({ schema: {} })
     execute(ValidationExecutionStage.CHANGE,
       { id: 'name', type: 'string' },
+      ['page'],
       'some-data')
     expect(generateErrorMessageMock).toHaveBeenCalled()
     expect(generateErrorMessageMock.mock.calls[0][1]).toMatchSnapshot()
@@ -53,6 +56,7 @@ describe('jsonSchemaNodeValidatorSetup', () => {
     const execute = await jsonSchemaNodeValidatorSetup({ schema: {} })
     execute(ValidationExecutionStage.CHANGE,
       { id: 'name', type: 'string' },
+      ['page'],
       'some-data')
     expect(validatorMock).toHaveBeenCalledWith('some-data')
   })
@@ -65,6 +69,7 @@ describe('jsonSchemaNodeValidatorSetup', () => {
     const execute = await jsonSchemaNodeValidatorSetup({ schema: {} })
     const result = execute(ValidationExecutionStage.CHANGE,
       { id: 'name', type: 'string' },
+      ['page'],
       'some-data')
     expect(result).toMatchSnapshot()
   })
@@ -77,6 +82,7 @@ describe('jsonSchemaNodeValidatorSetup', () => {
     const execute = await jsonSchemaNodeValidatorSetup({ schema: {} })
     const result = execute(ValidationExecutionStage.CHANGE,
       { id: 'name', type: 'string' },
+      ['page'],
       'some-data')
     expect(result).toMatchSnapshot()
   })

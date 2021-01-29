@@ -1,7 +1,7 @@
 import { JsonSchemaValidatorOptions } from "./JsonSchemaValidatorOptions";
-import Ajv from "ajv";
+import { ValidateFunction } from "ajv";
 
-export default function(data: any, options: JsonSchemaValidatorOptions, validateFn: Ajv.ValidateFunction){
+export default function(data: any, options: JsonSchemaValidatorOptions, validateFn: ValidateFunction){
   if(typeof options.error === 'function'){
     return options.error(data);
   }

@@ -180,7 +180,7 @@ describe('<ListNodeRenderer />', () => {
     expect(nodeRendererStoreGetMock).toHaveBeenCalledWith('string')
   })
   it('should render an empty item to add', () => {
-    const { queryByTestId } = render(<ListNodeRenderer
+    const { queryByTestId, getByText } = render(<ListNodeRenderer
       config={{
         id: 'name',
         name: 'Name',
@@ -199,6 +199,9 @@ describe('<ListNodeRenderer />', () => {
       committed={true}
       path={[ '/' ]}
     />);
+    act(() => {
+      fireEvent.click(getByText('[+]'))
+    })
     expect(queryByTestId('add-item')).not.toBeNull()
   })
   it('should commit a new item when the "add" button is selected', () => {
@@ -208,7 +211,7 @@ describe('<ListNodeRenderer />', () => {
       removeItem: () => {},
       commitItem: commitItemMock
     }))
-    const { getByTestId } = render(<ListNodeRenderer
+    const { getByTestId, getByText } = render(<ListNodeRenderer
       config={{
         id: 'name',
         name: 'Name',
@@ -227,6 +230,9 @@ describe('<ListNodeRenderer />', () => {
       committed={true}
       path={[ '/' ]}
     />);
+    act(() => {
+      fireEvent.click(getByText('[+]'))
+    })
     const addItemContainerQueries = within(getByTestId('add-item'))
     act(() => {
       fireEvent.change(addItemContainerQueries.getByDisplayValue(''), {

@@ -21,7 +21,7 @@ export const useNodeValidation = jest.fn().mockResolvedValue([])
 export const nodeRendererStore = {
   get: jest.fn((nodeType: string) => ({
     type: 'string',
-    renderer: ({originalNodeData}: any) => {
+    Renderer: ({originalNodeData}: any) => {
       const [ value, setValue ] = useState(originalNodeData || '')
       return (
         <input value={value} onChange={e => setValue(e.target.value)} data-testid='string-renderer' />
@@ -35,3 +35,7 @@ export const pathConfigStore = {
   get: jest.fn(),
   set: jest.fn()
 }
+
+export const setupNodeRenderer = jest.fn((renderer: any) => renderer)
+
+export {}
