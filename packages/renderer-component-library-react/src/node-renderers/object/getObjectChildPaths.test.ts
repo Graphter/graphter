@@ -7,7 +7,7 @@ const nodeRendererStoreMock  = nodeRendererStore as jest.Mocked<any>
 const pathConfigStoreMock = pathConfigStore as jest.Mocked<any>
 
 describe('getChildPaths()', () => {
-  it('should return all descendent paths', async () => {
+  it('should return all descendent paths', () => {
     pathConfigStoreMock.get.mockReturnValue({
       id: 'page',
       type: 'object',
@@ -24,25 +24,25 @@ describe('getChildPaths()', () => {
     when(nodeRendererStoreMock.get)
       .calledWith('object')
       .mockReturnValueOnce({
-        getChildPaths: () => Promise.resolve([
+        getChildPaths: () => ([
           ['page', 'author', 'name'],
           ['page', 'author', 'location']
         ])
       })
-    const result = await getObjectChildPaths(['page'], jest.fn())
+    const result = getObjectChildPaths(['page'], jest.fn())
     expect(result).toEqual([
       ['page', 'author'],
       ['page', 'author', 'name'],
       ['page', 'author', 'location']
     ])
   })
-  it('should error if no parent config is found', async () => {
+  it('should error if no parent config is found', () => {
     pathConfigStoreMock.get
       .mockReturnValue(null)
-    await expect(() => getObjectChildPaths(['page'], jest.fn()))
-      .rejects.toMatchSnapshot()
+    expect(() => getObjectChildPaths(['page'], jest.fn()))
+      .toMatchSnapshot()
   })
-  it('should skip descendent path resolution when child renderer does not implement a getChildPaths() function', async () => {
+  it('should skip descendent path resolution when child renderer does not implement a getChildPaths() function', () => {
     pathConfigStoreMock.get.mockReturnValue({
       id: 'page',
       type: 'object',
@@ -57,10 +57,10 @@ describe('getChildPaths()', () => {
     const getNodeValueMock = jest.fn()
     when(getNodeValueMock)
       .calledWith(['page', 'title'])
-      .mockResolvedValueOnce('The Page Title')
+      .mockReturnValueOnce('The Page Title')
       .calledWith(['page', 'author'])
-      .mockResolvedValueOnce('Joe Bloggs')
-    const result = await getObjectChildPaths(['page'], getNodeValueMock)
+      .mockReturnValueOnce('Joe Bloggs')
+    const result = getObjectChildPaths(['page'], getNodeValueMock)
     expect(result).toEqual([
       ["page", "title"], ["page", "author"]
     ])

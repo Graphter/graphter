@@ -6,7 +6,7 @@ const nodeRendererStoreMock  = nodeRendererStore as jest.Mocked<any>
 const pathConfigStoreMock = pathConfigStore as jest.Mocked<any>
 
 describe('getChildData()', () => {
-  it('should return descendent data correctly formed', async () => {
+  it('should return descendent data correctly formed', () => {
     pathConfigStoreMock.get.mockReturnValueOnce({
       id: 'page',
       type: 'object',
@@ -24,20 +24,20 @@ describe('getChildData()', () => {
     when(nodeRendererStoreMock.get)
       .calledWith('object')
       .mockReturnValueOnce({
-        getChildData: () => Promise.resolve({ name: 'Bob', location: 'London' })
+        getChildData: () => ({ name: 'Bob', location: 'London' })
       })
-    const result = await getObjectChildData(['page'], jest.fn())
+    const result = getObjectChildData(['page'], jest.fn())
     expect(result).toEqual({
       author: { name: 'Bob', location: 'London' }
     })
   })
-  it('should error if parent config is not found', async () => {
+  it('should error if parent config is not found', () => {
     pathConfigStoreMock.get.mockReturnValue(null)
-    await expect(() => getObjectChildData(['page'], jest.fn()))
-      .rejects.toThrowErrorMatchingSnapshot()
+    expect(() => getObjectChildData(['page'], jest.fn()))
+      .toThrowErrorMatchingSnapshot()
   })
   it.each([[], null])
-    ('should error if the parent has no children (i.e. %s) configured', async (noChildren) => {
+    ('should error if the parent has no children (i.e. %s) configured', (noChildren) => {
     pathConfigStoreMock.get.mockReturnValue({
       id: 'page',
       type: 'object',
@@ -46,12 +46,12 @@ describe('getChildData()', () => {
     when(nodeRendererStoreMock.get)
       .calledWith('object')
       .mockReturnValueOnce({
-        getChildData: () => Promise.resolve({ name: 'Bob', location: 'London' })
+        getChildData: () => ({ name: 'Bob', location: 'London' })
       })
-    await expect(() => getObjectChildData(['page'], jest.fn()))
-      .rejects.toThrowErrorMatchingSnapshot()
+    expect(() => getObjectChildData(['page'], jest.fn()))
+      .toThrowErrorMatchingSnapshot()
   })
-  it('should skip descendent data resolution when child renderer does not implement a getChild() function', async () => {
+  it('should skip descendent data resolution when child renderer does not implement a getChild() function', () => {
     const getNodeValueMock = jest.fn()
     pathConfigStoreMock.get.mockReturnValueOnce({
       id: 'page',
@@ -66,10 +66,10 @@ describe('getChildData()', () => {
       .mockReturnValue({ })
     when(getNodeValueMock)
       .calledWith(['page', 'title'])
-      .mockResolvedValueOnce('The Page Title')
+      .mockReturnValueOnce('The Page Title')
       .calledWith(['page', 'author'])
-      .mockResolvedValueOnce('Joe Bloggs')
-    const result = await getObjectChildData(['page'], getNodeValueMock)
+      .mockReturnValueOnce('Joe Bloggs')
+    const result = getObjectChildData(['page'], getNodeValueMock)
     expect(result).toEqual({
       title: 'The Page Title',
       author: 'Joe Bloggs'
