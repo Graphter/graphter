@@ -1,3 +1,0 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
-
-exports[`getChildPaths() should error if no config is found for a child item 1`] = `[Error: Couldn't find config for child node at path 'page/0']`;
