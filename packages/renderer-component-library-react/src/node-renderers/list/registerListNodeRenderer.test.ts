@@ -1,6 +1,6 @@
 import { registerListNodeRenderer } from "./registerListNodeRenderer";
-import { getListChildData } from "./getChildData";
-import { getListChildPaths } from "./getChildPaths";
+import { getListChildData } from "./getListChildData";
+import { getListChildPaths } from "./getListChildPaths";
 import ListNodeRenderer from "./ListNodeRenderer";
 
 describe('registerListNodeRenderer()', () => {
