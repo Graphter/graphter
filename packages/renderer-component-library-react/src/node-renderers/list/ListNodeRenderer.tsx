@@ -21,7 +21,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   if (!config.children || !config.children.length) throw new Error(`'${config.type}' renderer must have at least one child config`)
   if (config.children.length > 1) throw new Error('Only one child list type is currently supported')
 
-  const [ showAdd, setShowAdd ] = useState(false)
+  const [ showNewItemUI, setShowNewItemUI ] = useState(false)
 
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
@@ -59,8 +59,9 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           </div>
         )}
       </div>
-      {showAdd ? (
+      {showNewItemUI ? (
         <DefaultNewItemWrapper config={config} onAdd={() => {
+          setShowNewItemUI(false)
           commitItem(childIds.length)
         }}>
           <ChildTypeRenderer
@@ -70,7 +71,12 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
             ErrorDisplayComponent={ErrorDisplayComponent} />
         </DefaultNewItemWrapper>
       ) : (
-        <button onClick={() => setShowAdd(true)}>Add</button>
+        <button
+        type='button'
+        className={s.button}
+        onClick={() => setShowNewItemUI(true)}
+        data-testid='add-item-btn'
+        >[+]</button>
       )}
 
     </div>
