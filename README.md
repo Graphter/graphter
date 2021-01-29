@@ -54,5 +54,8 @@ For example:
 ## Long term
 Provide managed cloud solutions on top of the open source tooling.
     
+## Vague ideas
+A record of [vague ideas](/docs/vague-ideas.md) for future features and goals.
+
 ## Contributing
 See [Contributing Docs](./docs/contributing.md)
