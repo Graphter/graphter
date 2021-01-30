@@ -75,7 +75,7 @@ export const commitItem = (
 ) => {
   checkPathArg(path)
   const node = getPathNode(path)
-  if(!node.meta) throw new Error('Node is missing meta. Should never happen')
+  if(!node.meta) throw new Error(`Node at ${path.join('/')} is missing meta. Should never happen`)
   node.meta.committed = true
 }
 
