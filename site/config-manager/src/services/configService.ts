@@ -4,12 +4,41 @@ const configs: NodeConfig[] = [
   {
     id: 'page',
     name: 'Page',
-    type: 'object'
+    type: 'object',
+    children: [
+      {
+        id: 'title',
+        name: 'Title',
+        type: 'string'
+      },
+      {
+        id: 'authors',
+        name: 'Authors',
+        type: 'list',
+        children: [
+          {
+            id: 'author',
+            name: 'Author',
+            type: 'nested',
+            options: {
+              configId: 'author'
+            }
+          },
+        ]
+      }
+    ]
   },
   {
     id: 'author',
     name: 'Author',
-    type: 'string'
+    type: 'object',
+    children: [
+      {
+        id: 'name',
+        name: 'Name',
+        type: 'string'
+      }
+    ]
   }
 ]
 
