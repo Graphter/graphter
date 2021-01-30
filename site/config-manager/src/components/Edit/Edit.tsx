@@ -12,6 +12,7 @@ import { useNodeData } from "@graphter/renderer-react";
 import { registerIdNodeRenderer } from "../../node-renderers/id";
 import { registerDataSelectNodeRenderer } from "../../node-renderers/data-select";
 import { registerConditionalNodeRenderer } from "../../node-renderers/conditional";
+import { registerNestedNodeRenderer } from "../../node-renderers/nested";
 
 export default function Edit(){
   const { id } = useParams<{ id: string }>();
@@ -51,7 +52,8 @@ export default function Edit(){
           },
           registerIdNodeRenderer(),
           registerDataSelectNodeRenderer(),
-          registerConditionalNodeRenderer()
+          registerConditionalNodeRenderer(),
+          registerNestedNodeRenderer()
         ]}
         cancel={() => history.push(backUri)}
         onSaved={() => history.push(backUri)}

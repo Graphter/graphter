@@ -82,28 +82,19 @@ const config:NodeConfig = {
       type: 'conditional',
       children: [
         {
-          id: 'object-properties',
+          id: 'object-children',
           name: 'Object properties',
           description: 'Properties configured for the object type',
           type: 'list',
           children: [
             {
-              id: 'name',
-              name: 'Name',
-              description: 'The model name',
-              type: 'object',
-              validation: [
-                {
-                  type: 'json-schema',
-                  executeOn: AllValidationExecutionStages,
-                  options: {
-                    error: 'An ID is required',
-                    schema: {
-                      "minLength": 1
-                    },
-                  }
-                },
-              ]
+              id: 'child',
+              name: 'Child',
+              description: 'The nested child config',
+              type: 'nested',
+              options: {
+                configId: 'config'
+              }
             },
           ],
           validation: [ ]
@@ -113,7 +104,7 @@ const config:NodeConfig = {
       options: {
         siblingPath: ['type'],
         branches: [
-          { condition: 'object', childId: 'object-properties' }
+          { condition: 'object', childId: 'object-children' }
         ]
       }
     }
