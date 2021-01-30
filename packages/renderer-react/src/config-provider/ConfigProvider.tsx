@@ -6,7 +6,16 @@ interface ConfigProviderProps {
   children: any
 }
 
-const Context = createContext<Map<PathSegment, NodeConfig> | null>(null);
+const Context = createContext<Map<string, NodeConfig> | null>(null);
+
+let configMap: Map<string, NodeConfig>
+
+export function getConfig(id: string): NodeConfig {
+  if(!configMap) throw new Error(`Couldn't find the API service registry. Make sure you've declared a <ServiceProvider /> and passed it a valid service.`)
+  const service = configMap.get(id)
+  if(!service) throw new Error(`Missing '${id}' config`)
+  return service
+}
 
 export function useConfig(id: string): NodeConfig {
   const configMap = useContext(Context)
@@ -17,11 +26,12 @@ export function useConfig(id: string): NodeConfig {
 }
 
 export default function ConfigProvider({ configs, children }: ConfigProviderProps){
-  const configMap = configs.reduce((a, c) => {
+  configMap = configs.reduce((a, c) => {
     if(Array.isArray(c)) c.forEach(registration => a.set(registration.id, registration.config))
     else a.set(c.id, c)
     return a
   }, new Map<string, NodeConfig>())
+
   return (
     <Context.Provider value={configMap}>
       {children}
