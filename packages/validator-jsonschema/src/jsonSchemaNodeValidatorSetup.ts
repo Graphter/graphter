@@ -9,6 +9,12 @@ import generateErrorMessage from "./generateErrorMessage";
 import ajvKeywords from "ajv-keywords";
 import Ajv from "ajv";
 
+const ajv = new Ajv({
+  jsPropertySyntax: true,
+  allErrors: true
+});
+ajvKeywords(ajv)
+
 export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidatorOptions): NodeValidator {
   if(!options || !options.schema) throw new Error(`Schema option is required by JsonSchemaValidator`);
   options = {
@@ -19,13 +25,7 @@ export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidato
     ...options
   };
 
-  const ajv = new Ajv({
-    jsPropertySyntax: true,
-    allErrors: true
-  });
-  ajvKeywords(ajv)
   const validateFn = ajv.compile(options.schema);
-
 
   return function execute(
     stage: ValidationExecutionStage,
