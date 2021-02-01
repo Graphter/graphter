@@ -1,60 +1,18 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`path getValue() should error if it comes across bad path segment [ [length]: 0 ] 1`] = `
-[Error: Unable to get a value at [] in 
-      {
-  "some": {
-    "nested": "data"
-  }
-} 
-      and no default was specified]
-`;
+exports[`path getValue() should error if it comes across bad path segment [ [length]: 0 ] 1`] = `[Error: Could not find a value at some/ within: {"some":{"nested":"data"}} and no default value was given.]`;
 
-exports[`path getValue() should error if it comes across bad path segment {} 1`] = `
-[Error: Unable to get a value at [] in 
-      {
-  "some": {
-    "nested": "data"
-  }
-} 
-      and no default was specified]
-`;
+exports[`path getValue() should error if it comes across bad path segment {} 1`] = `[Error: Could not find a value at some/[object Object] within: {"some":{"nested":"data"}} and no default value was given.]`;
 
-exports[`path getValue() should error if it comes across bad path segment null 1`] = `
-[Error: Unable to get a value at [] in 
-      {
-  "some": {
-    "nested": "data"
-  }
-} 
-      and no default was specified]
-`;
+exports[`path getValue() should error if it comes across bad path segment null 1`] = `[Error: Could not find a value at some/ within: {"some":{"nested":"data"}} and no default value was given.]`;
 
-exports[`path getValue() should error if it comes across bad path segment undefined 1`] = `[Error: Undefined path segment]`;
+exports[`path getValue() should error if it comes across bad path segment undefined 1`] = `[Error: Could not find a value at some/ within: {"some":{"nested":"data"}} and no default value was given.]`;
 
-exports[`path getValue() when data cannot be found at path [ 'foo', 0, 'bar', [length]: 3 ] in 'the-value' should error if default value is not defined 1`] = `
-[Error: Unable to get a value at [0/bar] in 
-      "the-value" 
-      and no default was specified]
-`;
+exports[`path getValue() when data cannot be found at path [ 'foo', 0, 'bar', [length]: 3 ] in 'the-value' should error if default value is not defined 1`] = `[Error: Could not find a value at foo/0/bar within: "the-value" and no default value was given.]`;
 
-exports[`path getValue() when data cannot be found at path [ 'foo', 0, 'bar', [length]: 3 ] in { foo: 'the-value' } should error if default value is not defined 1`] = `
-[Error: Unable to get a value at [] in 
-      {
-  "foo": "the-value"
-} 
-      and no default was specified]
-`;
+exports[`path getValue() when data cannot be found at path [ 'foo', 0, 'bar', [length]: 3 ] in { foo: 'the-value' } should error if default value is not defined 1`] = `[Error: Could not find a value at foo/0/bar within: {"foo":"the-value"} and no default value was given.]`;
 
-exports[`path getValue() when data cannot be found at path [ 'foo', 0, 'bar', [length]: 3 ] in { foo: [ 'the-value', [length]: 1 ] } should error if default value is not defined 1`] = `
-[Error: Unable to get a value at [] in 
-      {
-  "foo": [
-    "the-value"
-  ]
-} 
-      and no default was specified]
-`;
+exports[`path getValue() when data cannot be found at path [ 'foo', 0, 'bar', [length]: 3 ] in { foo: [ 'the-value', [length]: 1 ] } should error if default value is not defined 1`] = `[Error: Could not find a value at foo/0/bar within: {"foo":["the-value"]} and no default value was given.]`;
 
 exports[`path validate() should return invalid if any of the segments are of the wrong type ([]) 1`] = `"'object' is an invalid path segment"`;
 

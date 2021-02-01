@@ -1,9 +1,5 @@
 import { PathSegment } from "@graphter/core";
 
-export const pathUtils = {
-  validate,
-  getValue
-}
 
 export function validate(path?: Array<PathSegment> | null){
   if(typeof path === null || path === undefined) return {
@@ -32,20 +28,19 @@ export function validate(path?: Array<PathSegment> | null){
   }
 }
 
-export function getValue(data: any, path?: Array<PathSegment> | null, defaultVal?: any){
-  if(!path || !path.length) return data
-  let currentData = data
-  const pathClone = [ ...path ]
-  while(pathClone.length) {
-    const segment = pathClone.shift()
-    if(typeof segment === 'undefined') throw new Error('Undefined path segment')
-    currentData = currentData[segment]
-    if(typeof currentData === 'undefined'){
-      if(defaultVal) return defaultVal
-      else throw new Error(`Unable to get a value at [${pathClone.join('/')}] in 
-      ${JSON.stringify(data, null, 2)} 
-      and no default was specified`)
-    }
+export const getValue = (data: any, path?: Array<PathSegment> | null, defaultVal?: any) => {
+  const targetData = path?.reduce((data: any, pathSegment: PathSegment) => {
+    if(typeof data !== 'undefined') return data[pathSegment]
+  }, data)
+  if(typeof targetData === 'undefined'){
+    if(typeof defaultVal === 'undefined')
+      throw new Error(`Could not find a value at ${path?.join('/')} within: ${JSON.stringify(data)} and no default value was given.`)
+    else return defaultVal
   }
-  return currentData
+  return targetData
+}
+
+export const pathUtils = {
+  validate,
+  getValue
 }
