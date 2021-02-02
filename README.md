@@ -34,7 +34,10 @@ Your data is not so special. Graphter allows humans to manage _any_ data structu
 1. Eventing
     1. JS events (local)
     1. SQS
-    
+
+## Immediate Jobs
+[In progress and up next](./docs/immediate-jobs.md)
+
 ## Short term priorities
 [Why bother having anything else?](./docs/short-term-priorities.md)
 
