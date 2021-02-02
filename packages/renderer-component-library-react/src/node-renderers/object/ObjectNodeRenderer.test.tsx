@@ -12,6 +12,7 @@ describe('<ObjectNodeRenderer />', () => {
   it('render correctly', () => {
     const { container } = render(<ObjectNodeRenderer
       originalNodeData={{}}
+      originalNodeDataAncestry={[]}
       committed={true}
       config={{
         id: 'author',
@@ -31,6 +32,7 @@ describe('<ObjectNodeRenderer />', () => {
           },
         ]
       }}
+      configAncestry={[]}
       path={['/']} /> )
     expect(container).toMatchSnapshot()
   })
@@ -51,7 +53,9 @@ describe('<ObjectNodeRenderer />', () => {
     }
     render(<ObjectNodeRenderer
       config={clone()(config)}
+      configAncestry={[]}
       originalNodeData={undefined}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -74,10 +78,12 @@ describe('<ObjectNodeRenderer />', () => {
     }
     render(<ObjectNodeRenderer
       config={clone()(config)}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -99,10 +105,12 @@ describe('<ObjectNodeRenderer />', () => {
     }
     render(<ObjectNodeRenderer
       config={clone()(config)}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);

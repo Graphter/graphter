@@ -9,7 +9,9 @@ import { useNodeData } from "@graphter/renderer-react";
 const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
+    configAncestry,
     originalNodeData,
+    originalNodeDataAncestry,
     committed = true,
     path,
     ErrorDisplayComponent,
@@ -25,8 +27,10 @@ const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
       <nestedRendererRegistration.Renderer
         committed={committed}
         config={nestedConfig}
+        configAncestry={configAncestry}
         path={[ ...path, nestedConfig.id ]}
         originalNodeData={originalNodeData}
+        originalNodeDataAncestry={originalNodeDataAncestry}
         options={nestedRendererRegistration.options}
         ErrorDisplayComponent={ErrorDisplayComponent} />
     </>

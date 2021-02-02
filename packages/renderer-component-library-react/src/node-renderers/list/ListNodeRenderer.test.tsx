@@ -3,6 +3,7 @@ import { act, render, fireEvent, within, queryAllByTestId } from '@testing-libra
 import * as graphterRenderer from "@graphter/renderer-react";
 import ListNodeRenderer from "./ListNodeRenderer";
 import clone from 'rfdc'
+import ObjectNodeRenderer from "../object";
 
 const useArrayNodeDataMock = graphterRenderer.useArrayNodeData as jest.Mock<any>
 const nodeRendererStoreGetMock = graphterRenderer.nodeRendererStore.get as jest.Mock<any>
@@ -28,10 +29,12 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -52,7 +55,9 @@ describe('<ListNodeRenderer />', () => {
     }
     render(<ListNodeRenderer
       config={clone()(config)}
+      configAncestry={[]}
       originalNodeData={undefined}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -74,10 +79,12 @@ describe('<ListNodeRenderer />', () => {
     }
     render(<ListNodeRenderer
       config={clone()(config)}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -98,9 +105,11 @@ describe('<ListNodeRenderer />', () => {
             type: 'string'
           } ]
         }}
+        configAncestry={[]}
         originalNodeData={{
           some: 'non-array-data'
         }}
+        originalNodeDataAncestry={[]}
         committed={true}
         path={[ '/' ]}
       />);
@@ -113,10 +122,12 @@ describe('<ListNodeRenderer />', () => {
     try {
       // @ts-ignore
       render(<ListNodeRenderer config={undefined}
+                               configAncestry={[]}
                                originalNodeData={[
                                  'item 1 value',
                                  'item 2 value'
                                ]}
+                               originalNodeDataAncestry={[]}
                                committed={true}
                                path={[ '/' ]}
       />);
@@ -146,10 +157,12 @@ describe('<ListNodeRenderer />', () => {
             },
           ]
         }}
+        configAncestry={[]}
         originalNodeData={[
           'item 1 value',
           'item 2 value'
         ]}
+        originalNodeDataAncestry={[]}
         committed={true}
         path={[ '/' ]}
       />)
@@ -170,10 +183,12 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -192,10 +207,12 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -223,10 +240,12 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);
@@ -267,10 +286,12 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
+      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
       ]}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={[ '/' ]}
     />);

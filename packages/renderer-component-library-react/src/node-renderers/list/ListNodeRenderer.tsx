@@ -9,7 +9,9 @@ import { setupNodeRenderer } from "@graphter/renderer-react";
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
+    configAncestry,
     originalNodeData,
+    originalNodeDataAncestry,
     committed,
     path,
     ErrorDisplayComponent
@@ -28,6 +30,9 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   if (!childRendererRegistration) return null
   const ChildTypeRenderer = childRendererRegistration.Renderer
 
+  const newConfigAncestry = [ ...configAncestry, config ]
+  const newOriginalDataAncestry = [ ...originalNodeDataAncestry, originalNodeData ]
+
   const {
     childIds,
     removeItem,
@@ -45,10 +50,12 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
               removeItem(i)
             }}>
               <ChildTypeRenderer
+                config={childConfig}
+                configAncestry={newConfigAncestry}
                 path={[ ...path, i ]}
                 committed={committed}
                 originalNodeData={originalNodeData ? originalNodeData[i] : undefined}
-                config={childConfig}
+                originalNodeDataAncestry={newOriginalDataAncestry}
                 ErrorDisplayComponent={ErrorDisplayComponent} />
             </DefaultExistingItemWrapper>
           )
@@ -65,9 +72,11 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           commitItem(childIds.length)
         }}>
           <ChildTypeRenderer
+            config={childConfig}
+            configAncestry={newConfigAncestry}
             path={[ ...path, childIds.length ]}
             committed={false}
-            config={childConfig}
+            originalNodeDataAncestry={newOriginalDataAncestry}
             ErrorDisplayComponent={ErrorDisplayComponent} />
         </DefaultNewItemWrapper>
       ) : (

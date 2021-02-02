@@ -26,7 +26,6 @@ export default function NodeEditRenderer(
     editingId,
     configId,
     errorRenderer,
-    onSaved,
     cancel,
     typeRegistry
   }: NodeEditRendererProps) {
@@ -102,7 +101,9 @@ export default function NodeEditRenderer(
           committed={true}
           path={path}
           config={config}
+          configAncestry={[]}
           originalNodeData={startingData}
+          originalNodeDataAncestry={[]}
           options={registration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}
         />

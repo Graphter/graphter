@@ -8,7 +8,9 @@ import { setupNodeRenderer } from "@graphter/renderer-react";
 const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
+    configAncestry,
     originalNodeData,
+    originalNodeDataAncestry,
     path,
     committed,
     ErrorDisplayComponent
@@ -16,6 +18,8 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 ) => {
   if (!originalNodeData) originalNodeData = createDefault(config, {})
   useNodeData(path, config, originalNodeData, committed)
+  const newConfigAncestry = [ ...configAncestry, config ]
+  const newOriginalDataAncestry = [ ...originalNodeDataAncestry, originalNodeData ]
   return (
     <div className={s.objectNodeRenderer} data-nodetype='object' data-nodepath={path.join('/')}>
       {config.children && config.children.map((childConfig, i) => {
@@ -27,8 +31,10 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
             <ChildTypeRenderer
               committed={committed}
               config={childConfig}
+              configAncestry={newConfigAncestry}
               path={[ ...path, childConfig.id ]}
               originalNodeData={originalNodeData[childConfig.id]}
+              originalNodeDataAncestry={newOriginalDataAncestry}
               options={childRendererRegistration.options}
               ErrorDisplayComponent={ErrorDisplayComponent} />
           </DefaultPropertyWrapper>
