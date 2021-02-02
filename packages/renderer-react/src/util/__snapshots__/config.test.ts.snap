@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`config getAt should throw an error if invalid config { id: 'some-invalid-config-id' } is supplied 1`] = `"Could not find config at some-invalid-config-id within: {\\"id\\":\\"some-invalid-config-id\\"}."`;
+
+exports[`config getAt should throw an error if invalid config {} is supplied 1`] = `"Could not find config at some-invalid-config-id within: {}."`;
+
+exports[`config getAt should throw an error if invalid config null is supplied 1`] = `"Could not find config at some-invalid-config-id within: null."`;
+
+exports[`config getAt should throw an error if invalid config undefined is supplied 1`] = `"Could not find config at some-invalid-config-id within: undefined."`;
+
+exports[`config getAt should throw an error if invalid path [ undefined, [length]: 1 ] is supplied 1`] = `"Could not find config at  within: {\\"id\\":\\"some-config-id\\",\\"type\\":\\"object\\",\\"children\\":[{\\"id\\":\\"some-child-config-id\\",\\"type\\":\\"string\\"}]}."`;
+
+exports[`config getAt should throw an error if invalid path null is supplied 1`] = `"Could not find config at undefined within: {\\"id\\":\\"some-config-id\\",\\"type\\":\\"object\\",\\"children\\":[{\\"id\\":\\"some-child-config-id\\",\\"type\\":\\"string\\"}]}."`;
+
+exports[`config getAt should throw an error if invalid path undefined is supplied 1`] = `"Could not find config at undefined within: {\\"id\\":\\"some-config-id\\",\\"type\\":\\"object\\",\\"children\\":[{\\"id\\":\\"some-child-config-id\\",\\"type\\":\\"string\\"}]}."`;
+
+exports[`config getAt should throw an error if no config is found 1`] = `"Could not find config at another-config-id/some-non-existent-config-id within: {\\"id\\":\\"some-config-id\\",\\"type\\":\\"object\\",\\"children\\":[{\\"id\\":\\"another-config-id\\",\\"type\\":\\"list\\",\\"children\\":[{\\"id\\":\\"and-another-config-id\\",\\"type\\":\\"string\\"}]}]}."`;
