@@ -1,9 +1,9 @@
-import React, { useState } from "react";
+import React from "react";
 import { act, render, fireEvent, within, queryAllByTestId } from '@testing-library/react';
 import * as graphterRenderer from "@graphter/renderer-react";
 import ListNodeRenderer from "./ListNodeRenderer";
 import clone from 'rfdc'
-import ObjectNodeRenderer from "../object";
+import { when } from "jest-when";
 
 const useArrayNodeDataMock = graphterRenderer.useArrayNodeData as jest.Mock<any>
 const nodeRendererStoreGetMock = graphterRenderer.nodeRendererStore.get as jest.Mock<any>
@@ -11,9 +11,12 @@ const createDefaultMock = graphterRenderer.createDefault as jest.Mock<any>
 
 describe('<ListNodeRenderer />', () => {
   beforeEach(() => {
-  })
-  afterEach(() => {
-    jest.clearAllMocks()
+    jest.resetAllMocks()
+    when(nodeRendererStoreGetMock)
+      .calledWith('string')
+      .mockReturnValue({
+        Renderer: () => <div>A child item</div>
+      })
   })
   it('should render correctly', () => {
     useArrayNodeDataMock.mockReturnValue({ childIds: [ 'one', 'two' ] })
@@ -41,6 +44,7 @@ describe('<ListNodeRenderer />', () => {
     expect(container).toMatchSnapshot();
   })
   it('should render default data when new', () => {
+    useArrayNodeDataMock.mockReturnValue({ childIds: [] })
     createDefaultMock.mockReturnValue([])
     const config = {
       id: 'name',
@@ -171,6 +175,7 @@ describe('<ListNodeRenderer />', () => {
     }
   })
   it('should use the correct child renderer', () => {
+    useArrayNodeDataMock.mockReturnValue({ childIds: [ 'one', 'two' ] })
     render(<ListNodeRenderer
       config={{
         id: 'name',
@@ -194,7 +199,44 @@ describe('<ListNodeRenderer />', () => {
     />);
     expect(nodeRendererStoreGetMock).toHaveBeenCalledWith('string')
   })
+
+  it('should pass the correct props to the child renderer', () => {
+    const rendererMock = jest.fn().mockReturnValue(<div>The child item</div>)
+    when(nodeRendererStoreGetMock)
+      .calledWith('string')
+      .mockReturnValueOnce({
+        Renderer: rendererMock
+      })
+    useArrayNodeDataMock.mockReturnValue({ childIds: [ 'one', 'two' ] })
+    const { queryAllByText } = render(<ListNodeRenderer
+      config={{
+        id: 'name',
+        name: 'Name',
+        description: 'The name',
+        type: 'list',
+        children: [ {
+          id: 'list-item',
+          name: 'List item',
+          type: 'string'
+        } ]
+      }}
+      configAncestry={[]}
+      originalNodeData={[
+        'item 1 value',
+        'item 2 value'
+      ]}
+      originalNodeDataAncestry={[]}
+      committed={true}
+      path={[ '/' ]}
+    />);
+    expect(queryAllByText('The child item').length).toBe(2)
+    expect(rendererMock).toHaveBeenCalled()
+    const props = rendererMock.mock.calls[0][0]
+    expect(props).toMatchSnapshot()
+  })
+
   it('should render an empty item to add', () => {
+    useArrayNodeDataMock.mockReturnValue({ childIds: [ 'one', 'two' ] })
     const { queryByTestId, getByText } = render(<ListNodeRenderer
       config={{
         id: 'name',
@@ -228,7 +270,12 @@ describe('<ListNodeRenderer />', () => {
       removeItem: () => {},
       commitItem: commitItemMock
     }))
-    const { getByTestId, getByText } = render(<ListNodeRenderer
+    when(nodeRendererStoreGetMock)
+      .calledWith('string')
+      .mockReturnValue({
+        Renderer: () => <input />
+      })
+    const { getByText } = render(<ListNodeRenderer
       config={{
         id: 'name',
         name: 'Name',
@@ -252,17 +299,8 @@ describe('<ListNodeRenderer />', () => {
     act(() => {
       fireEvent.click(getByText('[+]'))
     })
-    const addItemContainerQueries = within(getByTestId('add-item'))
     act(() => {
-      fireEvent.change(addItemContainerQueries.getByDisplayValue(''), {
-        target:
-          {
-            value: 'some new value'
-          }
-      })
-    })
-    act(() => {
-      fireEvent.click(getByTestId('add-item-btn'))
+      fireEvent.click(getByText('Add [+]'))
     })
     expect(commitItemMock).toHaveBeenCalledWith(2)
   })

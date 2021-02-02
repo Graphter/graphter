@@ -19,15 +19,7 @@ export const useNodeData = jest.fn(() => {
 export const useNodeValidation = jest.fn().mockResolvedValue([])
 
 export const nodeRendererStore = {
-  get: jest.fn((nodeType: string) => ({
-    type: 'string',
-    Renderer: ({originalNodeData}: any) => {
-      const [ value, setValue ] = useState(originalNodeData || '')
-      return (
-        <input value={value} onChange={e => setValue(e.target.value)} data-testid='string-renderer' />
-    )
-    }
-  }))
+  get: jest.fn()
 }
 export const createDefault = jest.fn()
 

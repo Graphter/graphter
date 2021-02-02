@@ -1,38 +1,40 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`<ObjectNodeRenderer /> render correctly 1`] = `
-<div>
-  <div
-    class="objectNodeRenderer"
-    data-nodepath="/"
-    data-nodetype="object"
-  >
-    <div
-      class="defaultWrapper"
-    >
-      <label
-        for="name"
-      >
-        Name
-      </label>
-      <input
-        data-testid="string-renderer"
-        value=""
-      />
-    </div>
-    <div
-      class="defaultWrapper"
-    >
-      <label
-        for="location"
-      >
-        Location
-      </label>
-      <input
-        data-testid="string-renderer"
-        value=""
-      />
-    </div>
-  </div>
-</div>
+exports[`<ObjectNodeRenderer /> should pass the correct props to child renderers 1`] = `
+Object {
+  "ErrorDisplayComponent": undefined,
+  "committed": true,
+  "config": Object {
+    "id": "name",
+    "name": "Name",
+    "type": "string",
+  },
+  "configAncestry": Array [
+    Object {
+      "children": Array [
+        Object {
+          "id": "name",
+          "name": "Name",
+          "type": "string",
+        },
+      ],
+      "description": "The name",
+      "id": "name",
+      "name": "Name",
+      "type": "list",
+    },
+  ],
+  "options": undefined,
+  "originalNodeData": undefined,
+  "originalNodeDataAncestry": Array [
+    Array [
+      "item 1 value",
+      "item 2 value",
+    ],
+  ],
+  "path": Array [
+    "/",
+    "name",
+  ],
+}
 `;

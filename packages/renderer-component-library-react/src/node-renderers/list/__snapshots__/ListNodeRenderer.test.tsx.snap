@@ -4,6 +4,44 @@ exports[`<ListNodeRenderer /> should error when more than one child config is su
 
 exports[`<ListNodeRenderer /> should error when no child config is supplied 1`] = `[Error: <ListNodeRenderer /> component at '/' is missing config]`;
 
+exports[`<ListNodeRenderer /> should pass the correct props to the child renderer 1`] = `
+Object {
+  "ErrorDisplayComponent": undefined,
+  "committed": true,
+  "config": Object {
+    "id": "list-item",
+    "name": "List item",
+    "type": "string",
+  },
+  "configAncestry": Array [
+    Object {
+      "children": Array [
+        Object {
+          "id": "list-item",
+          "name": "List item",
+          "type": "string",
+        },
+      ],
+      "description": "The name",
+      "id": "name",
+      "name": "Name",
+      "type": "list",
+    },
+  ],
+  "originalNodeData": "item 1 value",
+  "originalNodeDataAncestry": Array [
+    Array [
+      "item 1 value",
+      "item 2 value",
+    ],
+  ],
+  "path": Array [
+    "/",
+    0,
+  ],
+}
+`;
+
 exports[`<ListNodeRenderer /> should render correctly 1`] = `
 <div>
   <div
@@ -29,10 +67,9 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
         class="defaultItemWrapper"
         data-testid="item"
       >
-        <input
-          data-testid="string-renderer"
-          value="item 1 value"
-        />
+        <div>
+          A child item
+        </div>
         <button
           class="button"
           data-testid="remove-item-btn"
@@ -45,10 +82,9 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
         class="defaultItemWrapper"
         data-testid="item"
       >
-        <input
-          data-testid="string-renderer"
-          value="item 2 value"
-        />
+        <div>
+          A child item
+        </div>
         <button
           class="button"
           data-testid="remove-item-btn"
