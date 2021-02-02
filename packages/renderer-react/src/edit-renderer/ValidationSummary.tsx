@@ -22,8 +22,9 @@ export default function ValidationSummary({ path }: ValidationSummaryProps){
         return (
           <div key={i}>
             {validationData.results.map((result, i) => {
+              if(result.valid) return null
               return (
-                <div key={i}>{result.errorMessage}</div>
+                <div key={i}>{validationData.path.join('/')}: {result.errorMessage}</div>
               )
             })}
           </div>
