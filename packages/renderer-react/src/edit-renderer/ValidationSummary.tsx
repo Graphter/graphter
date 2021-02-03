@@ -1,15 +1,16 @@
 import React, { useEffect, useState } from 'react';
 import s from './ValidationSummary.pcss';
-import { PathSegment } from "@graphter/core";
+import { NodeConfig, PathSegment } from "@graphter/core";
 import { useAggregateNodeValidation } from "../node-validation-provider/NodeValidationProvider";
 import { useTreePaths } from "../node-data-provider";
 
 export interface ValidationSummaryProps {
+  config: NodeConfig,
   path: Array<PathSegment>
 }
 
-export default function ValidationSummary({ path }: ValidationSummaryProps){
-  const descendentPaths = useTreePaths(path)
+export default function ValidationSummary({ config, path }: ValidationSummaryProps){
+  const descendentPaths = useTreePaths(config, path)
   const aggregatedValidationData = useAggregateNodeValidation(descendentPaths)
   const someErrors = aggregatedValidationData
     .some(validationData => validationData.results

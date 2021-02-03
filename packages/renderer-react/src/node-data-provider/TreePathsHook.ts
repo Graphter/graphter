@@ -1,5 +1,5 @@
-import { PathSegment } from "@graphter/core";
+import { NodeConfig, PathSegment } from "@graphter/core";
 
 export interface TreePathsHook {
-  (path: Array<PathSegment>): Array<Array<PathSegment>>
+  (config: NodeConfig, path: Array<PathSegment>): Array<Array<PathSegment>>
 }

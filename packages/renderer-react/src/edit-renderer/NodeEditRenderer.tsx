@@ -49,6 +49,7 @@ export default function NodeEditRenderer(
     (treeData) => {
       console.log('saving model ', treeData)
     },
+    config,
     [ configId, editingId === undefined ? 'new' : editingId ])
 
   useEffect(() => {
@@ -108,7 +109,7 @@ export default function NodeEditRenderer(
           ErrorDisplayComponent={ErrorDisplayComponent}
         />
 
-        <ValidationSummary path={path}/>
+        <ValidationSummary config={config} path={path}/>
 
         <div className={s.controls}>
           <button type='submit' data-testid='save' className={s.save}>Save</button>

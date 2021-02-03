@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { NodeValidatorRegistration, PathSegment, ValidationResult } from "@graphter/core";
+import { NodeConfig, NodeValidatorRegistration, PathSegment, ValidationResult } from "@graphter/core";
 import { NodeValidationHook } from "./NodeValidationHook";
 import { AggregateNodeValidationHook } from "./AggregateNodeValidationHook";
 import { NodeValidationData } from "./NodeValidationData";
@@ -20,6 +20,7 @@ const Context = createContext<{
 } | null>(null);
 
 export const useNodeValidation = (
+  config: NodeConfig,
   path: Array<PathSegment>
 ): NodeValidationData => {
   const ctx = useContext(Context);
@@ -27,7 +28,7 @@ export const useNodeValidation = (
   if (!ctx.nodeValidationHook) throw new Error(`Couldn't find a NodeValidationHook to use.`);
   if(!ctx.validatorRegistry) throw new Error('No validators have been defined. Please ensue <NodeValidationProvider /> has been defined correctly.')
 
-  return ctx.nodeValidationHook(path, ctx.validatorRegistry);
+  return ctx.nodeValidationHook(config, path, ctx.validatorRegistry);
 }
 
 export const useAggregateNodeValidation = (
