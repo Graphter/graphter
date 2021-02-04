@@ -14,13 +14,14 @@ describe('useRecoilNodeData()', () => {
     jest.clearAllMocks()
   })
   it('return a callback providing integrated tree data for the descendents of a node', async () => {
+    const config = { id: 'some-id', type: 'some-type' }
     when(treeDataStoreMock.getDescendentData)
-      .calledWith(['/'])
+      .calledWith(config, ['page'])
       .mockReturnValueOnce({
         some: 'state'
       })
     const callbackMock = jest.fn()
-    useRecoilTreeData(callbackMock, ['/'])
+    useRecoilTreeData(callbackMock, config, ['page'])
     expect(useRecoilCallbackMock).toHaveBeenCalled()
     const snapshotGetPromiseMock = jest.fn().mockResolvedValueOnce({
       some: 'tree-data'

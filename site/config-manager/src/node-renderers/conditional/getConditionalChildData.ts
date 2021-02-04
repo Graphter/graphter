@@ -1,9 +1,8 @@
 import { GetChildDataFn } from "@graphter/core";
-import { nodeRendererStore, pathConfigStore } from "@graphter/renderer-react";
+import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
 
-export const getConditionalChildData: GetChildDataFn = (path, getNodeValue) => {
-  const config = pathConfigStore.get(path)
+export const getConditionalChildData: GetChildDataFn = (config, path, getNodeValue) => {
   if (!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
   if (!config.children?.length) throw new Error(`${config.type} type '${config.id}' has no children configured. Exactly one is required.`)
   if(config.children?.length > 1) throw new Error(`transparent ${config.type} type '${config.id}' has more than one child configured. Exactly one is required.`)
@@ -24,6 +23,6 @@ export const getConditionalChildData: GetChildDataFn = (path, getNodeValue) => {
   const matchingChildRenderer = nodeRendererStore.get(matchingChildConfig.type)
   console.info(`Transparently passing through matched conditional at ${matchingChildPath.join('/')}`)
   return matchingChildRenderer.getChildData ?
-    matchingChildRenderer.getChildData(matchingChildPath, getNodeValue) :
+    matchingChildRenderer.getChildData(matchingChildConfig, matchingChildPath, getNodeValue) :
     getNodeValue(matchingChildPath)
 }

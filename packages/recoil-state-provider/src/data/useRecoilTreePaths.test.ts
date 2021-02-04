@@ -1,4 +1,4 @@
-import { useRecoilValueLoadable } from "recoil";
+import { useRecoilValue } from "recoil";
 import { useRecoilTreePaths } from './useRecoilTreePaths'
 import { when } from "jest-when";
 import treeDataStore from "../store/treeDataStore";
@@ -6,7 +6,7 @@ import treeDataStore from "../store/treeDataStore";
 jest.mock('recoil')
 jest.mock('../store/treeDataStore')
 
-const useRecoilValueLoadableMock = useRecoilValueLoadable as jest.Mock<any>
+const useRecoilValueMock = useRecoilValue as jest.Mock<any>
 const treeDataStoreMock = treeDataStore as jest.Mocked<any>
 
 describe('useRecoilTreePaths', () => {
@@ -14,32 +14,19 @@ describe('useRecoilTreePaths', () => {
     jest.clearAllMocks()
   })
   it('should return descendent paths', () => {
+    const config = {
+      id: 'some-id',
+      type: 'some-type'
+    }
     when(treeDataStoreMock.getDescendentPaths)
-      .calledWith(['0'])
+      .calledWith(config, ['some-id'])
       .mockReturnValueOnce({ some: 'state' })
-    when(useRecoilValueLoadableMock)
+    when(useRecoilValueMock)
       .calledWith({ some: 'state' })
-      .mockReturnValue({
-        state: 'hasValue',
-        contents: [ [ 'title' ], [ 'name' ] ]
-      })
-    const result = useRecoilTreePaths(['0'])
-    expect(result).toEqual([['title'], ['name']])
+      .mockReturnValue([ [ 'title' ], [ 'name' ] ])
+    const result = useRecoilTreePaths(config, ['some-id'])
+    expect(result).toEqual([ ['title'], ['name'] ])
   })
-  it.each(['loading', 'hasError' ])
-    ('should return no paths while in "%s" state', (state) => {
-      when(treeDataStoreMock.getDescendentPaths)
-        .calledWith(['0'])
-        .mockReturnValueOnce({ some: 'state' })
-      when(useRecoilValueLoadableMock)
-        .calledWith({ some: 'state' })
-        .mockReturnValue({
-          state,
-          contents: [ [ 'title' ], [ 'name' ] ]
-        })
-      const result = useRecoilTreePaths(['0'])
-      expect(result).toEqual([])
-    })
 })
 
 export {}

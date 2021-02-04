@@ -1,3 +1,5 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`useRecoilNodeValidation should error if unable to find config for the node 1`] = `"Couldn't find config for node at path 'page' for validation"`;
+exports[`useRecoilNodeValidation should error if null config is supplied 1`] = `"Cannot read property 'validation' of null"`;
+
+exports[`useRecoilNodeValidation should error if undefined config is supplied 1`] = `"Cannot read property 'validation' of undefined"`;

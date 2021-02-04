@@ -1,6 +1,6 @@
 import { RecoilValueReadOnly, selector } from "recoil";
 import { NodeConfig, PathSegment } from "@graphter/core";
-import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
+import { nodeRendererStore } from "@graphter/renderer-react";
 import { propDataStore } from "./propDataStore";
 
 const treeDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
@@ -16,6 +16,8 @@ export interface TreeDataStore {
 
 const treeDataStore: TreeDataStore = {
   getDescendentData: (config, path) => {
+    if(!config) throw new Error('Config is required to get descendent data')
+    if(!path) throw new Error('Path is required to get descendent data')
     const key = `tree-from-${path.join(treeKeySalt)}`
     let treeDataSelector = treeDataMap[key]
     if(treeDataSelector) return treeDataSelector
@@ -31,7 +33,7 @@ const treeDataStore: TreeDataStore = {
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
 
         return renderer.getChildData ?
-          renderer.getChildData(path, getNodeValue) :
+          renderer.getChildData(config, path, getNodeValue) :
           getNodeValue(path)
       }
     });
@@ -40,6 +42,8 @@ const treeDataStore: TreeDataStore = {
   },
 
   getDescendentPaths: (config, path): RecoilValueReadOnly<Array<Array<PathSegment>>> => {
+    if(!config) throw new Error('Config is required to get descendent data')
+    if(!path) throw new Error('Path is required to get descendent data')
     const key = `descendent-paths-${path.join(descendentPathKeySalt)}`
     let descendentPathSelector = descendentPathDataMap[key]
     if(descendentPathSelector) return descendentPathSelector
@@ -49,7 +53,7 @@ const treeDataStore: TreeDataStore = {
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
         if(!renderer.getChildPaths) return [ [ config.id ] ]
-        const childPaths = renderer.getChildPaths(path, (path:Array<PathSegment>) => {
+        const childPaths = renderer.getChildPaths(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })

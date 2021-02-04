@@ -6,6 +6,10 @@ import NodeDataProvider, { useNodeData, useArrayNodeData, useTreeData, useTreePa
 
 describe('<NodeDataProvider />', () => {
 
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
+
   it('should render children', () => {
     const { queryByText } = render(
       <NodeDataProvider
@@ -202,6 +206,7 @@ describe('<NodeDataProvider />', () => {
     function TreeDataConsumerMock(props: any) {
       useTreeData(
         props.fn,
+        props.config,
         props.path
       )
       return null
@@ -215,7 +220,8 @@ describe('<NodeDataProvider />', () => {
           nodeDataHook={jest.fn()}
           treeDataHook={treeDataHookMock}
           treePathsHook={jest.fn()}
-          arrayNodeDataHook={jest.fn()} >
+          arrayNodeDataHook={jest.fn()}
+        >
           <TreeDataConsumerMock
             path={['/']}
             fn={callbackFn}
@@ -227,6 +233,9 @@ describe('<NodeDataProvider />', () => {
       )
       expect(treeDataHookMock).toHaveBeenCalledWith(
         callbackFn,
+        {
+          id: 'some-node'
+        },
         ['/']
       )
     })
@@ -274,6 +283,7 @@ describe('<NodeDataProvider />', () => {
     function TreePathsConsumerMock(props: any) {
     useTreePaths(
       props.path,
+      props.config,
     )
     return null
   }
@@ -287,12 +297,18 @@ describe('<NodeDataProvider />', () => {
           treePathsHook={treePathsHookMock}
           arrayNodeDataHook={jest.fn()} >
           <TreePathsConsumerMock
+            config={{
+              id: 'some-id'
+            }}
             path={['/']}
           />
         </NodeDataProvider>
       )
       expect(treePathsHookMock).toHaveBeenCalledWith(
-        ['/']
+        ['/'],
+        {
+          id: 'some-id'
+        }
       )
     })
     it('should error if no provider is defined', () => {

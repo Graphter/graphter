@@ -18,7 +18,7 @@ describe('<NodeValidationProvider />', () => {
   })
   describe('when using useNodeValidation hook', () => {
     function ValidationConsumerMock(props: any) {
-      useNodeValidation(props.path)
+      useNodeValidation(props.config, props.path)
       return null
     }
     it('should delegate to the registered node validation hook', () => {
@@ -30,10 +30,10 @@ describe('<NodeValidationProvider />', () => {
           aggregateNodeValidationHook={jest.fn()}
           validatorRegistry={[]}
         >
-          <ValidationConsumerMock path={['page']} />
+          <ValidationConsumerMock path={['page']} config={{ id: 'some-id' }} />
         </NodeValidationProvider>
       )
-      expect(nodeValidationHookMock).toHaveBeenCalledWith(['page'], [])
+      expect(nodeValidationHookMock).toHaveBeenCalledWith({ id: 'some-id' }, ['page'], [])
     })
     it('should throw an error if the provider is not present in the component hierarchy', () => {
       expect(() => {

@@ -1,3 +1,7 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`getChildData() should error if child config is missing 1`] = `[Function]`;
+
+exports[`getChildData() should error if null child config is supplied 1`] = `[Function]`;
+
+exports[`getChildData() should error if undefined child config is supplied 1`] = `[Function]`;
