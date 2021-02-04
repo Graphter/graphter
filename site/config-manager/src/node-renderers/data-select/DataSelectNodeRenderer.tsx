@@ -32,7 +32,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   if(isNew) originalNodeData = createDefault(config, '')
   const [ touched, setTouched ] = useState(false)
   const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-  const validationResults = useNodeValidation(path)
+  const validationResults = useNodeValidation(config, path)
   const dataService = useService(config.options?.service)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)
   const [ loading, setLoading ] = useState(true)
@@ -47,7 +47,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
       setLoading(false)
     })()
   }, [])
-  console.log(options?.map(option => option.key).join(', '))
+
   return (
     <>
       <select

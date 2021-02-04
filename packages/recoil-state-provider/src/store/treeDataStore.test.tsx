@@ -2,18 +2,15 @@ import React from 'react'
 import {
   RecoilRoot,
   RecoilValueReadOnly,
-  selector,
   useRecoilValue,
-  useRecoilValueLoadable
 } from "recoil";
 import { TreeDataStore } from "./treeDataStore";
 import { propDataStore } from "./propDataStore";
-import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
+import { nodeRendererStore } from "@graphter/renderer-react";
 import { when } from "jest-when";
 import { render } from "@testing-library/react";
-import flushPromises from "../../test-utils/flushPromises";
+import { NodeConfig } from "@graphter/core";
 
-const pathConfigStoreMock = pathConfigStore as jest.Mocked<any>
 const nodeRendererStoreMock = nodeRendererStore as jest.Mocked<any>
 
 describe('treeDataStore', () => {
@@ -27,20 +24,17 @@ describe('treeDataStore', () => {
   })
   describe('getDescendentData()', () => {
     it('should return a selector that resolves the descendent tree structure', () => {
-      function ConsumerComponent() {
-        const value = useRecoilValue(treeDataStore.getDescendentData([ 'page' ]))
+      function ConsumerComponent({config}: { config: NodeConfig }) {
+        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
         return <div>{JSON.stringify(value)}</div>
       }
-
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
       const getChildDataMock = jest.fn()
       when(getChildDataMock)
-        .calledWith([ 'page' ], expect.anything())
+        .calledWith(config, [ 'page' ], expect.anything())
         .mockReturnValue('the-child-data')
       when(nodeRendererStoreMock.get)
         .calledWith('unicorn')
@@ -49,52 +43,45 @@ describe('treeDataStore', () => {
         })
       const {container} = render(
         <RecoilRoot>
-          <ConsumerComponent/>
+          <ConsumerComponent config={config}/>
         </RecoilRoot>
       )
       expect(container).toMatchSnapshot()
     })
     it('should skip descendent data resolution if the starting node does not implement a getChildData() function', async () => {
-      function ConsumerComponent() {
-        const loadableValue = useRecoilValueLoadable(treeDataStore.getDescendentData([ 'page' ]))
-        return loadableValue.state === 'hasValue' ?
-          <div>{loadableValue.contents}</div> :
-          null
+      function ConsumerComponent({config}: { config: NodeConfig }) {
+        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
+        return <div>{value}</div>
       }
 
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
       when(nodeRendererStoreMock.get)
         .calledWith('unicorn')
         .mockReturnValueOnce({})
       propDataStore.set([ 'page' ], true, 'the-page-value')
       const {container} = render(
         <RecoilRoot>
-          <ConsumerComponent/>
+          <ConsumerComponent config={config}/>
         </RecoilRoot>
       )
-      await flushPromises()
       expect(container).toMatchSnapshot()
     })
     it('should cache the selector for next time', () => {
       let states: Array<RecoilValueReadOnly<any>> = []
 
-      function ConsumerComponent() {
-        const state = treeDataStore.getDescendentData([ 'page' ])
+      function ConsumerComponent({config}: { config: NodeConfig }) {
+        const state = treeDataStore.getDescendentData(config, [ 'page' ])
         states.push(state)
         return null
       }
 
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
       const getChildDataMock = jest.fn()
       when(getChildDataMock)
         .calledWith([ 'page' ], expect.anything())
@@ -106,40 +93,40 @@ describe('treeDataStore', () => {
         })
       render(
         <RecoilRoot>
-          <ConsumerComponent/>
-          <ConsumerComponent/>
+          <ConsumerComponent config={config}/>
+          <ConsumerComponent config={config}/>
         </RecoilRoot>
       )
       expect(states.length).toBe(2)
       expect(states[0]).toBe(states[1])
     })
-    it('should error if config is missing for the starting node', () => {
-      function ConsumerComponent() {
-        const value = useRecoilValue(treeDataStore.getDescendentData([ 'page' ]))
+    it.each([ null, undefined ])('should error if %o config is passed to the starting node', (noConfig) => {
+      function ConsumerComponent({config}: { config: NodeConfig }) {
+        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
         return <div>{JSON.stringify(value)}</div>
       }
 
       expect(() => render(
         <RecoilRoot>
-          <ConsumerComponent/>
+          <ConsumerComponent
+            // @ts-ignore
+            config={noConfig}/>
         </RecoilRoot>
       )).toThrowErrorMatchingSnapshot()
     })
     it('should error if no renderer is found for the starting node', () => {
-      function ConsumerComponent() {
-        const value = useRecoilValue(treeDataStore.getDescendentData([ 'page' ]))
+      function ConsumerComponent({config}: { config: NodeConfig }) {
+        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
         return <div>{JSON.stringify(value)}</div>
       }
 
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
       expect(() => render(
         <RecoilRoot>
-          <ConsumerComponent/>
+          <ConsumerComponent config={config}/>
         </RecoilRoot>
       )).toThrowErrorMatchingSnapshot()
     })
@@ -148,24 +135,25 @@ describe('treeDataStore', () => {
     beforeEach(async () => {
       jest.resetAllMocks()
     })
-    function ConsumerComponent() {
-      const pathsLoadable = useRecoilValueLoadable(treeDataStore.getDescendentPaths([ 'page' ]))
-      return pathsLoadable.state === 'hasValue' ?
+
+    function ConsumerComponent({config}: { config: NodeConfig }) {
+      const value = useRecoilValue(treeDataStore.getDescendentPaths(config, [ 'page' ]))
+      return (
         <div>
-          {JSON.stringify( pathsLoadable.contents)}
-        </div> : null
+          {JSON.stringify(value)}
+        </div>
+      )
     }
+
     it('should return a selector that resolves the descendent paths', async () => {
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
       const getChildPathsMock = jest.fn()
       when(getChildPathsMock)
-        .calledWith([ 'page' ], expect.anything())
-        .mockReturnValueOnce( [['page', 'title'], ['page', 'author']])
+        .calledWith(config, [ 'page' ], expect.anything())
+        .mockReturnValueOnce([ [ 'page', 'title' ], [ 'page', 'author' ] ])
       when(nodeRendererStoreMock.get)
         .calledWith('unicorn')
         .mockReturnValueOnce({
@@ -173,90 +161,80 @@ describe('treeDataStore', () => {
         })
       const {container} = render(
         <RecoilRoot>
-          <ConsumerComponent/>
+          <ConsumerComponent config={config}/>
         </RecoilRoot>
       )
-      await flushPromises()
       expect(container).toMatchSnapshot()
     })
     it('should skip descendent path resolution if the starting node does not implement a getChildPaths() function', async () => {
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
       when(nodeRendererStoreMock.get)
         .calledWith('unicorn')
-        .mockReturnValueOnce({ })
+        .mockReturnValueOnce({})
       const {container} = render(
         <RecoilRoot>
-          <ConsumerComponent/>
+          <ConsumerComponent config={config}/>
         </RecoilRoot>
       )
-      await flushPromises()
       expect(container).toMatchSnapshot()
     })
     it('should cache the selector for next time', async () => {
       const states: Array<any> = []
-      function RecordingConsumerComponent() {
-        states.push(treeDataStore.getDescendentPaths([ 'page' ]))
+
+      function RecordingConsumerComponent({config}: { config: NodeConfig }) {
+        states.push(treeDataStore.getDescendentPaths(config, [ 'page' ]))
         return null
       }
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
+
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
       when(nodeRendererStoreMock.get)
         .calledWith('unicorn')
-        .mockReturnValueOnce({ })
+        .mockReturnValueOnce({})
       render(
         <RecoilRoot>
-          <RecordingConsumerComponent/>
-          <RecordingConsumerComponent/>
+          <RecordingConsumerComponent config={config}/>
+          <RecordingConsumerComponent config={config}/>
         </RecoilRoot>
       )
-      await flushPromises()
       expect(states.length).toBe(2)
       expect(states[0]).toBe(states[1])
     })
-    it('should error if config is missing for the starting node', async () => {
-      function ErrorConsumerComponent() {
-        const pathsLoadable = useRecoilValueLoadable(treeDataStore.getDescendentPaths([ 'page' ]))
-        return <div>
-            {JSON.stringify(pathsLoadable)}
-          </div>
+    it.each([ null, undefined ])
+    ('should error if %o config is passed to the starting node', async (noConfig) => {
+      function ErrorConsumerComponent({config}: { config: NodeConfig }) {
+        useRecoilValue(treeDataStore.getDescendentPaths(config, [ 'page' ]))
+        return null
       }
-      const { container } = render(
+
+      expect(() => render(
         <RecoilRoot>
-          <ErrorConsumerComponent/>
+          <ErrorConsumerComponent
+            // @ts-ignore
+            config={noConfig}/>
         </RecoilRoot>
-      )
-      await flushPromises()
-      expect(container).toMatchSnapshot()
+      )).toThrowErrorMatchingSnapshot()
     })
     it('should error if no renderer is found for the starting node', async () => {
-      function ErrorConsumerComponent() {
-        const pathsLoadable = useRecoilValueLoadable(treeDataStore.getDescendentPaths([ 'page' ]))
-        return <div>
-          {JSON.stringify(pathsLoadable)}
-        </div>
+      function ErrorConsumerComponent({config}: { config: NodeConfig }) {
+        useRecoilValue(treeDataStore.getDescendentPaths(config, [ 'page' ]))
+        return null
       }
-      when(pathConfigStoreMock.get)
-        .calledWith([ 'page' ])
-        .mockReturnValueOnce({
-          id: 'page',
-          type: 'unicorn'
-        })
-      const { container } = render(
+
+      const config = {
+        id: 'page',
+        type: 'unicorn'
+      }
+      expect(() => render(
         <RecoilRoot>
-          <ErrorConsumerComponent/>
+          <ErrorConsumerComponent config={config}/>
         </RecoilRoot>
-      )
-      await flushPromises()
-      expect(container).toMatchSnapshot()
+      )).toThrowErrorMatchingSnapshot()
     })
   })
 })

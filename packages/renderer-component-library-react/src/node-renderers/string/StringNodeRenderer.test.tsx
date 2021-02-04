@@ -21,7 +21,9 @@ describe(`<StringNodeRenderer />`, () => {
         type: 'string',
         default: 'Unnamed'
       }}
+      configAncestry={[]}
       originalNodeData={'Foo Bar'}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={['/']}
     />);
@@ -39,7 +41,9 @@ describe(`<StringNodeRenderer />`, () => {
     }
     render(<StringNodeRenderer
       config={config}
+      configAncestry={[]}
       originalNodeData={undefined}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={['/']}
     />);
@@ -57,7 +61,9 @@ describe(`<StringNodeRenderer />`, () => {
         type: 'string',
         default: 'The default value'
       }}
+      configAncestry={[]}
       originalNodeData={'The original value'}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={['/']}
     />);
@@ -96,7 +102,9 @@ describe(`<StringNodeRenderer />`, () => {
     })
     const { getByDisplayValue, queryByText } = render(<StringNodeRenderer
       config={config}
+      configAncestry={[]}
       originalNodeData={'The original value'}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={['/']}
     />);
@@ -120,7 +128,9 @@ describe(`<StringNodeRenderer />`, () => {
         type: 'string',
         default: 'The default value'
       }}
+      configAncestry={[]}
       originalNodeData={'The original value'}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={['/']}
     />);
@@ -150,7 +160,9 @@ describe(`<StringNodeRenderer />`, () => {
     useNodeValidationMock.mockReturnValueOnce(originalResult)
     let { getByDisplayValue, queryByText, rerender } = render(<StringNodeRenderer
       config={config}
+      configAncestry={[]}
       originalNodeData={'The original value'}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={['/']}
     />);
@@ -171,7 +183,9 @@ describe(`<StringNodeRenderer />`, () => {
     })
     rerender(<StringNodeRenderer
       config={config}
+      configAncestry={[]}
       originalNodeData={'The original value'}
+      originalNodeDataAncestry={[]}
       committed={true}
       path={['/']}
     />)

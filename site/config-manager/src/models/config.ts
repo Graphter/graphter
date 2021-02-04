@@ -49,7 +49,7 @@ const config:NodeConfig = {
           type: 'json-schema',
           executeOn: AllValidationExecutionStages,
           options: {
-            error: 'An ID is required',
+            error: 'A name is required',
             schema: {
               "minLength": 1
             },

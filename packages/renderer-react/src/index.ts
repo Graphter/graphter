@@ -17,7 +17,6 @@ export {
 }
 
 export * from "./store/nodeRendererStore"
-export * from './store/pathConfigStore'
 export * from './list-renderer'
 export * from './edit-renderer'
 export * from './util/node'

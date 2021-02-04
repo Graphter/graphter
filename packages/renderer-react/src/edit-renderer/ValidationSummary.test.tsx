@@ -7,13 +7,20 @@ import { when } from "jest-when";
 
 
 describe('<ValidationSummary />', () => {
+  beforeEach(() => {
+    jest.resetAllMocks()
+  })
   it('should render error messages', () => {
+    const config = {
+      id: 'page',
+      type: 'object'
+    }
     const useTreePathsHookMock = jest.fn()
     when(useTreePathsHookMock)
-      .calledWith([ 'page' ])
+      .calledWith(config, [ 'page' ])
       .mockReturnValueOnce([ [ 'page' ], [ 'page', '0' ] ])
-    const aggregateValidationDataMock = jest.fn()
-    when(aggregateValidationDataMock)
+    const aggregateNodeValidationMock = jest.fn()
+    when(aggregateNodeValidationMock)
       .calledWith([ [ 'page' ], [ 'page', '0' ] ])
       .mockReturnValueOnce([
         {
@@ -21,7 +28,8 @@ describe('<ValidationSummary />', () => {
             {errorMessage: 'This is an error'},
             {errorMessage: 'This is another error'},
             {errorMessage: 'This is yet another error'},
-          ]
+          ],
+          path: ['page', '0']
         }
       ])
     const {queryByText} = render(
@@ -35,19 +43,23 @@ describe('<ValidationSummary />', () => {
         <NodeValidationProvider
           instanceId={'some-id'}
           nodeValidationHook={jest.fn()}
-          aggregateNodeValidationHook={aggregateValidationDataMock}
+          aggregateNodeValidationHook={aggregateNodeValidationMock}
           validatorRegistry={[]}
         >
-          <ValidationSummary path={[ 'page' ]}/>
+          <ValidationSummary config={config} path={[ 'page' ]}/>
         </NodeValidationProvider>
       </NodeDataProvider>
     )
-    expect(queryByText('This is an error')).not.toBeNull()
-    expect(queryByText('This is another error')).not.toBeNull()
-    expect(queryByText('This is yet another error')).not.toBeNull()
+    expect(queryByText('page/0: This is an error')).not.toBeNull()
+    expect(queryByText('page/0: This is another error')).not.toBeNull()
+    expect(queryByText('page/0: This is yet another error')).not.toBeNull()
   })
   it('should return null when no validation results are found', () => {
     const aggregateValidationDataMock = jest.fn().mockReturnValueOnce([])
+    const config = {
+      id: 'page',
+      type: 'object'
+    }
     const { container } = render(
       <NodeDataProvider
         instanceId={'some-id'}
@@ -62,7 +74,7 @@ describe('<ValidationSummary />', () => {
           aggregateNodeValidationHook={aggregateValidationDataMock}
           validatorRegistry={[]}
         >
-          <ValidationSummary path={[ 'page' ]}/>
+          <ValidationSummary config={config} path={[ 'page' ]}/>
         </NodeValidationProvider>
       </NodeDataProvider>
     )

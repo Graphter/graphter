@@ -16,7 +16,7 @@ const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   if(isNew) originalNodeData = createDefault(config, '')
   const [ touched, setTouched ] = useState(false)
   const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-  const validationResults = useNodeValidation(path)
+  const validationResults = useNodeValidation(config, path)
   return (
     <>
       <input

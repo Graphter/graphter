@@ -1,13 +1,11 @@
-import { NodeValidatorRegistration, ValidationExecutionStage } from "@graphter/core";
+import { NodeConfig, NodeValidatorRegistration, ValidationExecutionStage } from "@graphter/core";
 import React from "react";
 import { render } from "@testing-library/react";
 import { RecoilRoot } from 'recoil'
-import { NodeValidationHook, pathConfigStore } from "@graphter/renderer-react";
+import { NodeValidationHook } from "@graphter/renderer-react";
 import { when } from "jest-when";
 import flushPromises from "../../test-utils/flushPromises";
 import validationDataStore from "../store/validationDataStore";
-
-const pathConfigStoreMock = pathConfigStore as jest.Mocked<any>
 
 describe('useRecoilNodeValidation', () => {
   let useRecoilNodeValidation: NodeValidationHook,
@@ -15,8 +13,8 @@ describe('useRecoilNodeValidation', () => {
     validatorMock: jest.Mock<any>,
     propDataStore: any
 
-  function ConsumerComponent({ cb }: { cb?: (data: any) => void }) {
-    const validationData = useRecoilNodeValidation([ 'page' ], [ validatorRegistration ])
+  function ConsumerComponent({ cb, config }: { cb?: (data: any) => void, config: NodeConfig }) {
+    const validationData = useRecoilNodeValidation(config, [ 'page' ], [ validatorRegistration ])
     if(cb) cb(validationData)
     return null
   }
@@ -29,7 +27,6 @@ describe('useRecoilNodeValidation', () => {
         return validatorMock
       }
     }
-    pathConfigStoreMock.get.mockReset()
     jest.isolateModules(() => {
       useRecoilNodeValidation = require('./useRecoilNodeValidation').useRecoilNodeValidation
       propDataStore = require('../store/propDataStore')
@@ -54,10 +51,6 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    when(pathConfigStoreMock.get)
-      .calledWith(['page'])
-      .mockReturnValue(config)
-
     validationDataStore.set(['page'], config, 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
@@ -70,7 +63,7 @@ describe('useRecoilNodeValidation', () => {
     const cbMock = jest.fn()
     render(
       <RecoilRoot>
-        <ConsumerComponent cb={cbMock} />
+        <ConsumerComponent cb={cbMock} config={config} />
       </RecoilRoot>
     )
     await flushPromises()
@@ -103,10 +96,6 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    when(pathConfigStoreMock.get)
-      .calledWith(['page'])
-      .mockReturnValue(config)
-
     validationDataStore.set(['page'], config, 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
@@ -115,7 +104,7 @@ describe('useRecoilNodeValidation', () => {
     const cbMock = jest.fn()
     render(
       <RecoilRoot>
-        <ConsumerComponent cb={cbMock} />
+        <ConsumerComponent cb={cbMock} config={config} />
       </RecoilRoot>
     )
     await flushPromises()
@@ -146,10 +135,6 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    when(pathConfigStoreMock.get)
-      .calledWith(['page'])
-      .mockReturnValue(config)
-
     validationDataStore.set(['page'], config, 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
@@ -158,7 +143,7 @@ describe('useRecoilNodeValidation', () => {
     const cbMock = jest.fn()
     render(
       <RecoilRoot>
-        <ConsumerComponent cb={cbMock} />
+        <ConsumerComponent cb={cbMock} config={config} />
       </RecoilRoot>
     )
     await flushPromises()
@@ -178,10 +163,6 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    when(pathConfigStoreMock.get)
-      .calledWith(['page'])
-      .mockReturnValue(config)
-
     validationDataStore.set(['page'], config, 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
@@ -190,7 +171,7 @@ describe('useRecoilNodeValidation', () => {
     const cbMock = jest.fn()
     render(
       <RecoilRoot>
-        <ConsumerComponent cb={cbMock} />
+        <ConsumerComponent cb={cbMock} config={config} />
       </RecoilRoot>
     )
     await flushPromises()
@@ -211,9 +192,6 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    when(pathConfigStoreMock.get)
-      .calledWith(['page'])
-      .mockReturnValue(config)
     validationDataStore.set(['page'], config, 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
@@ -222,7 +200,7 @@ describe('useRecoilNodeValidation', () => {
     const cbMock = jest.fn()
     render(
       <RecoilRoot>
-        <ConsumerComponent cb={cbMock} />
+        <ConsumerComponent cb={cbMock} config={config} />
       </RecoilRoot>
     )
     await flushPromises()
@@ -233,11 +211,13 @@ describe('useRecoilNodeValidation', () => {
     expect(result.results[0].errorMessage).toBe('Some error message')
     expect(validationDataStore.has(['page'])).toBe(true)
   })
-  it('should error if unable to find config for the node', async () => {
+  it.each([ null, undefined ])('should error if %o config is supplied', async (noConfig) => {
     propDataStore.set(['page'], true, 'the-page-data')
     expect(() => render(
       <RecoilRoot>
-        <ConsumerComponent />
+        <ConsumerComponent
+          // @ts-ignore
+          config={noConfig} />
       </RecoilRoot>
     )).toThrowErrorMatchingSnapshot()
   })

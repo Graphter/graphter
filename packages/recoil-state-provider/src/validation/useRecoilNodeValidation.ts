@@ -12,9 +12,9 @@ import { NodeValidation } from "@graphter/core";
 import { propDataStore } from "../store/propDataStore";
 import validationDataStore from "../store/validationDataStore";
 import { NodeValidationData, NodeValidationHook } from "@graphter/renderer-react";
-import { pathConfigStore } from "@graphter/renderer-react";
 
 export const useRecoilNodeValidation: NodeValidationHook = (
+  config: NodeConfig,
   path: Array<PathSegment>,
   validatorRegistry: Array<NodeValidatorRegistration>
 ) => {
@@ -26,8 +26,6 @@ export const useRecoilNodeValidation: NodeValidationHook = (
   const propDataState = propDataStore.get(path)
   const propData = useRecoilValue(propDataState)
   validationData.value = propData
-  const config = pathConfigStore.get(path)
-  if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}' for validation`)
   validationData.config = config
   const onChangeValidators = getChangeValidators(config, validatorRegistry)
   if(!onChangeValidators) return validationData

@@ -1,6 +1,6 @@
 import { RecoilValueReadOnly, selector } from "recoil";
-import { PathSegment } from "@graphter/core";
-import { pathConfigStore, nodeRendererStore } from "@graphter/renderer-react";
+import { NodeConfig, PathSegment } from "@graphter/core";
+import { nodeRendererStore } from "@graphter/renderer-react";
 import { propDataStore } from "./propDataStore";
 
 const treeDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
@@ -10,12 +10,14 @@ const treeKeySalt = 'c2c87429-dabf-4ea0-b2e1-6e7a6262bc11'
 const descendentPathKeySalt = '04ea4750-019b-446d-87f4-c025f837ab7f'
 
 export interface TreeDataStore {
-  getDescendentData: (path: Array<PathSegment>) => RecoilValueReadOnly<any>
-  getDescendentPaths: (path: Array<PathSegment>) => RecoilValueReadOnly<Array<Array<PathSegment>>>
+  getDescendentData: (config: NodeConfig, path: Array<PathSegment>) => RecoilValueReadOnly<any>
+  getDescendentPaths: (config: NodeConfig, path: Array<PathSegment>) => RecoilValueReadOnly<Array<Array<PathSegment>>>
 }
 
 const treeDataStore: TreeDataStore = {
-  getDescendentData: (path: Array<PathSegment>) => {
+  getDescendentData: (config, path) => {
+    if(!config) throw new Error('Config is required to get descendent data')
+    if(!path) throw new Error('Path is required to get descendent data')
     const key = `tree-from-${path.join(treeKeySalt)}`
     let treeDataSelector = treeDataMap[key]
     if(treeDataSelector) return treeDataSelector
@@ -27,13 +29,11 @@ const treeDataStore: TreeDataStore = {
           const state = propDataStore.get(path)
           return get(state)
         }
-        const config = pathConfigStore.get(path)
-        if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
 
         return renderer.getChildData ?
-          renderer.getChildData(path, getNodeValue) :
+          renderer.getChildData(config, path, getNodeValue) :
           getNodeValue(path)
       }
     });
@@ -41,19 +41,19 @@ const treeDataStore: TreeDataStore = {
     return treeDataSelector
   },
 
-  getDescendentPaths: (path: Array<PathSegment>): RecoilValueReadOnly<Array<Array<PathSegment>>> => {
+  getDescendentPaths: (config, path): RecoilValueReadOnly<Array<Array<PathSegment>>> => {
+    if(!config) throw new Error('Config is required to get descendent data')
+    if(!path) throw new Error('Path is required to get descendent data')
     const key = `descendent-paths-${path.join(descendentPathKeySalt)}`
     let descendentPathSelector = descendentPathDataMap[key]
     if(descendentPathSelector) return descendentPathSelector
     descendentPathDataMap[key] = descendentPathSelector = selector<any>({
       key: key,
       get: ({ get }) => {
-        const config = pathConfigStore.get(path)
-        if(!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
         if(!renderer.getChildPaths) return [ [ config.id ] ]
-        const childPaths = renderer.getChildPaths(path, (path:Array<PathSegment>) => {
+        const childPaths = renderer.getChildPaths(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
