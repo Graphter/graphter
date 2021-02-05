@@ -1,8 +1,21 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`jsonSchemaNodeValidatorSetup should return the correct result when data is valid 1`] = `Promise {}`;
+exports[`jsonSchemaNodeValidatorSetup should return the correct result when data is not valid 1`] = `
+Object {
+  "errorDisplayMode": Array [
+    "INLINE",
+    "SUMMARY",
+  ],
+  "errorMessage": undefined,
+  "valid": false,
+}
+`;
 
-exports[`jsonSchemaNodeValidatorSetup should return the correct result when did is not valid 1`] = `Promise {}`;
+exports[`jsonSchemaNodeValidatorSetup should return the correct result when data is valid 1`] = `
+Object {
+  "valid": true,
+}
+`;
 
 exports[`jsonSchemaNodeValidatorSetup should use sensible defaults 1`] = `
 Object {
