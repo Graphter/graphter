@@ -14,7 +14,7 @@ export default function registerIdUniquenessValidator(): NodeValidatorRegistrati
 }
 
 interface IdUniquenessValidatorSetupOptions {
-  uniquenessPath: Array<PathSegment>
+  serviceId: string
 }
 
 function idUniquenessValidatorSetup(options: IdUniquenessValidatorSetupOptions){
@@ -25,7 +25,7 @@ function idUniquenessValidatorSetup(options: IdUniquenessValidatorSetupOptions){
     data: any,
   ): Promise<ValidationResult> {
     if(!path || path.length < 2) throw new Error(`Invalid path`)
-    const result = await getService(path[0].toString()).get(data)
+    const result = await getService(options.serviceId).get(data)
     const valid = !result.item || (result.item.id === path[1])
     console.debug(`${config.id} value of ${JSON.stringify(data)} ${valid?'passed':'failed'} validation: ${JSON.stringify(result)}`)
     if(valid){

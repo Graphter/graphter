@@ -36,6 +36,9 @@ const config:NodeConfig = {
         {
           type: 'id-uniqueness',
           executeOn: AllValidationExecutionStages,
+          options: {
+            serviceId: 'config'
+          }
         }
       ]
     },
