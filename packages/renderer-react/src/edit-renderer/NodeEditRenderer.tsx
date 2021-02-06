@@ -1,7 +1,7 @@
-import React, { ComponentType, Suspense, useEffect, useState } from "react";
+import React, { ComponentType, useEffect, useState } from "react";
 import s from './NodeEditRenderer.pcss';
 import { isEmpty } from "../util/id";
-import { useService } from "../service-provider/ServiceProvider";
+import { useService } from "../providers/service";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps,
@@ -9,8 +9,8 @@ import {
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
-import { useTreeData } from "../node-data-provider";
-import { useConfig } from "../config-provider";
+import { useTreeData } from "../providers/node-data";
+import { useConfig } from "../providers/config";
 
 export interface NodeEditRendererProps {
   configId: string

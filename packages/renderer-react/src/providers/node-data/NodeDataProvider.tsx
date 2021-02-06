@@ -1,4 +1,4 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext } from 'react';
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { NodeDataHook } from "./NodeDataHook";
 import { ArrayNodeDataHook } from "./ArrayNodeDataHook";

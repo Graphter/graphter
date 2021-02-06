@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { NodeConfig, NodeValidatorRegistration, PathSegment, ValidationResult } from "@graphter/core";
+import { NodeConfig, NodeValidatorRegistration, PathSegment } from "@graphter/core";
 import { NodeValidationHook } from "./NodeValidationHook";
 import { AggregateNodeValidationHook } from "./AggregateNodeValidationHook";
 import { NodeValidationData } from "./NodeValidationData";
