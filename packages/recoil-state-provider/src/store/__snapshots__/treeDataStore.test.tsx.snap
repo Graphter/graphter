@@ -31,7 +31,7 @@ exports[`treeDataStore getDescendentPaths should error if undefined config is pa
 exports[`treeDataStore getDescendentPaths should return a selector that resolves the descendent paths 1`] = `
 <div>
   <div>
-    [["page"],["page","title"],["page","author"]]
+    [["page","title"],["page","author"]]
   </div>
 </div>
 `;
@@ -39,7 +39,7 @@ exports[`treeDataStore getDescendentPaths should return a selector that resolves
 exports[`treeDataStore getDescendentPaths should skip descendent path resolution if the starting node does not implement a getChildPaths() function 1`] = `
 <div>
   <div>
-    [["page"]]
+    []
   </div>
 </div>
 `;
