@@ -21,6 +21,26 @@ interface Node {
 
 const propStateNodeTree: Array<Node> = []
 
+export const init = (
+  path: Array<PathSegment>,
+  data: any
+): void => {
+  const init = (path: Array<PathSegment>, data: any) => {
+    if(Array.isArray(data)){
+      if(!has(path)) set(path, true, data.map(() => nanoid()))
+      data.forEach((item, i) => init([ ...path, i ], item))
+    }else if(typeof data === 'object'){
+      if(!has(path)) set(path, true, data)
+      Object.entries(data).forEach(([key, value]) => {
+        init([ ...path, key ], value)
+      })
+    } else {
+      if(!has(path)) set(path, true, data)
+    }
+  }
+  init(path, data)
+}
+
 export const get = (
   path: Array<PathSegment>
 ): RecoilState<any> => {
@@ -139,6 +159,7 @@ function checkPathArg(path: Array<PathSegment>){
 }
 
 export interface PropDataStore {
+  init: (path: Array<PathSegment>, data: any) => void
   get: (path: Array<PathSegment>) => RecoilState<any>
   getAll: (path: Array<PathSegment>) => Array<RecoilState<any>>
   set: (
@@ -152,6 +173,7 @@ export interface PropDataStore {
 }
 
 export const propDataStore: PropDataStore = {
+  init,
   get,
   getAll,
   set,

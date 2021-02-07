@@ -8,16 +8,16 @@ jest.mock('recoil')
 const atomMock = atom as jest.Mock<any>
 const nanoidMock = nanoid as jest.Mock<any>
 
-atomMock.mockImplementation((options) => {
-  return {
-    recoilStateOptions: options
-  }
-})
-nanoidMock.mockReturnValue('some-random-guid')
-
 describe('propDataStore', () => {
   let propDataStore: PropDataStore
   beforeEach(async() => {
+    jest.resetAllMocks()
+    atomMock.mockImplementation((options) => {
+      return {
+        recoilStateOptions: options
+      }
+    })
+    nanoidMock.mockReturnValue('some-random-guid')
     jest.isolateModules(async () => {
       propDataStore = require('./propDataStore')
     })
@@ -29,6 +29,72 @@ describe('propDataStore', () => {
         key: 'some-random-guid',
         default: 'some-data'
       }
+    })
+  })
+  describe('init()', () => {
+    it('should prime state for the supplied data structure', () => {
+      const data = Object.freeze({
+        title: 'The page title',
+        author: {
+          name: 'Joe Bloggs',
+          location: 'San Francisco'
+        },
+        tags: [
+          { name: 'Travel', type: 'system' },
+          { name: 'Wanderlust', type: 'user' }
+        ]
+      })
+      propDataStore.init(['page'], data)
+      expect(propDataStore.get(['page'])).toEqual({
+        recoilStateOptions: {
+          key: 'some-random-guid',
+          default: data
+        }
+      })
+      expect(propDataStore.get(['page', 'title'])).toEqual({
+        recoilStateOptions: {
+          key: 'some-random-guid',
+          default: 'The page title'
+        }
+      })
+      expect(propDataStore.get(['page', 'author'])).toEqual({
+        recoilStateOptions: {
+          key: 'some-random-guid',
+          default: data.author
+        }
+      })
+      expect(propDataStore.get(['page', 'author', 'name'])).toEqual({
+        recoilStateOptions: {
+          key: 'some-random-guid',
+          default: data.author.name
+        }
+      })
+      expect(propDataStore.get(['page', 'author', 'location'])).toEqual({
+        recoilStateOptions: {
+          key: 'some-random-guid',
+          default: data.author.location
+        }
+      })
+    })
+    it('should use random IDs for array item data since it\'s only used for ordering', () => {
+      const data = Object.freeze({
+        tags: [
+          { name: 'Travel', type: 'system' },
+          { name: 'Wanderlust', type: 'user' }
+        ]
+      })
+      nanoidMock.mockReset()
+      nanoidMock.mockReturnValueOnce('random-guid-1')
+      nanoidMock.mockReturnValueOnce('random-guid-2')
+      nanoidMock.mockReturnValueOnce('random-guid-3')
+      nanoidMock.mockReturnValueOnce('random-guid-4')
+      propDataStore.init(['page'], data)
+      expect(propDataStore.get(['page', 'tags'])).toEqual({
+        recoilStateOptions: {
+          key: 'random-guid-4',
+          default: [ 'random-guid-2', 'random-guid-3' ]
+        }
+      })
     })
   })
   describe('get()', () => {
