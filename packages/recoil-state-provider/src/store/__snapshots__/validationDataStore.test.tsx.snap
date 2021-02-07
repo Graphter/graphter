@@ -23,25 +23,6 @@ Array [
 exports[`validationDataStore getAll() should return a selector that aggregates results for all the supplied paths 1`] = `
 Array [
   Object {
-    "config": Object {
-      "id": "page",
-      "type": "object",
-    },
-    "path": Array [
-      "page",
-    ],
-    "results": Array [
-      Object {
-        "errorMessage": "Some page error",
-        "valid": false,
-      },
-    ],
-  },
-  Object {
-    "config": Object {
-      "id": "title",
-      "type": "string",
-    },
     "path": Array [
       "page",
       "title",
@@ -53,6 +34,19 @@ Array [
       },
     ],
   },
+  Object {
+    "path": Array [
+      "page",
+      "author",
+      "location",
+    ],
+    "results": Array [
+      Object {
+        "errorMessage": "Some author location error",
+        "valid": false,
+      },
+    ],
+  },
 ]
 `;
 
@@ -60,10 +54,6 @@ exports[`validationDataStore set() should error if no path is supplied 1`] = `"p
 
 exports[`validationDataStore should set and get validation data 1`] = `
 Object {
-  "config": Object {
-    "id": "page",
-    "type": "object",
-  },
   "path": Array [
     "page",
   ],

@@ -26,7 +26,7 @@ describe('validationDataStore', () => {
       ['page'],
       'the-page-value',
       [ { valid: false, errorMessage: 'Some error' }]
-      )
+    )
     const cbMock = jest.fn()
     render(
       <RecoilRoot>
@@ -50,25 +50,25 @@ describe('validationDataStore', () => {
       paths: Array<Array<PathSegment>>
       cb?: (data: any) => void
     }){
-    const validationData = useRecoilValue(validationDataStore.getAll(paths))
-    if(cb) cb(validationData)
-    return null
-  }
+      const validationData = useRecoilValue(validationDataStore.getAll(paths))
+      if(cb) cb(validationData)
+      return null
+    }
     it('should return a selector that aggregates results for all the supplied paths', () => {
-      validationDataStore.set(
-        ['page'],
-        'the-page-value',
-        [ { valid: false, errorMessage: 'Some page error' }]
-      )
       validationDataStore.set(
         ['page', 'title'],
         'the-title-value',
         [ { valid: false, errorMessage: 'Some title error' }]
       )
+      validationDataStore.set(
+        ['page', 'author', 'location'],
+        'the-page-value',
+        [ { valid: false, errorMessage: 'Some author location error' }]
+      )
       const cbMock = jest.fn()
       render(
         <RecoilRoot>
-          <GetAllConsumerComponent paths={[ ['page'], ['page', 'title'] ]} cb={cbMock} />
+          <GetAllConsumerComponent paths={[ ['page', 'title'], ['page', 'author', 'location'] ]} cb={cbMock} />
         </RecoilRoot>
       )
       expect(cbMock).toHaveBeenCalled()
@@ -76,9 +76,9 @@ describe('validationDataStore', () => {
     })
     it('should cache the selector for subsequent uses', () => {
       validationDataStore.set(
-      ['page'],
-      'the-page-value',
-      [ { valid: false, errorMessage: 'Some page error' }]
+        ['page'],
+        'the-page-value',
+        [ { valid: false, errorMessage: 'Some page error' }]
       )
       validationDataStore.set(
         ['page', 'title'],

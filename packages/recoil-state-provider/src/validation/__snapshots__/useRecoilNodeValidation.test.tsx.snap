@@ -5,3 +5,9 @@ exports[`useRecoilNodeValidation should error if null config is supplied 1`] = `
 exports[`useRecoilNodeValidation should error if undefined config is supplied 1`] = `"Cannot read property 'validation' of undefined"`;
 
 exports[`useRecoilNodeValidation should throw an error if the node has no state 1`] = `"Couldn't find state at page"`;
+
+exports[`useRecoilNodeValidation() should error if null config is supplied 1`] = `"Cannot read property 'validation' of null"`;
+
+exports[`useRecoilNodeValidation() should error if undefined config is supplied 1`] = `"Cannot read property 'validation' of undefined"`;
+
+exports[`useRecoilNodeValidation() should throw an error if the node has no state 1`] = `"Couldn't find state at page"`;
