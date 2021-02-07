@@ -11,6 +11,7 @@ import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useTreeData } from "../providers/node-data";
 import { useConfig } from "../providers/config";
+import { useTreeDataInitialiser } from "../providers/node-data/NodeDataProvider";
 
 export interface NodeEditRendererProps {
   configId: string
@@ -44,13 +45,14 @@ export default function NodeEditRenderer(
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
   const [ startingData, setStartingData ] = useState<any>(undefined);
-
+  const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
+  const treeDataInitialiser = useTreeDataInitialiser()
   const save = useTreeData(
     (treeData) => {
       console.log('saving model ', treeData)
     },
     config,
-    [ configId, editingId === undefined ? 'new' : editingId ])
+    path)
 
   useEffect(() => {
     (async () => {
@@ -64,6 +66,7 @@ export default function NodeEditRenderer(
             setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`));
             return;
           }
+          treeDataInitialiser(path, getResult.item)
           setStartingData(getResult.item)
         } catch (err) {
           console.error(err);
@@ -78,8 +81,6 @@ export default function NodeEditRenderer(
   if (!startingData) return null
   const registration = nodeRendererStore.get(config.type)
   const TypeRenderer = registration.Renderer
-
-  const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
 
   return (
     <div className={s.editRenderer}>
