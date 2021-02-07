@@ -6,7 +6,7 @@ import { NodeValidationHook } from "@graphter/renderer-react";
 import flushPromises from "../../test-utils/flushPromises";
 import { ValidationDataStore } from "../store/validationDataStore";
 
-describe('useRecoilNodeValidation', () => {
+describe('useRecoilNodeValidation()', () => {
   let useRecoilNodeValidation: NodeValidationHook,
     validatorRegistration: NodeValidatorRegistration,
     validatorMock: jest.Mock<any>,
