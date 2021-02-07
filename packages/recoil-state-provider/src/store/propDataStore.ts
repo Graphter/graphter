@@ -26,10 +26,10 @@ export const init = (
   data: any
 ): void => {
   const init = (path: Array<PathSegment>, data: any) => {
-    if(Array.isArray(data)){
+    if(Array.isArray(data)) {
       if(!has(path)) set(path, true, data.map(() => nanoid()))
       data.forEach((item, i) => init([ ...path, i ], item))
-    }else if(typeof data === 'object'){
+    } else if(typeof data === 'object') {
       if(!has(path)) set(path, true, data)
       Object.entries(data).forEach(([key, value]) => {
         init([ ...path, key ], value)
