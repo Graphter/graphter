@@ -1,6 +1,7 @@
 import { NodeConfig, PathSegment, ValidationResult } from "@graphter/core";
 import { atom, RecoilState, RecoilValueReadOnly, selector } from "recoil";
 import { NodeValidationData } from "@graphter/renderer-react";
+import { propDataStore } from "./propDataStore";
 
 const validationStateMap: Map<string, RecoilState<NodeValidationData>> = new Map()
 const pathSegmentKeySalt = '[be3cc399-9225-4cbc-9d23-6c0c69ddca4a]'
@@ -25,14 +26,18 @@ export const getAll = (paths: Array<Array<PathSegment>>): RecoilValueReadOnly<Ar
 
   const aggregateValidations = selector<Array<NodeValidationData>>({
     key,
-    get: (options) => {
+    get: ({ get: selectorGet }) => {
       return paths.flatMap(path => {
-        if(!has(path)) return []
+        if(!has(path)) {
+          if(!propDataStore.has(path)) return []
+          const propState = propDataStore.get(path)
+          const propData = selectorGet(propState)
+          set(path, propData, [])
+        }
         const validationDataState = get(path)
-        const validationData = options.get(validationDataState)
+        const validationData = selectorGet(validationDataState)
         return [{
           path,
-          config: validationData.config,
           results: validationData.results
         }]
       })
@@ -49,7 +54,6 @@ export const has = (path: Array<PathSegment>): boolean => {
 
 export const set = (
   path: Array<PathSegment>,
-  config: NodeConfig,
   value: any,
   results: Array<ValidationResult>
 ) => {
@@ -57,7 +61,6 @@ export const set = (
   const key = generateValidationKey(path)
   const validationData: NodeValidationData = {
     path,
-    config,
     value,
     results
   }
@@ -73,7 +76,6 @@ export interface ValidationDataStore{
   has: (path: Array<PathSegment>) => boolean
   set: (
     path: Array<PathSegment>,
-    config: NodeConfig,
     value: any,
     results: Array<ValidationResult>
   ) => void

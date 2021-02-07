@@ -2,6 +2,24 @@
 
 exports[`validationDataStore get() should error if no validation data has been set yet 1`] = `"No validation state for 'page' found in the store"`;
 
+exports[`validationDataStore getAll() should initialise state on the fly when not already initialised 1`] = `
+Array [
+  Object {
+    "path": Array [
+      "page",
+    ],
+    "results": Array [],
+  },
+  Object {
+    "path": Array [
+      "page",
+      "title",
+    ],
+    "results": Array [],
+  },
+]
+`;
+
 exports[`validationDataStore getAll() should return a selector that aggregates results for all the supplied paths 1`] = `
 Array [
   Object {
