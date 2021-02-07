@@ -34,7 +34,7 @@ export default function jsonSchemaNodeValidatorSetup(options: JsonSchemaValidato
     data: any,
   ): Promise<ValidationResult> {
     const valid = validateFn(data);
-    console.debug(`${config.id} value of ${JSON.stringify(data)} ${valid?'passed':'failed'} validation: ${JSON.stringify(options)}`)
+    console.debug(`${config.type} value at ${path.join('/')} ${JSON.stringify(data)} ${valid?'passed':'failed'} validation: ${JSON.stringify(options)}`)
     if(valid){
       return Promise.resolve({
         valid: true
