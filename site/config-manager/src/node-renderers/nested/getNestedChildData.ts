@@ -10,10 +10,10 @@ export const getNestedChildData: GetChildDataFn = (config, path, getNodeValue) =
   if(!nestedConfig) throw new Error(`${config.type} type '${config.id}' cannot cannot find the nested config '${config.options.configId}'`)
   const nestedRenderer = nodeRendererStore.get(nestedConfig.type)
 
-  const childPath: Array<PathSegment> = [ ...path, config.options.configId ]
+  const transparentPath: Array<PathSegment> = [ ...path ]
 
-  console.info(`Transparently passing through nested node at at ${childPath.join('/')}`)
+  console.info(`Transparently passing through nested node at at ${transparentPath.join('/')}`)
   return nestedRenderer.getChildData ?
-    nestedRenderer.getChildData(nestedConfig, childPath, getNodeValue) :
-    getNodeValue(childPath)
+    nestedRenderer.getChildData(nestedConfig, transparentPath, getNodeValue) :
+    getNodeValue(transparentPath)
 }

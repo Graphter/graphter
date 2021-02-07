@@ -9,11 +9,10 @@ export const getConditionalChildPaths: GetChildPathsFn = (config, path, getNodeV
   if(!config.options?.siblingPath) throw new Error(`siblingPath option is required for conditional renderer.`)
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const targetNodeData = getNodeValue(targetPath)
-  //const targetNodeData = 'object'
   const matchingChildConfig = getMatchingConfig(config, targetNodeData)
   if(!matchingChildConfig) return []
   const matchingChildRenderer = nodeRendererStore.get(matchingChildConfig.type)
   return matchingChildRenderer.getChildPaths ?
-    matchingChildRenderer.getChildPaths(matchingChildConfig, [ ...path, matchingChildConfig.id ], getNodeValue) :
+    matchingChildRenderer.getChildPaths(matchingChildConfig, [ ...path ], getNodeValue) :
     []
 }
