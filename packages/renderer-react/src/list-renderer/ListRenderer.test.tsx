@@ -3,7 +3,7 @@ import ListRenderer from "./ListRenderer";
 import { act, render } from '@testing-library/react';
 import { screen } from '@testing-library/dom'
 import '@testing-library/jest-dom/extend-expect'
-import ServiceProvider from "../service-provider";
+import ServiceProvider from "../providers/service";
 import { RenderItemProps } from "./RenderItemProps";
 import { RenderPaginationProps } from "./RenderPaginationProps";
 import { ListResult, NodeConfig } from "@graphter/core";

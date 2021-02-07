@@ -1,8 +1,8 @@
 import { render } from "@testing-library/react";
 import React from "react";
 import ValidationSummary from "./ValidationSummary";
-import { NodeValidationProvider } from "../node-validation-provider";
-import NodeDataProvider from "../node-data-provider";
+import { NodeValidationProvider } from "../providers/node-validation";
+import NodeDataProvider from "../providers/node-data";
 import { when } from "jest-when";
 
 
@@ -35,6 +35,7 @@ describe('<ValidationSummary />', () => {
     const {queryByText} = render(
       <NodeDataProvider
         instanceId={'some-id'}
+        treeDataInitialiserHook={jest.fn()}
         nodeDataHook={jest.fn()}
         arrayNodeDataHook={jest.fn()}
         treeDataHook={jest.fn()}
@@ -63,6 +64,7 @@ describe('<ValidationSummary />', () => {
     const { container } = render(
       <NodeDataProvider
         instanceId={'some-id'}
+        treeDataInitialiserHook={jest.fn()}
         nodeDataHook={jest.fn()}
         arrayNodeDataHook={jest.fn()}
         treeDataHook={jest.fn()}
