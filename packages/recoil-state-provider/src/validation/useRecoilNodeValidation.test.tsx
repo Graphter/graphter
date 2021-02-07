@@ -3,14 +3,14 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { RecoilRoot } from 'recoil'
 import { NodeValidationHook } from "@graphter/renderer-react";
-import { when } from "jest-when";
 import flushPromises from "../../test-utils/flushPromises";
-import validationDataStore from "../store/validationDataStore";
+import { ValidationDataStore } from "../store/validationDataStore";
 
 describe('useRecoilNodeValidation', () => {
   let useRecoilNodeValidation: NodeValidationHook,
     validatorRegistration: NodeValidatorRegistration,
     validatorMock: jest.Mock<any>,
+    validationDataStore: ValidationDataStore,
     propDataStore: any
 
   function ConsumerComponent({ cb, config }: { cb?: (data: any) => void, config: NodeConfig }) {
@@ -20,6 +20,12 @@ describe('useRecoilNodeValidation', () => {
   }
 
   beforeEach(() => {
+    jest.resetAllMocks()
+    jest.isolateModules(() => {
+      useRecoilNodeValidation = require('./useRecoilNodeValidation').useRecoilNodeValidation
+      validationDataStore = require('../store/validationDataStore')
+      propDataStore = require('../store/propDataStore')
+    })
     validatorMock = jest.fn()
     validatorRegistration = {
       type: 'test-validation',
@@ -27,10 +33,6 @@ describe('useRecoilNodeValidation', () => {
         return validatorMock
       }
     }
-    jest.isolateModules(() => {
-      useRecoilNodeValidation = require('./useRecoilNodeValidation').useRecoilNodeValidation
-      propDataStore = require('../store/propDataStore')
-    })
   })
 
   it('should return validation data for a node', async () => {
@@ -51,7 +53,7 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    validationDataStore.set(['page'], config, 'the-page-data', [])
+    validationDataStore.set(['page'], 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
       errorMessage: 'Some error message'
@@ -77,9 +79,6 @@ describe('useRecoilNodeValidation', () => {
   })
   it('should skip any validator other than those configured to run onChange', async () => {
     propDataStore.set(['page'], true, 'the-page-data')
-    // when(useRecoilValueMock)
-    //   .calledWith()
-    //   .mockReturnValueOnce('the-prop-data')
     const config = {
       id: 'page',
       type: 'object',
@@ -96,7 +95,7 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    validationDataStore.set(['page'], config, 'the-page-data', [])
+    validationDataStore.set(['page'], 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
       errorMessage: 'Some error message'
@@ -116,9 +115,6 @@ describe('useRecoilNodeValidation', () => {
   })
   it('should return empty validation data if no onChange validators are found', async () => {
     propDataStore.set(['page'], true, 'the-page-data')
-    // when(useRecoilValueMock)
-    //   .calledWith()
-    //   .mockReturnValueOnce('the-prop-data')
     const config = {
       id: 'page',
       type: 'object',
@@ -135,7 +131,7 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    validationDataStore.set(['page'], config, 'the-page-data', [])
+    validationDataStore.set(['page'], 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
       errorMessage: 'Some error message'
@@ -147,37 +143,22 @@ describe('useRecoilNodeValidation', () => {
       </RecoilRoot>
     )
     await flushPromises()
-    expect(cbMock).toHaveBeenCalledTimes(3)
-    const result = cbMock.mock.calls[2][0]
+    expect(cbMock).toHaveBeenCalledTimes(2)
+    const result = cbMock.mock.calls[1][0]
     expect(result.results.length).toBe(0)
   })
-  it('should return empty validation data if the node has no data', async () => {
-    const config = {
-      id: 'page',
-      type: 'object',
-      validation: [
-        {
-          type: 'test-validation',
-          executeOn: ValidationExecutionStage.CHANGE,
-          options: { some: 'validation-constraints' }
-        }
-      ]
-    }
-    validationDataStore.set(['page'], config, 'the-page-data', [])
+  it('should throw an error if the node has no state', async () => {
+    validationDataStore.set(['page'], 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
       errorMessage: 'Some error message'
     })
     const cbMock = jest.fn()
-    render(
+    expect(() => render(
       <RecoilRoot>
-        <ConsumerComponent cb={cbMock} config={config} />
+        <ConsumerComponent cb={cbMock} config={{id: 'some-id', type: 'some-type'}} />
       </RecoilRoot>
-    )
-    await flushPromises()
-    expect(cbMock).toHaveBeenCalledTimes(1)
-    const result = cbMock.mock.calls[0][0]
-    expect(result.results.length).toBe(0)
+    )).toThrowErrorMatchingSnapshot()
   })
   it('should set initial validationDataStore data if none exists yet', async () => {
     propDataStore.set(['page'], true, 'the-page-data')
@@ -192,7 +173,7 @@ describe('useRecoilNodeValidation', () => {
         }
       ]
     }
-    validationDataStore.set(['page'], config, 'the-page-data', [])
+    validationDataStore.set(['page'], 'the-page-data', [])
     validatorMock.mockResolvedValueOnce({
       valid: false,
       errorMessage: 'Some error message'
