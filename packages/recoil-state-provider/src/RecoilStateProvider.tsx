@@ -8,6 +8,7 @@ import { useRecoilTreeData } from "./data/useRecoilTreeData";
 import { useRecoilTreePaths } from "./data/useRecoilTreePaths";
 import { useRecoilArrayNodeData } from "./data/useRecoilArrayNodeData";
 import { NodeDataProvider, NodeValidationProvider } from "@graphter/renderer-react";
+import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 
 export interface RecoilStateProvider {
   instanceId: string | number
@@ -32,6 +33,7 @@ export function RecoilStateProvider(
       >
         <NodeDataProvider
           instanceId={instanceId}
+          treeDataInitialiserHook={useRecoilTreeDataInitialiser}
           nodeDataHook={useRecoilNodeData}
           treeDataHook={useRecoilTreeData}
           treePathsHook={useRecoilTreePaths}
