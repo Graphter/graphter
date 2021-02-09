@@ -19,10 +19,10 @@ export const getConditionalChildData: GetChildDataFn = (config, path, getNodeVal
       default: return typeof config.options.defaultValue
     }
   }
-  const matchingChildPath = [ ...path, matchingChildConfig.id ]
+  const transparentPath = [ ...path ]
   const matchingChildRenderer = nodeRendererStore.get(matchingChildConfig.type)
-  console.info(`Transparently passing through matched conditional at ${matchingChildPath.join('/')}`)
+  console.info(`Transparently passing through matched conditional at ${transparentPath.join('/')}`)
   return matchingChildRenderer.getChildData ?
-    matchingChildRenderer.getChildData(matchingChildConfig, matchingChildPath, getNodeValue) :
-    getNodeValue(matchingChildPath)
+    matchingChildRenderer.getChildData(matchingChildConfig, transparentPath, getNodeValue) :
+    getNodeValue(transparentPath)
 }

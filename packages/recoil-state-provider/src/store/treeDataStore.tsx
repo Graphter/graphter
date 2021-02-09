@@ -52,12 +52,12 @@ const treeDataStore: TreeDataStore = {
       get: ({ get }) => {
         const renderer = nodeRendererStore.get(config.type)
         if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
-        if(!renderer.getChildPaths) return [ [ config.id ] ]
+        if(!renderer.getChildPaths) return []
         const childPaths = renderer.getChildPaths(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
-        return [ [config.id], ...childPaths ]
+        return childPaths
       }
     })
     return descendentPathSelector

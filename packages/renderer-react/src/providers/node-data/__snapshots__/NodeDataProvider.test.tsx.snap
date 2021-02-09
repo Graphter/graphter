@@ -14,6 +14,10 @@ exports[`<NodeDataProvider /> when using useTreeData should error if no hook is 
 
 exports[`<NodeDataProvider /> when using useTreeData should error if no provider is defined 1`] = `"Couldn't find a TreeDataHook or context to use."`;
 
+exports[`<NodeDataProvider /> when using useTreeDataInitialiser should error if no hook is supplied to the provider 1`] = `"Couldn't find a TreeDataInitialiserHook or context to use."`;
+
+exports[`<NodeDataProvider /> when using useTreeDataInitialiser should error if no provider is defined 1`] = `"Couldn't find a TreeDataInitialiserHook or context to use."`;
+
 exports[`<NodeDataProvider /> when using useTreePaths should error if no hook is supplied to the provider 1`] = `"Couldn't find a TreePathsHook or context to use."`;
 
 exports[`<NodeDataProvider /> when using useTreePaths should error if no provider is defined 1`] = `"Couldn't find a TreePathsHook or context to use."`;

@@ -1,7 +1,14 @@
 import React from 'react';
 import { render } from '@testing-library/react';
 
-import NodeDataProvider, { useNodeData, useArrayNodeData, useTreeData, useTreePaths } from './NodeDataProvider'
+import NodeDataProvider,
+{
+  useNodeData,
+  useTreeDataInitialiser,
+  useArrayNodeData,
+  useTreeData,
+  useTreePaths
+} from './NodeDataProvider'
 
 
 describe('<NodeDataProvider />', () => {
@@ -15,6 +22,7 @@ describe('<NodeDataProvider />', () => {
       <NodeDataProvider
         instanceId={'some-instance-id'}
         nodeDataHook={jest.fn()}
+        treeDataInitialiserHook={jest.fn()}
         treeDataHook={jest.fn()}
         treePathsHook={jest.fn()}
         arrayNodeDataHook={jest.fn()} >
@@ -22,6 +30,69 @@ describe('<NodeDataProvider />', () => {
       </NodeDataProvider>
     )
     expect(queryByText('Some child component')).not.toBeNull();
+  })
+
+  describe('when using useTreeDataInitialiser', () => {
+    function TreeDataConsumerMock(props: any) {
+      const initialiser = useTreeDataInitialiser()
+      initialiser(props.config, props.path, props.originalNodeData)
+      return null
+    }
+    it('should use the hook supplied to return an initialiser function', () => {
+      const initialiserMock = jest.fn()
+      const treeDataInitialiserHookMock = jest.fn().mockReturnValue(initialiserMock)
+      render(
+        <NodeDataProvider
+          instanceId={'some-instance-id'}
+          nodeDataHook={jest.fn()}
+          treeDataInitialiserHook={treeDataInitialiserHookMock}
+          treeDataHook={jest.fn()}
+          treePathsHook={jest.fn()}
+          arrayNodeDataHook={jest.fn()} >
+          <TreeDataConsumerMock
+            config={{ id: 'some-id', type: 'some-type' }}
+            path={['/']}
+            originalNodeData='The original data'
+          />
+        </NodeDataProvider>
+      )
+      expect(initialiserMock).toHaveBeenCalledWith(
+        { id: 'some-id', type: 'some-type' },
+        ['/'],
+        'The original data',
+      )
+    })
+    it('should error if no provider is defined', () => {
+      expect(() => {
+        render(
+          <TreeDataConsumerMock
+            config={{ id: 'some-id', type: 'some-type' }}
+            path={['/']}
+            originalNodeData='The Name'
+          />
+        )
+      }).toThrowErrorMatchingSnapshot()
+    })
+    it('should error if no hook is supplied to the provider', () => {
+      expect(() => {
+        render(
+          <NodeDataProvider
+            instanceId={'some-instance-id'}
+            nodeDataHook={jest.fn()}
+            // @ts-ignore
+            treeDataInitialiserHook={null}
+            treeDataHook={jest.fn()}
+            treePathsHook={jest.fn()}
+            arrayNodeDataHook={jest.fn()} >
+            <TreeDataConsumerMock
+              config={{ id: 'some-id', type: 'some-type' }}
+              path={['/']}
+              originalNodeData='The Name'
+            />
+          </NodeDataProvider>
+        )
+      }).toThrowErrorMatchingSnapshot()
+    })
   })
 
   describe('when using useNodeData', () => {
@@ -40,6 +111,7 @@ describe('<NodeDataProvider />', () => {
         <NodeDataProvider
           instanceId={'some-instance-id'}
           nodeDataHook={nodeDataHookMock}
+          treeDataInitialiserHook={jest.fn()}
           treeDataHook={jest.fn()}
           treePathsHook={jest.fn()}
           arrayNodeDataHook={jest.fn()} >
@@ -82,6 +154,7 @@ describe('<NodeDataProvider />', () => {
             instanceId={'some-instance-id'}
             // @ts-ignore
             nodeDataHook={null}
+            treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             treePathsHook={jest.fn()}
             arrayNodeDataHook={jest.fn()} >
@@ -116,6 +189,7 @@ describe('<NodeDataProvider />', () => {
         <NodeDataProvider
           instanceId={'some-instance-id'}
           nodeDataHook={jest.fn()}
+          treeDataInitialiserHook={jest.fn()}
           treeDataHook={jest.fn()}
           treePathsHook={jest.fn()}
           arrayNodeDataHook={arrayNodeDataHookMock} >
@@ -161,6 +235,7 @@ describe('<NodeDataProvider />', () => {
           <NodeDataProvider
             instanceId={'some-instance-id'}
             nodeDataHook={jest.fn()}
+            treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             treePathsHook={jest.fn()}
             // @ts-ignore
@@ -184,6 +259,7 @@ describe('<NodeDataProvider />', () => {
           <NodeDataProvider
             instanceId={'some-instance-id'}
             nodeDataHook={jest.fn()}
+            treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             treePathsHook={jest.fn()}
             arrayNodeDataHook={jest.fn()} >
@@ -218,6 +294,7 @@ describe('<NodeDataProvider />', () => {
         <NodeDataProvider
           instanceId={'some-instance-id'}
           nodeDataHook={jest.fn()}
+          treeDataInitialiserHook={jest.fn()}
           treeDataHook={treeDataHookMock}
           treePathsHook={jest.fn()}
           arrayNodeDataHook={jest.fn()}
@@ -260,6 +337,7 @@ describe('<NodeDataProvider />', () => {
           <NodeDataProvider
             instanceId={'some-instance-id'}
             nodeDataHook={jest.fn()}
+            treeDataInitialiserHook={jest.fn()}
             // @ts-ignore
             treeDataHook={null}
             treePathsHook={jest.fn()}
@@ -293,6 +371,7 @@ describe('<NodeDataProvider />', () => {
         <NodeDataProvider
           instanceId={'some-instance-id'}
           nodeDataHook={jest.fn()}
+          treeDataInitialiserHook={jest.fn()}
           treeDataHook={jest.fn()}
           treePathsHook={treePathsHookMock}
           arrayNodeDataHook={jest.fn()} >
@@ -332,6 +411,7 @@ describe('<NodeDataProvider />', () => {
           <NodeDataProvider
             instanceId={'some-instance-id'}
             nodeDataHook={jest.fn()}
+            treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             // @ts-ignore
             treePathsHook={null}

@@ -1,12 +1,14 @@
-import React, { createContext, useContext, useMemo } from 'react';
+import React, { createContext, useContext } from 'react';
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { NodeDataHook } from "./NodeDataHook";
 import { ArrayNodeDataHook } from "./ArrayNodeDataHook";
 import { TreeDataHook } from "./TreeDataHook";
 import { TreePathsHook } from "./TreePathsHook";
+import { TreeDataInitialiserHook } from "./TreeDataInitialiserHook";
 
 interface DataProviderProps {
   instanceId: string | number
+  treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
   arrayNodeDataHook: ArrayNodeDataHook
   treeDataHook: TreeDataHook
@@ -15,11 +17,18 @@ interface DataProviderProps {
 }
 
 const Context = createContext<{
+  treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook,
   arrayNodeDataHook: ArrayNodeDataHook,
   treeDataHook: TreeDataHook,
   treePathsHook: TreePathsHook
 } | null>(null);
+
+export const useTreeDataInitialiser: TreeDataInitialiserHook = () => {
+  const ctx = useContext(Context);
+  if (!ctx || !ctx.treeDataInitialiserHook) throw new Error(`Couldn't find a TreeDataInitialiserHook or context to use.`);
+  return ctx.treeDataInitialiserHook()
+}
 
 export function useNodeData<D>(
   path: Array<PathSegment>,
@@ -66,6 +75,7 @@ export const useTreePaths:TreePathsHook = (config, path) => {
 
 export default function NodeDataProvider(
   {
+    treeDataInitialiserHook,
     nodeDataHook,
     treeDataHook,
     treePathsHook,
@@ -75,6 +85,7 @@ export default function NodeDataProvider(
 ) {
   return (
     <Context.Provider value={{
+      treeDataInitialiserHook,
       nodeDataHook,
       arrayNodeDataHook,
       treeDataHook,

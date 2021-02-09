@@ -6,6 +6,7 @@ Object {
   "description": "Manage complex nested structures",
   "getChildData": [Function],
   "getChildPaths": [Function],
+  "initialiseData": [Function],
   "name": "Object",
   "options": undefined,
   "type": "object",

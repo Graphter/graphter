@@ -1,10 +1,10 @@
 import React, { createContext, useContext } from 'react';
-import { NodeConfig, NodeValidatorRegistration, PathSegment, ValidationResult } from "@graphter/core";
+import { NodeConfig, NodeValidatorRegistration, PathSegment } from "@graphter/core";
 import { NodeValidationHook } from "./NodeValidationHook";
 import { AggregateNodeValidationHook } from "./AggregateNodeValidationHook";
 import { NodeValidationData } from "./NodeValidationData";
 
-interface DataProviderProps {
+interface ValidationProviderProps {
   instanceId: string | number,
   nodeValidationHook: NodeValidationHook,
   aggregateNodeValidationHook: AggregateNodeValidationHook,
@@ -48,7 +48,7 @@ export function NodeValidationProvider(
     aggregateNodeValidationHook,
     validatorRegistry,
     children
-  }: DataProviderProps
+  }: ValidationProviderProps
 ) {
   return (
     <Context.Provider value={{

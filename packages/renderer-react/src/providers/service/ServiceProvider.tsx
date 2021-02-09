@@ -1,5 +1,5 @@
 import React, {createContext, useContext} from 'react';
-import { NodeConfig, PathSegment, Service } from "@graphter/core";
+import { PathSegment, Service } from "@graphter/core";
 
 export interface ServiceRegistration {
   id: string,

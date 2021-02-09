@@ -1,0 +1,19 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`useRecoilTreeDataInitialiser() should start initialising state from the top node downward 1`] = `
+Array [
+  Object {
+    "id": "some-id",
+    "type": "some-type",
+  },
+  Array [
+    "page",
+  ],
+  Object {
+    "some": "data",
+  },
+  [Function],
+]
+`;
+
+exports[`useRecoilTreeDataInitialiser() should throw if a renderer can't be found for the top node 1`] = `"Unable to find renderer for node type 'some-type' at page"`;

@@ -11,3 +11,25 @@ exports[`<RecoilStateProvider /> should correctly set up Recoil state management
   </div>
 </div>
 `;
+
+exports[`<RecoilStateProvider /> should correctly set up Recoil state management 2`] = `
+Array [
+  "instanceId",
+  "nodeValidationHook",
+  "aggregateNodeValidationHook",
+  "validatorRegistry",
+  "children",
+]
+`;
+
+exports[`<RecoilStateProvider /> should correctly set up Recoil state management 3`] = `
+Array [
+  "instanceId",
+  "treeDataInitialiserHook",
+  "nodeDataHook",
+  "treeDataHook",
+  "treePathsHook",
+  "arrayNodeDataHook",
+  "children",
+]
+`;

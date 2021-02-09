@@ -2,9 +2,9 @@ import ListRenderer from './list-renderer'
 import EditRenderer from './edit-renderer'
 import NodeEditRenderer from "./edit-renderer/NodeEditRenderer"
 import ValidationSummary from './edit-renderer/ValidationSummary'
-import NodeDataProvider from "./node-data-provider";
-import ServiceProvider from './service-provider'
-import ConfigProvider from './config-provider'
+import NodeDataProvider from "./providers/node-data"
+import ServiceProvider from './providers/service'
+import ConfigProvider from './providers/config'
 
 export {
   ListRenderer,
@@ -22,8 +22,9 @@ export * from './edit-renderer'
 export * from './util/node'
 export * from './util/path'
 export * from './util/config'
-export * from './node-validation-provider'
-export * from './node-data-provider'
-export * from './service-provider'
-export * from './config-provider'
+export * from './providers/node-validation'
+export * from './providers/node-data'
+export * from './providers/service'
+export * from './providers/config'
 export * from './setup-node-renderer'
+export * from './node-renderer-utils'

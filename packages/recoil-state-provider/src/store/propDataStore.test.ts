@@ -8,16 +8,16 @@ jest.mock('recoil')
 const atomMock = atom as jest.Mock<any>
 const nanoidMock = nanoid as jest.Mock<any>
 
-atomMock.mockImplementation((options) => {
-  return {
-    recoilStateOptions: options
-  }
-})
-nanoidMock.mockReturnValue('some-random-guid')
-
 describe('propDataStore', () => {
   let propDataStore: PropDataStore
   beforeEach(async() => {
+    jest.resetAllMocks()
+    atomMock.mockImplementation((options) => {
+      return {
+        recoilStateOptions: options
+      }
+    })
+    nanoidMock.mockReturnValue('some-random-guid')
     jest.isolateModules(async () => {
       propDataStore = require('./propDataStore')
     })

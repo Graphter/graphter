@@ -4,7 +4,6 @@ import { NodeRendererProps } from "@graphter/core";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { getConfig } from "@graphter/renderer-react";
-import { useNodeData } from "@graphter/renderer-react";
 
 const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -19,7 +18,6 @@ const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 ) => {
   if (config.children?.length) throw new Error(`${config.type} type '${config.id}' cannot have children but one or more was defined`)
   if(!config.options?.configId) throw new Error(`${config.type} type '${config.id}' must have a configId defined`)
-  const [ targetNodeData ] = useNodeData(path, config, originalNodeData, committed)
   const nestedConfig = getConfig(config.options?.configId)
   const nestedRendererRegistration = nodeRendererStore.get(nestedConfig.type)
   return (
@@ -28,7 +26,7 @@ const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         committed={committed}
         config={nestedConfig}
         configAncestry={configAncestry}
-        path={[ ...path, nestedConfig.id ]}
+        path={[ ...path ]}
         originalNodeData={originalNodeData}
         originalNodeDataAncestry={originalNodeDataAncestry}
         options={nestedRendererRegistration.options}

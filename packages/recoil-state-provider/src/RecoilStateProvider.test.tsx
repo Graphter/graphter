@@ -5,6 +5,7 @@ import { NodeDataProvider, NodeValidationProvider } from "@graphter/renderer-rea
 import { useRecoilAggregateNodeValidation } from "./validation/useRecoilAggregateNodeValidation";
 import { useRecoilNodeValidation } from "./validation/useRecoilNodeValidation";
 import { NodeValidatorRegistration } from "@graphter/core";
+import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 import { useRecoilNodeData } from "./data/useRecoilNodeData";
 import { useRecoilTreeData } from "./data/useRecoilTreeData";
 import { useRecoilTreePaths } from "./data/useRecoilTreePaths";
@@ -28,13 +29,16 @@ describe('<RecoilStateProvider />', () => {
     expect(nodeValidationProviderProps.nodeValidationHook).toBe(useRecoilNodeValidation)
     expect(nodeValidationProviderProps.aggregateNodeValidationHook).toBe(useRecoilAggregateNodeValidation)
     expect(nodeValidationProviderProps.validatorRegistry).toBe(validatorRegistry)
+    expect(Object.keys(nodeValidationProviderProps)).toMatchSnapshot()
     expect(NodeDataProviderMock).toHaveBeenCalled()
     const nodeDataProviderProps = NodeDataProviderMock.mock.calls[0][0]
     expect(nodeDataProviderProps.instanceId).toBe('some-id')
+    expect(nodeDataProviderProps.treeDataInitialiserHook).toBe(useRecoilTreeDataInitialiser)
     expect(nodeDataProviderProps.nodeDataHook).toBe(useRecoilNodeData)
     expect(nodeDataProviderProps.treeDataHook).toBe(useRecoilTreeData)
     expect(nodeDataProviderProps.treePathsHook).toBe(useRecoilTreePaths)
     expect(nodeDataProviderProps.arrayNodeDataHook).toBe(useRecoilArrayNodeData)
+    expect(Object.keys(nodeDataProviderProps)).toMatchSnapshot()
 
   })
 })

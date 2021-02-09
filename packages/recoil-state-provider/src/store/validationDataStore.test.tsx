@@ -3,9 +3,11 @@ import { RecoilRoot, useRecoilValue } from "recoil";
 import { render } from "@testing-library/react";
 import React from "react";
 import { PathSegment } from "@graphter/core";
+import PropDataStore from "./propDataStore";
 
 describe('validationDataStore', () => {
-  let validationDataStore: ValidationDataStore
+  let validationDataStore: ValidationDataStore,
+    propDataStore: PropDataStore
 
   function GetConsumerComponent({ cb }: { cb?: (data: any) => void }){
     const validationData = useRecoilValue(validationDataStore.get(['page']))
@@ -16,15 +18,15 @@ describe('validationDataStore', () => {
   beforeEach(() => {
     jest.isolateModules(() => {
       validationDataStore = require('./validationDataStore')
+      propDataStore = require('./propDataStore')
     })
   })
   it('should set and get validation data', () => {
     validationDataStore.set(
       ['page'],
-      { id: 'page', type: 'object'},
       'the-page-value',
       [ { valid: false, errorMessage: 'Some error' }]
-      )
+    )
     const cbMock = jest.fn()
     render(
       <RecoilRoot>
@@ -48,22 +50,55 @@ describe('validationDataStore', () => {
       paths: Array<Array<PathSegment>>
       cb?: (data: any) => void
     }){
-    const validationData = useRecoilValue(validationDataStore.getAll(paths))
-    if(cb) cb(validationData)
-    return null
-  }
+      const validationData = useRecoilValue(validationDataStore.getAll(paths))
+      if(cb) cb(validationData)
+      return null
+    }
     it('should return a selector that aggregates results for all the supplied paths', () => {
       validationDataStore.set(
+        ['page', 'title'],
+        'the-title-value',
+        [ { valid: false, errorMessage: 'Some title error' }]
+      )
+      validationDataStore.set(
+        ['page', 'author', 'location'],
+        'the-page-value',
+        [ { valid: false, errorMessage: 'Some author location error' }]
+      )
+      const cbMock = jest.fn()
+      render(
+        <RecoilRoot>
+          <GetAllConsumerComponent paths={[ ['page', 'title'], ['page', 'author', 'location'] ]} cb={cbMock} />
+        </RecoilRoot>
+      )
+      expect(cbMock).toHaveBeenCalled()
+      expect(cbMock.mock.calls[0][0]).toMatchSnapshot()
+    })
+    it('should cache the selector for subsequent uses', () => {
+      validationDataStore.set(
         ['page'],
-        { id: 'page', type: 'object'},
         'the-page-value',
         [ { valid: false, errorMessage: 'Some page error' }]
       )
       validationDataStore.set(
         ['page', 'title'],
-        { id: 'title', type: 'string'},
         'the-title-value',
         [ { valid: false, errorMessage: 'Some title error' }]
+      )
+      const selector1 = validationDataStore.getAll([ ['page'], ['page', 'title'] ])
+      const selector2 = validationDataStore.getAll([ ['page'], ['page', 'title'] ])
+      expect(selector1).toBe(selector2)
+    })
+    it('should initialise state on the fly when not already initialised', () => {
+      propDataStore.set(
+        ['page'],
+        true,
+        'the-page-value'
+      )
+      propDataStore.set(
+        ['page', 'title'],
+        true,
+        'the-title-value',
       )
       const cbMock = jest.fn()
       render(
@@ -74,29 +109,11 @@ describe('validationDataStore', () => {
       expect(cbMock).toHaveBeenCalled()
       expect(cbMock.mock.calls[0][0]).toMatchSnapshot()
     })
-    it('should cache the selector for subsequent uses', () => {
-      validationDataStore.set(
-      ['page'],
-      { id: 'page', type: 'object'},
-      'the-page-value',
-      [ { valid: false, errorMessage: 'Some page error' }]
-      )
-      validationDataStore.set(
-        ['page', 'title'],
-        { id: 'title', type: 'string'},
-        'the-title-value',
-        [ { valid: false, errorMessage: 'Some title error' }]
-      )
-      const selector1 = validationDataStore.getAll([ ['page'], ['page', 'title'] ])
-      const selector2 = validationDataStore.getAll([ ['page'], ['page', 'title'] ])
-      expect(selector1).toBe(selector2)
-    })
   })
   describe('has()', () => {
     it('should return true if validation data set been set', () => {
       validationDataStore.set(
         ['page'],
-        { id: 'page', type: 'object'},
         'the-page-value',
         [ { valid: false, errorMessage: 'Some page error' }]
       )
@@ -111,7 +128,6 @@ describe('validationDataStore', () => {
       expect(() => validationDataStore.set(
         // @ts-ignore
         null,
-        { id: 'page', type: 'object' },
         'the-page-value',
         []
       )).toThrowErrorMatchingSnapshot()

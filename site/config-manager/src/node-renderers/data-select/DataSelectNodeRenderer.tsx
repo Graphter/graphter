@@ -58,10 +58,10 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
             setTouched(true)
           }
         }}
-        value={nodeData}
+        value={loading ? 'loading' : nodeData}
       >
         {loading && (
-          <option disabled>Loading...</option>
+          <option disabled value='loading'>Loading...</option>
         )}
         {options && options.map(option => {
           return (

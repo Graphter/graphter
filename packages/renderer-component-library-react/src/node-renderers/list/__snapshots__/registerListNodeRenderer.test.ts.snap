@@ -6,6 +6,7 @@ Object {
   "description": "Manage lists of data",
   "getChildData": [Function],
   "getChildPaths": [Function],
+  "initialiseData": [Function],
   "name": "List",
   "options": undefined,
   "type": "list",

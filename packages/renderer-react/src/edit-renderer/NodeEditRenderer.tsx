@@ -1,7 +1,7 @@
-import React, { ComponentType, Suspense, useEffect, useState } from "react";
+import React, { ComponentType, useEffect, useState } from "react";
 import s from './NodeEditRenderer.pcss';
 import { isEmpty } from "../util/id";
-import { useService } from "../service-provider/ServiceProvider";
+import { useService } from "../providers/service";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps,
@@ -9,8 +9,9 @@ import {
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
-import { useTreeData } from "../node-data-provider";
-import { useConfig } from "../config-provider";
+import { useTreeData } from "../providers/node-data";
+import { useConfig } from "../providers/config";
+import { useTreeDataInitialiser } from "../providers/node-data/NodeDataProvider";
 
 export interface NodeEditRendererProps {
   configId: string
@@ -32,25 +33,26 @@ export default function NodeEditRenderer(
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
 
-  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')}/>;
-  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')}/>;
+  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')} />;
+  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />;
 
   nodeRendererStore.registerAll(typeRegistry)
 
   const config = useConfig(configId)
 
-  const service = useService(configId);
+  const service = useService(configId)
 
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
   const [ startingData, setStartingData ] = useState<any>(undefined);
-
+  const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
+  const treeDataInitialiser = useTreeDataInitialiser()
   const save = useTreeData(
     (treeData) => {
       console.log('saving model ', treeData)
     },
     config,
-    [ configId, editingId === undefined ? 'new' : editingId ])
+    path)
 
   useEffect(() => {
     (async () => {
@@ -64,6 +66,7 @@ export default function NodeEditRenderer(
             setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`));
             return;
           }
+          treeDataInitialiser(config, path, getResult.item)
           setStartingData(getResult.item)
         } catch (err) {
           console.error(err);
@@ -78,8 +81,6 @@ export default function NodeEditRenderer(
   if (!startingData) return null
   const registration = nodeRendererStore.get(config.type)
   const TypeRenderer = registration.Renderer
-
-  const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
 
   return (
     <div className={s.editRenderer}>

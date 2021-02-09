@@ -22,22 +22,19 @@ export const useRecoilNodeValidation: NodeValidationHook = (
     path,
     results: [],
   }
-  if(!propDataStore.has(path)) return validationData
   const propDataState = propDataStore.get(path)
   const propData = useRecoilValue(propDataState)
   validationData.value = propData
-  validationData.config = config
   const onChangeValidators = getChangeValidators(config, validatorRegistry)
-  if(!onChangeValidators) return validationData
 
   if(!validationDataStore.has(path)){
-    validationDataStore.set(path, config, propData, [])
+    validationDataStore.set(path, propData, [])
   }
   const validationState = validationDataStore.get(path)
   const [ nodeValidationData, setNodeValidationData ] = useRecoilState(validationState)
 
   useEffect(() => {
-    if(onChangeValidators) {
+    if(onChangeValidators && onChangeValidators.length) {
       (async () => {
         const results = await Promise.all(onChangeValidators.map(validator => {
           if(validator) {
@@ -57,7 +54,6 @@ export const useRecoilNodeValidation: NodeValidationHook = (
         }, [])
         setNodeValidationData({
           path,
-          config,
           value: propData,
           results: flattenedValidationResults
         })

@@ -11,6 +11,7 @@ describe('nodeRendererStore', () => {
     const registration = {
       type: 'some-type',
       name: 'Some type',
+      initialiseData: () => null,
       getRenderedData: () => Promise.resolve(),
       getPaths: () => Promise.resolve([]),
       Renderer: () => null
@@ -22,6 +23,7 @@ describe('nodeRendererStore', () => {
     const registrationA = {
       type: 'type-a',
       name: 'Type A',
+      initialiseData: () => null,
       getRenderedData: () => Promise.resolve(),
       getPaths: () => Promise.resolve([]),
       Renderer: () => null
@@ -29,6 +31,7 @@ describe('nodeRendererStore', () => {
     const registrationB = {
       type: 'type-b',
       name: 'Type B',
+      initialiseData: () => null,
       getRenderedData: () => Promise.resolve(),
       getPaths: () => Promise.resolve([]),
       Renderer: () => null
@@ -41,6 +44,7 @@ describe('nodeRendererStore', () => {
     const registrationA = {
       type: 'type-a',
       name: 'Type A',
+      initialiseData: () => null,
       getRenderedData: () => Promise.resolve(),
       getPaths: () => Promise.resolve([]),
       Renderer: () => null
@@ -48,6 +52,7 @@ describe('nodeRendererStore', () => {
     const registrationB = {
       type: 'type-b',
       name: 'Type B',
+      initialiseData: () => null,
       getRenderedData: () => Promise.resolve(),
       getPaths: () => Promise.resolve([]),
       Renderer: () => null
