@@ -47,7 +47,7 @@ export const set = (
   originalValue?: any
 ) => {
   checkPathArg(path)
-  console.info(`Setting ${path.join('/')} = ${originalValue} [committed=${committed}]`)
+  console.info(`Setting ${path.join('/')} [committed=${committed}] = `, originalValue)
   const node = getPathNode(path)
   node.meta = {
     state: atom({
