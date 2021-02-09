@@ -9,8 +9,6 @@ export const initialiseObjectData:InitialiseNodeDataFn = (config, path, original
   config.children?.forEach(childConfig => {
     const childRenderer = nodeRendererStore.get(childConfig.type)
     const childPath = [ ...path, childConfig.id ]
-    if(childRenderer.initialiseData)
-      childRenderer.initialiseData(childConfig, childPath, originalTreeData, initialise)
-    else initialise(childPath, originalData[childConfig.id])
+    childRenderer.initialiseData(childConfig, childPath, originalTreeData, initialise)
   })
 }

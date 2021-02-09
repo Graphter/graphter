@@ -11,7 +11,5 @@ export const initialiseConditionalData:InitialiseNodeDataFn = (config, path, ori
   if(!matchingConfig) return
   const transparentPath: Array<PathSegment> = [ ...path ]
   const matchingRendererRegistration = nodeRendererStore.get(matchingConfig.type)
-  matchingRendererRegistration.initialiseData ?
-    matchingRendererRegistration.initialiseData(matchingConfig, transparentPath, originalTreeData, initialise) :
-    initialise(transparentPath, pathUtils.getValue(originalTreeData, transparentPath.slice(2)))
+  matchingRendererRegistration.initialiseData(matchingConfig, transparentPath, originalTreeData, initialise)
 }

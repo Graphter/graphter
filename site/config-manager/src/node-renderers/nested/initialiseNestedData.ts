@@ -10,8 +10,5 @@ export const initialiseNestedData:InitialiseNodeDataFn = (config, path, original
   if(!nestedConfig) throw new Error(`${config.type} type '${config.id}' cannot cannot find the nested config '${config.options.configId}'`)
   const nestedRenderer = nodeRendererStore.get(nestedConfig.type)
   const transparentPath: Array<PathSegment> = [ ...path ]
-  nestedRenderer.initialiseData ?
-    nestedRenderer.initialiseData(nestedConfig, transparentPath, originalTreeData, initialise) :
-    initialise(transparentPath, pathUtils.getValue(originalTreeData, transparentPath.slice(2)))
-
+  nestedRenderer.initialiseData(nestedConfig, transparentPath, originalTreeData, initialise)
 }
