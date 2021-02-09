@@ -35,7 +35,7 @@ describe('<NodeDataProvider />', () => {
   describe('when using useTreeDataInitialiser', () => {
     function TreeDataConsumerMock(props: any) {
       const initialiser = useTreeDataInitialiser()
-      initialiser(props.path, props.originalNodeData)
+      initialiser(props.config, props.path, props.originalNodeData)
       return null
     }
     it('should use the hook supplied to return an initialiser function', () => {
@@ -50,12 +50,14 @@ describe('<NodeDataProvider />', () => {
           treePathsHook={jest.fn()}
           arrayNodeDataHook={jest.fn()} >
           <TreeDataConsumerMock
+            config={{ id: 'some-id', type: 'some-type' }}
             path={['/']}
             originalNodeData='The original data'
           />
         </NodeDataProvider>
       )
       expect(initialiserMock).toHaveBeenCalledWith(
+        { id: 'some-id', type: 'some-type' },
         ['/'],
         'The original data',
       )
@@ -64,6 +66,7 @@ describe('<NodeDataProvider />', () => {
       expect(() => {
         render(
           <TreeDataConsumerMock
+            config={{ id: 'some-id', type: 'some-type' }}
             path={['/']}
             originalNodeData='The Name'
           />
@@ -82,6 +85,7 @@ describe('<NodeDataProvider />', () => {
             treePathsHook={jest.fn()}
             arrayNodeDataHook={jest.fn()} >
             <TreeDataConsumerMock
+              config={{ id: 'some-id', type: 'some-type' }}
               path={['/']}
               originalNodeData='The Name'
             />
