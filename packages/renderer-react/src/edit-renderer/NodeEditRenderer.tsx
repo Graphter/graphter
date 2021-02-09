@@ -33,14 +33,14 @@ export default function NodeEditRenderer(
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
 
-  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')}/>;
-  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')}/>;
+  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')} />;
+  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />;
 
   nodeRendererStore.registerAll(typeRegistry)
 
   const config = useConfig(configId)
 
-  const service = useService(configId);
+  const service = useService(configId)
 
   const [ loading, setLoading ] = useState(true);
   const [ error, setError ] = useState<Error>();
@@ -66,7 +66,7 @@ export default function NodeEditRenderer(
             setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`));
             return;
           }
-          treeDataInitialiser(path, getResult.item)
+          treeDataInitialiser(config, path, getResult.item)
           setStartingData(getResult.item)
         } catch (err) {
           console.error(err);
