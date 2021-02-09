@@ -28,6 +28,8 @@ export const pathConfigStore = {
   set: jest.fn()
 }
 
+export const createValueInitialiser = jest.fn()
+
 export const setupNodeRenderer = jest.fn((renderer: any) => renderer)
 
 export {}
