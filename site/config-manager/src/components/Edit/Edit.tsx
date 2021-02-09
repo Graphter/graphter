@@ -13,6 +13,7 @@ import { registerIdNodeRenderer } from "../../node-renderers/id";
 import { registerDataSelectNodeRenderer } from "../../node-renderers/data-select";
 import { registerConditionalNodeRenderer } from "../../node-renderers/conditional";
 import { registerNestedNodeRenderer } from "../../node-renderers/nested";
+import { createValueInitialiser } from "@graphter/renderer-react";
 
 export default function Edit(){
   const { id } = useParams<{ id: string }>();
@@ -32,6 +33,7 @@ export default function Edit(){
             type: 'multiline-string',
             name: 'Long text',
             description: 'Manage larger, multi-line plain text',
+            initialiseData: createValueInitialiser(''),
             Renderer: ({ config, originalNodeData, committed, path, ErrorDisplayComponent }) => {
               const isNew = typeof originalNodeData === 'undefined'
               if(isNew) originalNodeData = createDefault(config, '')
