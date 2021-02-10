@@ -5,6 +5,7 @@ import { ArrayNodeDataHook } from "./ArrayNodeDataHook";
 import { TreeDataHook } from "./TreeDataHook";
 import { TreePathsHook } from "./TreePathsHook";
 import { TreeDataInitialiserHook } from "./TreeDataInitialiserHook";
+import { TreeDataCallbackHook } from "./TreeDataCallbackHook";
 
 interface DataProviderProps {
   instanceId: string | number
@@ -12,17 +13,19 @@ interface DataProviderProps {
   nodeDataHook: NodeDataHook
   arrayNodeDataHook: ArrayNodeDataHook
   treeDataHook: TreeDataHook
+  treeDataCallbackHook: TreeDataCallbackHook
   treePathsHook: TreePathsHook
   children: any
 }
 
 const Context = createContext<{
   treeDataInitialiserHook: TreeDataInitialiserHook
-  nodeDataHook: NodeDataHook,
-  arrayNodeDataHook: ArrayNodeDataHook,
-  treeDataHook: TreeDataHook,
+  nodeDataHook: NodeDataHook
+  arrayNodeDataHook: ArrayNodeDataHook
+  treeDataHook: TreeDataHook
+  treeDataCallbackHook: TreeDataCallbackHook
   treePathsHook: TreePathsHook
-} | null>(null);
+} | null>(null)
 
 export const useTreeDataInitialiser: TreeDataInitialiserHook = () => {
   const ctx = useContext(Context);
@@ -59,12 +62,20 @@ export function useArrayNodeData<D>(
 }
 
 export const useTreeData:TreeDataHook = (
-  fn: (data: any) => void,
   config,
   path: Array<PathSegment>) => {
   const ctx = useContext(Context)
   if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataHook or context to use.`)
-  return ctx.treeDataHook(fn, config, path)
+  return ctx.treeDataHook(config, path)
+}
+
+export const useTreeDataCallback:TreeDataCallbackHook = (
+  fn: (data: any) => void,
+  config,
+  path: Array<PathSegment>) => {
+  const ctx = useContext(Context)
+  if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataCallbackHook or context to use.`)
+  return ctx.treeDataCallbackHook(fn, config, path)
 }
 
 export const useTreePaths:TreePathsHook = (config, path) => {
@@ -78,6 +89,7 @@ export default function NodeDataProvider(
     treeDataInitialiserHook,
     nodeDataHook,
     treeDataHook,
+    treeDataCallbackHook,
     treePathsHook,
     arrayNodeDataHook,
     children
@@ -87,6 +99,7 @@ export default function NodeDataProvider(
     <Context.Provider value={{
       treeDataInitialiserHook,
       nodeDataHook,
+      treeDataCallbackHook,
       arrayNodeDataHook,
       treeDataHook,
       treePathsHook
