@@ -1,7 +1,7 @@
 import React from "react";
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { useTreeData } from "@graphter/renderer-react";
-import s from './DefaultListItem.pcss'
+import s from './DefaultItemView.pcss'
 
 interface DefaultItemViewProps {
   childId: string
