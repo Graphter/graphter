@@ -11,7 +11,7 @@ import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useTreeData } from "../providers/node-data";
 import { useConfig } from "../providers/config";
-import { useTreeDataInitialiser } from "../providers/node-data/NodeDataProvider";
+import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/node-data/NodeDataProvider";
 
 export interface NodeEditRendererProps {
   configId: string
@@ -47,7 +47,7 @@ export default function NodeEditRenderer(
   const [ startingData, setStartingData ] = useState<any>(undefined);
   const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
   const treeDataInitialiser = useTreeDataInitialiser()
-  const save = useTreeData(
+  const save = useTreeDataCallback(
     (treeData) => {
       console.log('saving model ', treeData)
     },

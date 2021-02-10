@@ -1,5 +1,13 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`<NodeDataProvider /> when using treeDataCallbackHook should error if no hook is supplied to the provider 1`] = `"ctx.treeDataCallbackHook is not a function"`;
+
+exports[`<NodeDataProvider /> when using treeDataCallbackHook should error if no provider is defined 1`] = `"Couldn't find a TreeDataCallbackHook or context to use."`;
+
+exports[`<NodeDataProvider /> when using treeDataHook should error if no hook is supplied to the provider 1`] = `"Couldn't find a TreeDataHook or context to use."`;
+
+exports[`<NodeDataProvider /> when using treeDataHook should error if no provider is defined 1`] = `"Couldn't find a TreeDataHook or context to use."`;
+
 exports[`<NodeDataProvider /> when using useArrayNodeData should error if no hook is supplied to the provider 1`] = `"Couldn't find an ArrayNodeDataHook or context to use."`;
 
 exports[`<NodeDataProvider /> when using useArrayNodeData should error if no provider is defined 1`] = `"Couldn't find an ArrayNodeDataHook or context to use."`;

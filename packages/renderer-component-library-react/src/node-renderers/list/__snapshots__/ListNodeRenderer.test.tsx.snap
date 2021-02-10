@@ -42,7 +42,121 @@ Object {
 }
 `;
 
+exports[`<ListNodeRenderer /> should render child objects correctly 1`] = `
+<div>
+  <div
+    class="listNodeRenderer"
+    data-nodepath="pages"
+    data-nodetype="list"
+  >
+    <label
+      for="pages"
+    >
+      Pages
+    </label>
+    <div
+      class="items"
+      data-testid="items"
+    >
+      <a
+        class="defaultListItem"
+        data-testid="default-item-view"
+      >
+        <div
+          class="name"
+        >
+          Page 0 Title
+        </div>
+        <div
+          class="description"
+        >
+          Page 0 description
+        </div>
+      </a>
+      <a
+        class="defaultListItem"
+        data-testid="default-item-view"
+      >
+        <div
+          class="name"
+        >
+          Page 1 Title
+        </div>
+        <div
+          class="description"
+        >
+          Page 1 description
+        </div>
+      </a>
+    </div>
+    <button
+      class="button"
+      data-testid="add-item-btn"
+      type="button"
+    >
+      [+]
+    </button>
+  </div>
+</div>
+`;
+
 exports[`<ListNodeRenderer /> should render correctly 1`] = `
+<div>
+  <div
+    class="listNodeRenderer"
+    data-nodepath="pages"
+    data-nodetype="list"
+  >
+    <label
+      for="pages"
+    >
+      Pages
+    </label>
+    <div
+      class="items"
+      data-testid="items"
+    >
+      <a
+        class="defaultListItem"
+      >
+        <div
+          class="name"
+        >
+          Page 0 Title
+        </div>
+        <div
+          class="description"
+        >
+          Page 0 description
+        </div>
+      </a>
+      <a
+        class="defaultListItem"
+      >
+        <div
+          class="name"
+        >
+          Page 1 Title
+        </div>
+        <div
+          class="description"
+        >
+          Page 1 description
+        </div>
+      </a>
+    </div>
+    <button
+      class="button"
+      data-testid="add-item-btn"
+      type="button"
+    >
+      [+]
+    </button>
+  </div>
+</div>
+`;
+
+exports[`<ListNodeRenderer /> should render items in "edit" mode correctly 1`] = `
 <div>
   <div
     class="listNodeRenderer"
@@ -68,7 +182,7 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
         data-testid="item"
       >
         <div>
-          A child item
+          The child item
         </div>
         <button
           class="button"
@@ -77,13 +191,19 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
         >
           Remove [-]
         </button>
+        <button
+          class="button"
+          type="button"
+        >
+          Done
+        </button>
       </div>
       <div
         class="defaultItemWrapper"
         data-testid="item"
       >
         <div>
-          A child item
+          The child item
         </div>
         <button
           class="button"
@@ -91,6 +211,12 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
           type="button"
         >
           Remove [-]
+        </button>
+        <button
+          class="button"
+          type="button"
+        >
+          Done
         </button>
       </div>
     </div>
@@ -103,6 +229,44 @@ exports[`<ListNodeRenderer /> should render correctly 1`] = `
     </button>
   </div>
 </div>
+`;
+
+exports[`<ListNodeRenderer /> should render items in "edit" mode correctly 2`] = `
+Object {
+  "ErrorDisplayComponent": undefined,
+  "committed": true,
+  "config": Object {
+    "id": "list-item",
+    "name": "List item",
+    "type": "string",
+  },
+  "configAncestry": Array [
+    Object {
+      "children": Array [
+        Object {
+          "id": "list-item",
+          "name": "List item",
+          "type": "string",
+        },
+      ],
+      "description": "The name",
+      "id": "name",
+      "name": "Name",
+      "type": "list",
+    },
+  ],
+  "originalNodeData": "item 1 value",
+  "originalNodeDataAncestry": Array [
+    Array [
+      "item 1 value",
+      "item 2 value",
+    ],
+  ],
+  "path": Array [
+    "/",
+    0,
+  ],
+}
 `;
 
 exports[`<ListNodeRenderer /> should throw if non-array data is passed in 1`] = `[Error: 'list' renderer only works with arrays but got 'object']`;

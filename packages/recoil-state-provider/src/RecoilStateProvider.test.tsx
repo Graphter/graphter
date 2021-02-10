@@ -8,6 +8,7 @@ import { NodeValidatorRegistration } from "@graphter/core";
 import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 import { useRecoilNodeData } from "./data/useRecoilNodeData";
 import { useRecoilTreeData } from "./data/useRecoilTreeData";
+import { useRecoilTreeDataCallback } from "./data/useRecoilTreeDataCallback";
 import { useRecoilTreePaths } from "./data/useRecoilTreePaths";
 import { useRecoilArrayNodeData } from "./data/useRecoilArrayNodeData";
 
@@ -36,6 +37,7 @@ describe('<RecoilStateProvider />', () => {
     expect(nodeDataProviderProps.treeDataInitialiserHook).toBe(useRecoilTreeDataInitialiser)
     expect(nodeDataProviderProps.nodeDataHook).toBe(useRecoilNodeData)
     expect(nodeDataProviderProps.treeDataHook).toBe(useRecoilTreeData)
+    expect(nodeDataProviderProps.treeDataCallbackHook).toBe(useRecoilTreeDataCallback)
     expect(nodeDataProviderProps.treePathsHook).toBe(useRecoilTreePaths)
     expect(nodeDataProviderProps.arrayNodeDataHook).toBe(useRecoilArrayNodeData)
     expect(Object.keys(nodeDataProviderProps)).toMatchSnapshot()
