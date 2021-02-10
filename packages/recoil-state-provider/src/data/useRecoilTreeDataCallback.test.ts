@@ -1,6 +1,6 @@
 import { useRecoilCallback } from 'recoil'
 import { when } from "jest-when";
-import { useRecoilTreeData } from "./useRecoilTreeData";
+import { useRecoilTreeDataCallback } from "./useRecoilTreeDataCallback";
 import treeDataStore from "../store/treeDataStore";
 
 jest.mock('recoil')
@@ -9,7 +9,7 @@ jest.mock('../store/treeDataStore')
 const useRecoilCallbackMock = useRecoilCallback as jest.Mock<any>
 const treeDataStoreMock = treeDataStore as jest.Mocked<any>
 
-describe('useRecoilNodeData()', () => {
+describe('useRecoilTreeDataCallback()', () => {
   afterEach(() => {
     jest.clearAllMocks()
   })
@@ -21,7 +21,7 @@ describe('useRecoilNodeData()', () => {
         some: 'state'
       })
     const callbackMock = jest.fn()
-    useRecoilTreeData(callbackMock, config, ['page'])
+    useRecoilTreeDataCallback(callbackMock, config, ['page'])
     expect(useRecoilCallbackMock).toHaveBeenCalled()
     const snapshotGetPromiseMock = jest.fn().mockResolvedValueOnce({
       some: 'tree-data'

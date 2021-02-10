@@ -25,9 +25,10 @@ Array [
 exports[`<RecoilStateProvider /> should correctly set up Recoil state management 3`] = `
 Array [
   "instanceId",
+  "treeDataHook",
   "treeDataInitialiserHook",
   "nodeDataHook",
-  "treeDataHook",
+  "treeDataCallbackHook",
   "treePathsHook",
   "arrayNodeDataHook",
   "children",

@@ -4,11 +4,12 @@ import { NodeValidatorRegistration } from "@graphter/core";
 import { useRecoilNodeValidation } from "./validation/useRecoilNodeValidation";
 import { useRecoilAggregateNodeValidation } from "./validation/useRecoilAggregateNodeValidation";
 import { useRecoilNodeData } from "./data/useRecoilNodeData";
-import { useRecoilTreeData } from "./data/useRecoilTreeData";
+import { useRecoilTreeDataCallback } from "./data/useRecoilTreeDataCallback";
 import { useRecoilTreePaths } from "./data/useRecoilTreePaths";
 import { useRecoilArrayNodeData } from "./data/useRecoilArrayNodeData";
 import { NodeDataProvider, NodeValidationProvider } from "@graphter/renderer-react";
 import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
+import { useRecoilTreeData } from "./data/useRecoilTreeData";
 
 export interface RecoilStateProvider {
   instanceId: string | number
@@ -33,9 +34,10 @@ export function RecoilStateProvider(
       >
         <NodeDataProvider
           instanceId={instanceId}
+          treeDataHook={useRecoilTreeData}
           treeDataInitialiserHook={useRecoilTreeDataInitialiser}
           nodeDataHook={useRecoilNodeData}
-          treeDataHook={useRecoilTreeData}
+          treeDataCallbackHook={useRecoilTreeDataCallback}
           treePathsHook={useRecoilTreePaths}
           arrayNodeDataHook={useRecoilArrayNodeData}
         >
