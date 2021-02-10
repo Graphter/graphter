@@ -1,10 +1,12 @@
 import React, { ComponentType, useState } from 'react'
-import { NodeConfig, NodeRendererProps } from "@graphter/core";
+import { NodeRendererProps } from "@graphter/core";
 import { nodeRendererStore, createDefault } from "@graphter/renderer-react";
 import s from './ListNodeRenderer.pcss'
 import { useArrayNodeData } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
-
+import DefaultItemView from "./DefaultItemView";
+import DefaultNewItemWrapper from "./DefaultNewItemWrapper";
+import DefaultEditItemWrapper from "./DefaultEditItemWrapper";
 
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -24,10 +26,11 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   if (config.children.length > 1) throw new Error('Only one child list type is currently supported')
 
   const [ showNewItemUI, setShowNewItemUI ] = useState(false)
+  const [ editingItems, setEditingItems ] = useState<Set<string>>(new Set())
 
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
-  if (!childRendererRegistration) return null
+  if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${path.join('/')}/${childConfig.id}`)
   const ChildTypeRenderer = childRendererRegistration.Renderer
 
   const newConfigAncestry = [ ...configAncestry, config ]
@@ -45,19 +48,41 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
       {config.description && <p className={s.description}>{config.description}</p>}
       <div className={s.items} data-testid='items'>
         {childIds && childIds.map((childId: any, i: number) => {
+          const childPath = [ ...path, i ]
+          if(!editingItems.has(childId)) return (
+            <DefaultItemView
+              childId={childId}
+              config={childConfig}
+              path={childPath}
+              onEdit={() => {
+                const newEditingItems = new Set(editingItems)
+                newEditingItems.add(childId)
+                setEditingItems(newEditingItems)
+              }}
+            />
+          )
           return (
-            <DefaultExistingItemWrapper key={childId} onRemove={() => {
-              removeItem(i)
-            }}>
+            <DefaultEditItemWrapper
+              key={childId}
+              onRemove={() => {
+                removeItem(i)
+              }}
+              onDone={() => {
+                const newEditingItems = new Set(editingItems)
+                newEditingItems.delete(childId)
+                setEditingItems(newEditingItems)
+              }}
+            >
               <ChildTypeRenderer
                 config={childConfig}
                 configAncestry={newConfigAncestry}
-                path={[ ...path, i ]}
+                path={childPath}
                 committed={committed}
                 originalNodeData={originalNodeData ? originalNodeData[i] : undefined}
                 originalNodeDataAncestry={newOriginalDataAncestry}
-                ErrorDisplayComponent={ErrorDisplayComponent} />
-            </DefaultExistingItemWrapper>
+                ErrorDisplayComponent={ErrorDisplayComponent}
+              />
+            </DefaultEditItemWrapper>
           )
         })}
         {!childIds.length && (
@@ -67,10 +92,16 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         )}
       </div>
       {showNewItemUI ? (
-        <DefaultNewItemWrapper config={config} onAdd={() => {
-          setShowNewItemUI(false)
-          commitItem(childIds.length)
-        }}>
+        <DefaultNewItemWrapper
+          config={config}
+          onAdd={() => {
+            setShowNewItemUI(false)
+            commitItem(childIds.length)
+          }}
+          onCancel={() => {
+            setShowNewItemUI(false)
+          }}
+        >
           <ChildTypeRenderer
             config={childConfig}
             configAncestry={newConfigAncestry}
@@ -81,10 +112,10 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         </DefaultNewItemWrapper>
       ) : (
         <button
-        type='button'
-        className={s.button}
-        onClick={() => setShowNewItemUI(true)}
-        data-testid='add-item-btn'
+          type='button'
+          className={s.button}
+          onClick={() => setShowNewItemUI(true)}
+          data-testid='add-item-btn'
         >[+]</button>
       )}
 
@@ -93,54 +124,3 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 })
 
 export default ListNodeRenderer
-
-interface DefaultExistingItemWrapperProps {
-  onRemove: () => void
-  children: any
-}
-
-function DefaultExistingItemWrapper(
-  {
-    onRemove,
-    children
-  }: DefaultExistingItemWrapperProps
-) {
-  return (
-    <div className={s.defaultItemWrapper} data-testid='item'>
-      {children}
-      <button
-        type='button'
-        className={s.button}
-        onClick={onRemove}
-        data-testid='remove-item-btn'
-      >Remove [-]</button>
-    </div>
-  )
-}
-
-interface DefaultNewItemWrapperProps {
-  config: NodeConfig
-  onAdd: () => void
-  children: any
-}
-
-function DefaultNewItemWrapper(
-  {
-    config,
-    onAdd,
-    children
-  }: DefaultNewItemWrapperProps
-) {
-  return (
-
-    <div className={s.defaultNewItemWrapper} data-testid='add-item'>
-      {children}
-      <button
-        type='button'
-        className={s.button}
-        onClick={onAdd}
-        data-testid='add-item-btn'
-      >Add [+]</button>
-    </div>
-  )
-}

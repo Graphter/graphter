@@ -16,6 +16,10 @@ export const useNodeData = jest.fn(() => {
   ]
 })
 
+export const useTreeData = jest.fn()
+
+export const useTreeDataCallback = jest.fn()
+
 export const useNodeValidation = jest.fn().mockResolvedValue([])
 
 export const nodeRendererStore = {
