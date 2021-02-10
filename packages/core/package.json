@@ -14,7 +14,7 @@
     "prepare": "npm run build"
   },
   "author": "Jonathan Pritchard",
-  "license": "ISC",
+  "license": "MIT",
   "peerDependencies": {
     "react": "^16.13.1",
     "recoil": "^0.1.2"

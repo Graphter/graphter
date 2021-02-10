@@ -11,7 +11,7 @@
     "url": "git+https://github.com/Graphter/graphter.git"
   },
   "author": "Jonathan Pritchard",
-  "license": "ISC",
+  "license": "MIT",
   "bin": {
     "graphter": "./index.js"
   },
