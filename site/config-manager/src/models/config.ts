@@ -74,6 +74,7 @@ const config:NodeConfig = {
       type: 'data-select',
       children: [ ],
       validation: [ ],
+      default: 'text',
       options: {
         service: 'node-renderer',
         keyPath: [ 'type' ],
