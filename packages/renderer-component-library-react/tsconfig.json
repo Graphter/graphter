@@ -34,7 +34,9 @@
   ],
   "exclude": [
     "node_modules",
-    "__mocks__"
+    "__mocks__",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
   ],
   "files": [
     "src/global.d.ts"

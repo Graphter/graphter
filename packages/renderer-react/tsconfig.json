@@ -32,7 +32,9 @@
     "src/**/*.pcss"
   ],
   "exclude": [
-    "node_modules"
+    "node_modules",
+    "src/**/*.test.ts",
+    "src/**/*.test.tsx"
   ],
   "files": [
     "src/global.d.ts"
