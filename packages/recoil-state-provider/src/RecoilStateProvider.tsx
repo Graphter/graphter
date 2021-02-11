@@ -12,14 +12,12 @@ import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialise
 import { useRecoilTreeData } from "./data/useRecoilTreeData";
 
 export interface RecoilStateProvider {
-  instanceId: string | number
   validatorRegistry: Array<NodeValidatorRegistration>
   children?: ReactNode
 }
 
 export function RecoilStateProvider(
   {
-    instanceId,
     validatorRegistry,
     children
   }: RecoilStateProvider
@@ -27,13 +25,11 @@ export function RecoilStateProvider(
   return (
     <RecoilRoot>
       <NodeValidationProvider
-        instanceId={instanceId}
         nodeValidationHook={useRecoilNodeValidation}
         aggregateNodeValidationHook={useRecoilAggregateNodeValidation}
         validatorRegistry={validatorRegistry}
       >
         <NodeDataProvider
-          instanceId={instanceId}
           treeDataHook={useRecoilTreeData}
           treeDataInitialiserHook={useRecoilTreeDataInitialiser}
           nodeDataHook={useRecoilNodeData}
