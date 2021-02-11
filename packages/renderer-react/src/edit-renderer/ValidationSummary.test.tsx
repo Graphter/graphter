@@ -39,6 +39,7 @@ describe('<ValidationSummary />', () => {
         nodeDataHook={jest.fn()}
         arrayNodeDataHook={jest.fn()}
         treeDataHook={jest.fn()}
+        treeDataCallbackHook={jest.fn()}
         treePathsHook={useTreePathsHookMock}
       >
         <NodeValidationProvider
@@ -68,6 +69,7 @@ describe('<ValidationSummary />', () => {
         nodeDataHook={jest.fn()}
         arrayNodeDataHook={jest.fn()}
         treeDataHook={jest.fn()}
+        treeDataCallbackHook={jest.fn()}
         treePathsHook={jest.fn()}
       >
         <NodeValidationProvider
