@@ -3,8 +3,8 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { RecoilRoot } from 'recoil'
 import { NodeValidationHook } from "@graphter/renderer-react";
-import flushPromises from "../../test-utils/flushPromises";
 import { ValidationDataStore } from "../store/validationDataStore";
+import flushPromises from "../__test-utils__/flushPromises";
 
 describe('useRecoilNodeValidation()', () => {
   let useRecoilNodeValidation: NodeValidationHook,
