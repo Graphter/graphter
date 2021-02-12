@@ -14,7 +14,11 @@ const Breadcrumb = ({ path }: BreadcrumbProps) => {
         (a, c) => {
           a.current.push(c)
           a.crumbs.push(
-            <Link key={a.current.join('/')} to={pathUtils.toUrl(a.current)}>
+            <Link
+              key={a.current.join('/')}
+              to={pathUtils.toUrl(a.current)}
+              className={s.item}
+            >
               {c}
             </Link>
           )

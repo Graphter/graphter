@@ -1,3 +1,16 @@
 .breadcrumb{
+    padding: 10px;
+}
 
+.item{
+    display: inline-block;
+    background-color: #5d87a4;
+    color: white;
+    padding: 10px;
+    margin-right: 3px;
+    border-radius: 3px;
+}
+.item:hover{
+    background-color: #7fa8c1;
+    color: white;
 }

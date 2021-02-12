@@ -1,7 +1,7 @@
 import React from "react";
 import { RecoilStateProvider } from "@graphter/recoil-state-provider";
 import { registerJsonSchemaValidatorSetup } from "@graphter/validator-jsonschema";
-import { Route, Switch, useParams } from "react-router-dom";
+import { Redirect, Route, Switch, useParams } from "react-router-dom";
 import List from "../List/List";
 import { ServiceProvider, ConfigProvider } from "@graphter/renderer-react";
 import { configService } from "../../services/configService";
@@ -24,11 +24,14 @@ export default function ManageConfig(){
           { id: 'node-renderer', service: nodeRendererService }
         ]}>
           <Switch>
-            <Route path='/' exact>
+            <Route path='/config' exact>
               <List />
             </Route>
-            <Route path='/:path*'>
+            <Route path='/:path+'>
               <Edit />
+            </Route>
+            <Route path='*'>
+              <Redirect to='/config' />
             </Route>
           </Switch>
         </ServiceProvider>
