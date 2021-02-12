@@ -4,24 +4,21 @@ import { nodeRendererStore } from "@graphter/renderer-react";
 import { createDefault, useNodeData } from "@graphter/renderer-react";
 import s from './ObjectNodeRenderer.pcss'
 import { setupNodeRenderer } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 
 const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    configAncestry,
-    originalNodeData,
-    originalNodeDataAncestry,
-    path,
+    originalTreeData,
+    globalPath,
     committed,
     ErrorDisplayComponent
   }: NodeRendererProps
 ) => {
-  if (!originalNodeData) originalNodeData = createDefault(config, {})
-  useNodeData(path, config, originalNodeData, committed)
-  const newConfigAncestry = [ ...configAncestry, config ]
-  const newOriginalDataAncestry = [ ...originalNodeDataAncestry, originalNodeData ]
+  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, {}))
+  useNodeData(globalPath, originalNodeData, committed)
   return (
-    <div className={s.objectNodeRenderer} data-nodetype='object' data-nodepath={path.join('/')}>
+    <div className={s.objectNodeRenderer} data-nodetype='object' data-nodepath={globalPath.join('/')}>
       {config.children && config.children.map((childConfig, i) => {
         const childRendererRegistration = nodeRendererStore.get(childConfig.type)
         if (!childRendererRegistration) return null
@@ -31,10 +28,8 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
             <ChildTypeRenderer
               committed={committed}
               config={childConfig}
-              configAncestry={newConfigAncestry}
-              path={[ ...path, childConfig.id ]}
-              originalNodeData={originalNodeData[childConfig.id]}
-              originalNodeDataAncestry={newOriginalDataAncestry}
+              globalPath={[ ...globalPath, childConfig.id ]}
+              originalTreeData={originalTreeData}
               options={childRendererRegistration.options}
               ErrorDisplayComponent={ErrorDisplayComponent} />
           </DefaultPropertyWrapper>

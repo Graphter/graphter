@@ -5,7 +5,7 @@ import {
   registerObjectNodeRenderer,
   registerListNodeRenderer
 } from "@graphter/renderer-component-library-react";
-import { useParams, useHistory } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import { createDefault } from "@graphter/renderer-react";
 import { useState } from "react";
 import { useNodeData } from "@graphter/renderer-react";
@@ -14,31 +14,36 @@ import { registerDataSelectNodeRenderer } from "../../node-renderers/data-select
 import { registerConditionalNodeRenderer } from "../../node-renderers/conditional";
 import { registerNestedNodeRenderer } from "../../node-renderers/nested";
 import { createValueInitialiser } from "@graphter/renderer-react";
+import { useHistory } from "react-router-dom";
+import { pathUtils } from "@graphter/renderer-react";
 
 export default function Edit(){
-  const { id } = useParams<{ id: string }>();
-  const history = useHistory();
   const backUri = `/`
+  const history = useHistory();
+  const params = useParams<{ path: string }>();
+  const path = pathUtils.fromUrl(params.path)
   return (
     <>
       <NodeEditRenderer
-        configId={'config'}
-        editingId={id}
+        path={path}
         errorRenderer={ErrorPanel}
         typeRegistry={[
           registerStringNodeRenderer(),
           registerObjectNodeRenderer(),
-          registerListNodeRenderer(),
+          registerListNodeRenderer({
+            customItemSelectionBehaviour: (customBehaviour, config, path) => {
+              history.push(pathUtils.toUrl(path))
+            }
+          }),
           {
             type: 'multiline-string',
             name: 'Long text',
             description: 'Manage larger, multi-line plain text',
             initialiseData: createValueInitialiser(''),
-            Renderer: ({ config, originalNodeData, committed, path, ErrorDisplayComponent }) => {
-              const isNew = typeof originalNodeData === 'undefined'
-              if(isNew) originalNodeData = createDefault(config, '')
+            Renderer: ({ config, originalTreeData, committed, globalPath, ErrorDisplayComponent }) => {
+              const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
               const [ touched, setTouched ] = useState(false)
-              const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
+              const [ nodeData, setNodeData ] = useNodeData(path, originalNodeData, committed)
               const htmlId = path.join('-')
               return (
                 <div>

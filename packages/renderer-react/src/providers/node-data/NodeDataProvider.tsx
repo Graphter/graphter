@@ -8,7 +8,6 @@ import { TreeDataInitialiserHook } from "./TreeDataInitialiserHook";
 import { TreeDataCallbackHook } from "./TreeDataCallbackHook";
 
 interface DataProviderProps {
-  instanceId: string | number
   treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
   arrayNodeDataHook: ArrayNodeDataHook
@@ -35,7 +34,6 @@ export const useTreeDataInitialiser: TreeDataInitialiserHook = () => {
 
 export function useNodeData<D>(
   path: Array<PathSegment>,
-  config: NodeConfig,
   originalNodeData: D,
   committed: boolean = true,
 ): [D, (nodeData: D) => void] {
@@ -46,7 +44,6 @@ export function useNodeData<D>(
 
 export function useArrayNodeData<D>(
   path: Array<PathSegment>,
-  config: NodeConfig,
   originalChildData: Array<D>,
   committed: boolean = true,
 ): {
@@ -56,9 +53,8 @@ export function useArrayNodeData<D>(
 } {
   const ctx = useContext(Context)
   if (!ctx || !ctx.arrayNodeDataHook) throw new Error(`Couldn't find an ArrayNodeDataHook or context to use.`)
-  if(!Array.isArray(originalChildData)) throw new Error(`'${config.type}' renderer only works with arrays`)
 
-  return ctx.arrayNodeDataHook(path, config, originalChildData, committed)
+  return ctx.arrayNodeDataHook(path, originalChildData, committed)
 }
 
 export const useTreeData:TreeDataHook = (

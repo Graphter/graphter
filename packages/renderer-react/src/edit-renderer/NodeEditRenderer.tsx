@@ -5,17 +5,15 @@ import { useService } from "../providers/service";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps,
-  NodeRendererRegistration,
+  NodeRendererRegistration, PathSegment,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
-import { useTreeData } from "../providers/node-data";
 import { useConfig } from "../providers/config";
 import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/node-data/NodeDataProvider";
 
 export interface NodeEditRendererProps {
-  configId: string
-  editingId?: string | number
+  path: Array<PathSegment>
   errorRenderer?: ComponentType<ErrorRendererProps>
   onSaved?: (modelId: string, instance: any) => void
   cancel: (modelId: string | undefined, instance: any) => void
@@ -24,28 +22,30 @@ export interface NodeEditRendererProps {
 
 export default function NodeEditRenderer(
   {
-    editingId,
-    configId,
+    path,
     errorRenderer,
     cancel,
     typeRegistry
   }: NodeEditRendererProps) {
 
-  const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
+  const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError
 
-  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')} />;
-  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />;
+  if(path?.length < 2) return <ErrorDisplayComponent err={new Error('An absolute path (containing at least two path segments) is required.')} />
+
+  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />
 
   nodeRendererStore.registerAll(typeRegistry)
 
-  const config = useConfig(configId)
+  const configId = path[0]
+  const editingId = path[1]
+  const localPath = path.slice(2)
 
+  const config = useConfig(configId)
   const service = useService(configId)
 
-  const [ loading, setLoading ] = useState(true);
-  const [ error, setError ] = useState<Error>();
-  const [ startingData, setStartingData ] = useState<any>(undefined);
-  const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
+  const [ loading, setLoading ] = useState(true)
+  const [ error, setError ] = useState<Error>()
+  const [ startingData, setStartingData ] = useState<any>(undefined)
   const treeDataInitialiser = useTreeDataInitialiser()
   const save = useTreeDataCallback(
     (treeData) => {
@@ -54,33 +54,38 @@ export default function NodeEditRenderer(
     config,
     path)
 
+  const registration = nodeRendererStore.get(config.type)
+  if(!registration) throw new Error(`No renderer found for type '${config.type}'`)
+  const TypeRenderer = registration.Renderer
+
   useEffect(() => {
     (async () => {
       if (isEmpty(editingId)) {
-        setLoading(false);
+        setLoading(false)
       } else {
         try {
           const getResult = await service.get(editingId);
-          setLoading(false);
+          setLoading(false)
           if (!getResult.item) {
-            setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`));
+            setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`))
             return;
           }
-          treeDataInitialiser(config, path, getResult.item)
+          const configs = registration.getChildConfig ?
+            registration.getChildConfig([ config ], localPath, localPath, getResult.item) :
+            [ config ]
+          treeDataInitialiser(config, path.slice(0, 2), getResult.item)
           setStartingData(getResult.item)
         } catch (err) {
-          console.error(err);
-          setLoading(false);
+          console.error(err)
+          setLoading(false)
           setError(new Error(`There was a problem loading that ${config.name}: ${err.message}`));
           return;
         }
       }
     })()
-  }, [ editingId ]);
+  }, [ editingId, path ]);
 
   if (!startingData) return null
-  const registration = nodeRendererStore.get(config.type)
-  const TypeRenderer = registration.Renderer
 
   return (
     <div className={s.editRenderer}>
@@ -101,11 +106,9 @@ export default function NodeEditRenderer(
 
         <TypeRenderer
           committed={true}
-          path={path}
+          globalPath={path}
           config={config}
-          configAncestry={[]}
-          originalNodeData={startingData}
-          originalNodeDataAncestry={[]}
+          originalTreeData={startingData}
           options={registration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}
         />

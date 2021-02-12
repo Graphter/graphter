@@ -8,6 +8,7 @@ export interface NodeRendererRegistration {
   name: string
   description?: string
   initialiseData: InitialiseNodeDataFn
+  getChildConfig?: GetChildConfigFn
   getChildData?: GetChildDataFn
   getChildPaths?: GetChildPathsFn
   Renderer: ComponentType<NodeRendererProps>
@@ -21,6 +22,15 @@ export interface InitialiseNodeDataFn {
     originalTreeData: any,
     initialise: (path: Array<PathSegment>, originalTreeData: any) => void
   ): any
+}
+
+export interface GetChildConfigFn {
+  (
+    configs: Array<NodeConfig>,
+    absolutePath: Array<PathSegment>,
+    relativePath: Array<PathSegment>,
+    treeData: any
+  ): Array<NodeConfig>
 }
 
 export interface GetChildDataFn {

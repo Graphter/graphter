@@ -13,7 +13,7 @@ export default function ExampleListItem({ item, page, size, titlePath, subtextPa
   subtextPath?: Array<PathSegment>
 }){
   return (
-    <Link to={`/${item.id}?page=${page}&size=${size}`} className={s.listItem}>
+    <Link to={`/config/${item.id}?page=${page}&size=${size}`} className={s.listItem}>
       <ListItemRenderer item={item} titlePath={titlePath} subtextPath={subtextPath} />
     </Link>
   )

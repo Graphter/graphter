@@ -101,7 +101,10 @@ const config:NodeConfig = {
               }
             },
           ],
-          validation: [ ]
+          validation: [ ],
+          options: {
+            itemSelectionBehaviour: 'CUSTOM'
+          }
         }
       ],
       validation: [ ],

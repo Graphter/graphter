@@ -6,7 +6,7 @@ import s from './DefaultItemView.pcss'
 interface DefaultItemViewProps {
   childId: string
   config: NodeConfig
-  path: Array<PathSegment>
+  globalPath: Array<PathSegment>
   options?: DefaultExistingItemViewOptions
   onEdit?: (childId: string) => void
 }
@@ -26,8 +26,8 @@ const guessingNames = [ 'name', 'title', 'headline', 'label', 'id' ]
 const guessingDescriptions = [ 'description', 'body', 'subtext', 'metadata' ]
 const guessingIds = [ 'id', 'identifier', 'key' ]
 
-const DefaultItemView = ({childId, config, path, options, onEdit}: DefaultItemViewProps) => {
-  const data = useTreeData(config, path)
+const DefaultItemView = ({childId, config, globalPath, options, onEdit}: DefaultItemViewProps) => {
+  const data = useTreeData(config, globalPath)
   const dataType = typeof data
   let contents = null
   if (dataType === 'undefined') contents = <div>Empty</div>
@@ -40,7 +40,7 @@ const DefaultItemView = ({childId, config, path, options, onEdit}: DefaultItemVi
             key={i}
             childId={childId}
             config={item}
-            path={path}
+            globalPath={globalPath}
             options={options}
             onEdit={onEdit}/>
         )}

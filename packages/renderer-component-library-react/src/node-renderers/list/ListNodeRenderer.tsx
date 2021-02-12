@@ -7,20 +7,20 @@ import { setupNodeRenderer } from "@graphter/renderer-react";
 import DefaultItemView from "./DefaultItemView";
 import DefaultNewItemWrapper from "./DefaultNewItemWrapper";
 import DefaultEditItemWrapper from "./DefaultEditItemWrapper";
+import { pathUtils } from "@graphter/renderer-react";
 
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    configAncestry,
-    originalNodeData,
-    originalNodeDataAncestry,
+    originalTreeData,
     committed,
-    path,
-    ErrorDisplayComponent
+    globalPath,
+    ErrorDisplayComponent,
+    options
   }: NodeRendererProps
 ) => {
-  if(!config) throw new Error(`<ListNodeRenderer /> component at '${path.join('/')}' is missing config`)
-  if (!originalNodeData) originalNodeData = createDefault(config, [])
+  if(!config) throw new Error(`<ListNodeRenderer /> component at '${globalPath.join('/')}' is missing config`)
+  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, []))
   if(!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
   if (!config.children || !config.children.length) throw new Error(`'${config.type}' renderer must have at least one child config`)
   if (config.children.length > 1) throw new Error('Only one child list type is currently supported')
@@ -30,34 +30,38 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
-  if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${path.join('/')}/${childConfig.id}`)
+  if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${globalPath.join('/')}/${childConfig.id}`)
   const ChildTypeRenderer = childRendererRegistration.Renderer
-
-  const newConfigAncestry = [ ...configAncestry, config ]
-  const newOriginalDataAncestry = [ ...originalNodeDataAncestry, originalNodeData ]
 
   const {
     childIds,
     removeItem,
     commitItem,
-  } = useArrayNodeData(path, config, originalNodeData, committed)
+  } = useArrayNodeData(globalPath, originalNodeData, committed)
 
   return (
-    <div className={s.listNodeRenderer} data-nodetype='list' data-nodepath={path.join('/')}>
+    <div className={s.listNodeRenderer} data-nodetype='list' data-nodepath={globalPath.join('/')}>
       <label htmlFor={config.id}>{config.name}</label>
       {config.description && <p className={s.description}>{config.description}</p>}
       <div className={s.items} data-testid='items'>
         {childIds && childIds.map((childId: any, i: number) => {
-          const childPath = [ ...path, i ]
+          const childPath = [ ...globalPath, i ]
           if(!editingItems.has(childId)) return (
             <DefaultItemView
+              key={childId}
               childId={childId}
               config={childConfig}
-              path={childPath}
+              globalPath={childPath}
               onEdit={() => {
-                const newEditingItems = new Set(editingItems)
-                newEditingItems.add(childId)
-                setEditingItems(newEditingItems)
+                if(config.options?.itemSelectionBehaviour === 'INLINE' || !config.options?.itemSelectionBehaviour){
+                  const newEditingItems = new Set(editingItems)
+                  newEditingItems.add(childId)
+                  setEditingItems(newEditingItems)
+                  return
+                }
+                if(config.options?.itemSelectionBehaviour === 'CUSTOM' && typeof options?.customItemSelectionBehaviour === 'function'){
+                  options.customItemSelectionBehaviour(config.options?.itemSelectionBehaviour, childConfig, childPath)
+                }
               }}
             />
           )
@@ -75,12 +79,11 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
             >
               <ChildTypeRenderer
                 config={childConfig}
-                configAncestry={newConfigAncestry}
-                path={childPath}
+                globalPath={childPath}
                 committed={committed}
-                originalNodeData={originalNodeData ? originalNodeData[i] : undefined}
-                originalNodeDataAncestry={newOriginalDataAncestry}
+                originalTreeData={originalTreeData}
                 ErrorDisplayComponent={ErrorDisplayComponent}
+                options={childRendererRegistration.options}
               />
             </DefaultEditItemWrapper>
           )
@@ -104,11 +107,12 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         >
           <ChildTypeRenderer
             config={childConfig}
-            configAncestry={newConfigAncestry}
-            path={[ ...path, childIds.length ]}
+            globalPath={[ ...globalPath, childIds.length ]}
             committed={false}
-            originalNodeDataAncestry={newOriginalDataAncestry}
-            ErrorDisplayComponent={ErrorDisplayComponent} />
+            originalTreeData={originalTreeData}
+            ErrorDisplayComponent={ErrorDisplayComponent}
+            options={childRendererRegistration.options}
+          />
         </DefaultNewItemWrapper>
       ) : (
         <button

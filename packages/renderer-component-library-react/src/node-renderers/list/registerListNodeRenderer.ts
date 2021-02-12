@@ -1,11 +1,13 @@
 import ListNodeRenderer from "./ListNodeRenderer";
-import { NodeRendererRegistration } from "@graphter/core";
+import { NodeConfig, NodeRendererRegistration, PathSegment } from "@graphter/core";
 import { getListChildData } from "./getListChildData";
 import { getListChildPaths } from "./getListChildPaths";
 import { initialiseListData } from "./initialiseListData";
+import { getListChildConfig } from "./getListChildConfig";
 
 export interface ListNodeRendererOptions {
-  type: string
+  type?: string,
+  customItemSelectionBehaviour?: (behaviour: string, config: NodeConfig, path: Array<PathSegment>) => void
 }
 
 export function registerListNodeRenderer(options?: ListNodeRendererOptions): NodeRendererRegistration {
@@ -14,6 +16,7 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     name: 'List',
     description: 'Manage lists of data',
     initialiseData: initialiseListData,
+    getChildConfig: getListChildConfig,
     getChildData: getListChildData,
     getChildPaths: getListChildPaths,
     Renderer: ListNodeRenderer,

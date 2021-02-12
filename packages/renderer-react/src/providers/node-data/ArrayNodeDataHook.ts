@@ -1,9 +1,8 @@
-import { NodeConfig, PathSegment } from "@graphter/core";
+import { PathSegment } from "@graphter/core";
 
 export interface ArrayNodeDataHook {
   (
     path: Array<PathSegment>,
-    config: NodeConfig,
     originalNodeData: Array<any>,
     committed: boolean,
   ): {

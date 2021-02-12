@@ -11,9 +11,8 @@ import { nodeRendererService } from "../../services/nodeRendererService";
 import configConfig from '../../models/config'
 
 export default function ManageConfig(){
-  const { id } = useParams<{ id: string }>();
   return (
-    <RecoilStateProvider instanceId={id} validatorRegistry={[
+    <RecoilStateProvider validatorRegistry={[
       registerJsonSchemaValidatorSetup(),
       registerIdUniquenessValidator()
     ]}>
@@ -25,11 +24,11 @@ export default function ManageConfig(){
           { id: 'node-renderer', service: nodeRendererService }
         ]}>
           <Switch>
-            <Route path='/:id'>
-              <Edit />
-            </Route>
-            <Route path='/'>
+            <Route path='/' exact>
               <List />
+            </Route>
+            <Route path='/:path*'>
+              <Edit />
             </Route>
           </Switch>
         </ServiceProvider>

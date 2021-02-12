@@ -7,13 +7,11 @@ import { ArrayNodeDataHook } from "@graphter/renderer-react";
 /**
  * TODO: Split out into separate recoil package if successful
  * @param path
- * @param config
  * @param originalNodeData
  * @param committed
  */
 export const useRecoilArrayNodeData: ArrayNodeDataHook = (
   path,
-  config,
   originalNodeData,
   committed = true,
 ) => {

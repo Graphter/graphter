@@ -40,7 +40,34 @@ export const getValue = (data: any, path?: Array<PathSegment> | null, defaultVal
   return targetData
 }
 
+const safeNumberStringSalt = 'f3b1856b-59ee-4fe3-8538-ffee42ad7245'
+
+export const toUrl = (globalPath:Array<PathSegment>): string => {
+  return `/${globalPath
+    .map((segment: number | string) => {
+      if(typeof segment === 'number') return segment
+      if(!isNaN(parseInt(segment))) return `${segment}-${safeNumberStringSalt}`
+      return segment
+    })
+    .map(encodeURIComponent)
+    .join('/')}`
+}
+
+export const fromUrl = (url: string): Array<PathSegment> => {
+  return url
+    .split('/')
+    .filter(segment => segment)
+    .map(decodeURIComponent)
+    .map((segment) => {
+      const numberSegment = parseInt(segment)
+      if(!isNaN(numberSegment)) return numberSegment
+      return segment
+    })
+}
+
 export const pathUtils = {
+  toUrl,
+  fromUrl,
   validate,
   getValue
 }

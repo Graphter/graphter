@@ -1,9 +1,9 @@
-import React, { ComponentType, useEffect, useState } from "react";
+import React, { ComponentType, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
 import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './IdNodeRenderer.module.css'
-import { nanoid } from 'nanoid'
 import { setupNodeRenderer } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 
 const filterRegExp = /[^a-z0-9-]/
 const filterRegExpGlobal = /[^a-z0-9-]/g
@@ -11,16 +11,15 @@ const filterRegExpGlobal = /[^a-z0-9-]/g
 const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    originalNodeData,
+    originalTreeData,
     committed = true,
-    path
+    globalPath
   }: NodeRendererProps
 ) => {
-  const isNew = typeof originalNodeData === 'undefined'
-  if(isNew) originalNodeData = createDefault(config, '')
+  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData(globalPath, originalNodeData, committed)
+  const validationResults = useNodeValidation(config, globalPath)
   const showFixButton = filterRegExp.test(nodeData)
   return (
     <>
@@ -28,7 +27,7 @@ const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         type='text'
         value={nodeData}
         data-nodetype='id'
-        data-nodepath={path.join('/')}
+        data-nodepath={globalPath.join('/')}
         className={s.input}
         onChange={(e) => {
           if(!touched) setTouched(true)

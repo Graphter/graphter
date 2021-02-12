@@ -3,27 +3,27 @@ import { NodeRendererProps } from "@graphter/core";
 import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './StringNodeRenderer.pcss'
 import { setupNodeRenderer } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 
 const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    originalNodeData,
+    originalTreeData,
     committed = true,
-    path
+    globalPath
   }: NodeRendererProps
 ) => {
-  const isNew = typeof originalNodeData === 'undefined'
-  if(isNew) originalNodeData = createDefault(config, '')
+  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData(globalPath, originalNodeData, committed)
+  const validationResults = useNodeValidation(config, globalPath)
   return (
     <>
       <input
         type='text'
         value={nodeData}
         data-nodetype='string'
-        data-nodepath={path.join('/')}
+        data-nodepath={globalPath.join('/')}
         className={s.input}
         onChange={(e) => {
           if(!touched) setTouched(true)

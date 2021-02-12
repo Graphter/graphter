@@ -5,7 +5,6 @@ import { AggregateNodeValidationHook } from "./AggregateNodeValidationHook";
 import { NodeValidationData } from "./NodeValidationData";
 
 interface ValidationProviderProps {
-  instanceId: string | number,
   nodeValidationHook: NodeValidationHook,
   aggregateNodeValidationHook: AggregateNodeValidationHook,
   validatorRegistry: Array<NodeValidatorRegistration>
@@ -13,7 +12,6 @@ interface ValidationProviderProps {
 }
 
 const Context = createContext<{
-  instanceId: string | number,
   nodeValidationHook: NodeValidationHook,
   aggregateNodeValidationHook: AggregateNodeValidationHook,
   validatorRegistry: Array<NodeValidatorRegistration>
@@ -43,7 +41,6 @@ export const useAggregateNodeValidation = (
 
 export function NodeValidationProvider(
   {
-    instanceId,
     nodeValidationHook,
     aggregateNodeValidationHook,
     validatorRegistry,
@@ -52,7 +49,6 @@ export function NodeValidationProvider(
 ) {
   return (
     <Context.Provider value={{
-      instanceId,
       nodeValidationHook,
       aggregateNodeValidationHook,
       validatorRegistry
