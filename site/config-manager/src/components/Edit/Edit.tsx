@@ -16,6 +16,7 @@ import { registerNestedNodeRenderer } from "../../node-renderers/nested";
 import { createValueInitialiser } from "@graphter/renderer-react";
 import { useHistory } from "react-router-dom";
 import { pathUtils } from "@graphter/renderer-react";
+import Breadcrumb from "../Breadcrumb/Breadcrumb";
 
 export default function Edit(){
   const backUri = `/`
@@ -24,6 +25,7 @@ export default function Edit(){
   const path = pathUtils.fromUrl(params.path)
   return (
     <>
+      <Breadcrumb path={path} />
       <NodeEditRenderer
         path={path}
         errorRenderer={ErrorPanel}

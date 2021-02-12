@@ -1,3 +1,6 @@
+/***
+ * This module needs to be broken up and much of it moved out of the package
+ */
 import React, { ComponentType, useEffect, useState } from "react";
 import s from './NodeEditRenderer.pcss';
 import { isEmpty } from "../util/id";
@@ -36,12 +39,13 @@ export default function NodeEditRenderer(
 
   nodeRendererStore.registerAll(typeRegistry)
 
-  const configId = path[0]
+  const topNodeConfigId = path[0]
   const editingId = path[1]
   const localPath = path.slice(2)
+  const topNodePath = path.slice(0, 2)
 
-  const config = useConfig(configId)
-  const service = useService(configId)
+  const topNodeConfig = useConfig(topNodeConfigId)
+  const service = useService(topNodeConfigId)
 
   const [ loading, setLoading ] = useState(true)
   const [ error, setError ] = useState<Error>()
@@ -51,12 +55,9 @@ export default function NodeEditRenderer(
     (treeData) => {
       console.log('saving model ', treeData)
     },
-    config,
+    topNodeConfig,
     path)
 
-  const registration = nodeRendererStore.get(config.type)
-  if(!registration) throw new Error(`No renderer found for type '${config.type}'`)
-  const TypeRenderer = registration.Renderer
 
   useEffect(() => {
     (async () => {
@@ -67,18 +68,15 @@ export default function NodeEditRenderer(
           const getResult = await service.get(editingId);
           setLoading(false)
           if (!getResult.item) {
-            setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`))
+            setError(new Error(`Couldn't find a ${topNodeConfig.name} with ID '${editingId}'`))
             return;
           }
-          const configs = registration.getChildConfig ?
-            registration.getChildConfig([ config ], localPath, localPath, getResult.item) :
-            [ config ]
-          treeDataInitialiser(config, path.slice(0, 2), getResult.item)
+          treeDataInitialiser(topNodeConfig, path.slice(0, 2), getResult.item)
           setStartingData(getResult.item)
         } catch (err) {
           console.error(err)
           setLoading(false)
-          setError(new Error(`There was a problem loading that ${config.name}: ${err.message}`));
+          setError(new Error(`There was a problem loading that ${topNodeConfig.name}: ${err.message}`));
           return;
         }
       }
@@ -86,6 +84,16 @@ export default function NodeEditRenderer(
   }, [ editingId, path ]);
 
   if (!startingData) return null
+
+  const registration = nodeRendererStore.get(topNodeConfig.type)
+  if(!registration) throw new Error(`No renderer found for type '${topNodeConfig.type}'`)
+  const configs = registration.getChildConfig ?
+    registration.getChildConfig([ topNodeConfig ], localPath, localPath, startingData) :
+    [ topNodeConfig ]
+  const childConfig = configs[configs.length - 1]
+  const childRegistration = nodeRendererStore.get(childConfig.type)
+  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.type}'`)
+  const TypeRenderer = childRegistration.Renderer
 
   return (
     <div className={s.editRenderer}>
@@ -101,24 +109,24 @@ export default function NodeEditRenderer(
         })()
       }} data-testid='form'>
 
-        <h1 className={s.name}>{config.name}</h1>
-        {config.description && <p>{config.description}</p>}
+        <h1 className={s.name}>{topNodeConfig.name}</h1>
+        {topNodeConfig.description && <p>{topNodeConfig.description}</p>}
 
         <TypeRenderer
           committed={true}
           globalPath={path}
-          config={config}
+          config={childConfig}
           originalTreeData={startingData}
           options={registration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}
         />
 
-        <ValidationSummary config={config} path={path}/>
+        <ValidationSummary config={topNodeConfig} path={topNodePath}/>
 
         <div className={s.controls}>
           <button type='submit' data-testid='save' className={s.save}>Save</button>
           <button type='button' data-testid='cancel' className={s.cancel}
-                  onClick={() => cancel(config.id, editingId)}>Cancel
+                  onClick={() => cancel(topNodeConfig.id, editingId)}>Cancel
           </button>
         </div>
       </form>
