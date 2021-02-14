@@ -1,9 +1,9 @@
 import React, { ComponentType, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
 import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
-import s from './StringNodeRenderer.pcss'
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
+import InlineValidation from "../../inline-validation";
 
 const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -24,21 +24,15 @@ const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         value={nodeData}
         data-nodetype='string'
         data-nodepath={globalPath.join('/')}
-        className={s.input}
+        className='flex-grow p-3 rounded'
         onChange={(e) => {
           if(!touched) setTouched(true)
           setNodeData && setNodeData(e.currentTarget.value);
         }} />
-      {touched &&
-      validationResults &&
-      validationResults.value === nodeData &&
-      validationResults.results.map((result, i) => (
-        result.valid ? null : (
-          <div className={s.error} key={i} data-testid='validation-error'>
-            {result.errorMessage}
-          </div>
-        )
-      ))}
+      <InlineValidation
+        touched={touched}
+        validationData={validationResults}
+        nodeData={nodeData} />
     </>
   )
 })

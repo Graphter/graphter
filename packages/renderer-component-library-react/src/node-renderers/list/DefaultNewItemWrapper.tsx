@@ -19,19 +19,22 @@ const DefaultNewItemWrapper = (
 ) => {
   return (
 
-    <div className={s.defaultNewItemWrapper} data-testid='add-item'>
+    <div className='my-5 pl-3 border-l-4 border-blue-200' data-testid='add-item' data-component='DefaultNewItemWrapper'>
+      <span className='text-lg mb-3'>Adding new item to {config.name}</span>
       {children}
-      <button
-        type='button'
-        className={s.button}
-        onClick={onAdd}
-        data-testid='add-item-btn'
-      >Add [+]</button>
-      <button
-        type='button'
-        className={s.button}
-        onClick={() => onCancel && onCancel()}
-      >Cancel</button>
+      <div className='flex justify-between'>
+        <button
+          type='button'
+          className='p-3 mr-2 bg-blue-300 text-white rounded'
+          onClick={onAdd}
+          data-testid='add-item-btn'
+        >Add [+]</button>
+        <button
+          type='button'
+          className='p-3 mr-2 text-red-500 rounded'
+          onClick={() => onCancel && onCancel()}
+        >Cancel</button>
+      </div>
     </div>
   )
 }

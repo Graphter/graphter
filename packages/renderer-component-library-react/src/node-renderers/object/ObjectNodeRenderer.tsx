@@ -18,7 +18,7 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, {}))
   useNodeData(globalPath, originalNodeData, committed)
   return (
-    <div className={s.objectNodeRenderer} data-nodetype='object' data-nodepath={globalPath.join('/')}>
+    <div className='flex flex-col' data-nodetype='object' data-nodepath={globalPath.join('/')}>
       {config.children && config.children.map((childConfig, i) => {
         const childRendererRegistration = nodeRendererStore.get(childConfig.type)
         if (!childRendererRegistration) return null
@@ -54,9 +54,9 @@ function DefaultPropertyWrapper(
 ) {
   return (
 
-    <div className={s.defaultWrapper}>
+    <div className='flex flex-col mb-5'>
       <label htmlFor={config.id}>{config.name}</label>
-      {config.description && <p className={s.description}>{config.description}</p>}
+      {config.description && <p className='text-sm text-gray-400 mb-2'>{config.description}</p>}
       {children}
     </div>
   )

@@ -4,6 +4,7 @@ import { createDefault, useNodeData, useNodeValidation } from "@graphter/rendere
 import s from './IdNodeRenderer.module.css'
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
+import { InlineValidation } from "@graphter/renderer-component-library-react";
 
 const filterRegExp = /[^a-z0-9-]/
 const filterRegExpGlobal = /[^a-z0-9-]/g
@@ -23,36 +24,33 @@ const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   const showFixButton = filterRegExp.test(nodeData)
   return (
     <>
+      <div className='flex'>
       <input
         type='text'
         value={nodeData}
         data-nodetype='id'
         data-nodepath={globalPath.join('/')}
-        className={s.input}
+        className='flex-grow p-3 rounded'
         onChange={(e) => {
           if(!touched) setTouched(true)
           setNodeData && setNodeData(e.currentTarget.value);
         }} />
       {touched && (
-        showFixButton ? (
+        showFixButton && (
           <button
             type='button'
+            className='flex-none p-3 rounded bg-green-500 text-white ml-3'
             onClick={() => {
               setNodeData(nodeData.toLowerCase().replace(filterRegExpGlobal, '-'))
             }}
           >Fix</button>
-        ) : (
-          <span>Ok</span>
         )
       )}
-      {touched &&
-      validationResults.results.map((result, i) => (
-        result.valid ? null : (
-          <div className={s.error} key={i} data-testid='validation-error'>
-            {result.errorMessage}
-          </div>
-        )
-      ))}
+      </div>
+      <InlineValidation
+        touched={touched}
+        validationData={validationResults}
+        nodeData={nodeData} />
     </>
   )
 })

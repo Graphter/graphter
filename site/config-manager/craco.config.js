@@ -15,14 +15,13 @@ module.exports = {
       new DuplicatePackageCheckerPlugin(),
     ]
   },
-  plugins: [
-    {
-      plugin: require("craco-antd"),
-      options: {
-        customizeTheme: {
-          "@primary-color": "#1DA57A"
-        },
-      }
-    }
-  ]
+  style: {
+    postcss: {
+      plugins: [
+        require('tailwindcss'),
+        require('autoprefixer'),
+      ],
+    },
+  },
+  plugins: []
 };

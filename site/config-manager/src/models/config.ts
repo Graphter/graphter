@@ -94,7 +94,7 @@ const config:NodeConfig = {
             {
               id: 'child',
               name: 'Child',
-              description: 'The nested child config',
+              description: 'The configuration of a sub element of the model. For example the "name" of an "author" or the "street name" of an "address" of an "author"',
               type: 'nested',
               options: {
                 configId: 'config'

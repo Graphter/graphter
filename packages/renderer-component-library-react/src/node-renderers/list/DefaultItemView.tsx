@@ -34,7 +34,7 @@ const DefaultItemView = ({childId, config, globalPath, options, onEdit}: Default
   else if (dataType === 'string' || dataType === 'number') contents = <div>{data}</div>
   else if (Array.isArray(data)) {
     contents = (
-      <div>
+      <div className='py-3'>
         {data.map((item, i) =>
           <DefaultItemView
             key={i}
@@ -85,17 +85,23 @@ const DefaultItemView = ({childId, config, globalPath, options, onEdit}: Default
       })
     }
     contents = <>
-      <div className={s.name}>{name}</div>
-      <div className={s.description}>{description}</div>
-      {keyValues.map(({key, value}) => (
-        <span key={key} className={s.keyValue}>
-          <span className={s.key}>{key}</span>: <span className={s.value}>{value}</span>
-        </span>))}
+      <div className='divide-y divide-gray-200'>
+        <div className='py-5'>
+          <div className='text-xl'>{name}</div>
+          <div className='text-sm text-gray-900'>{description}</div>
+        </div>
+        <div className='py-3'>
+          {keyValues.map(({key, value}) => (
+            <span key={key} className='inline-block px-2 py-1 text-sm bg-gray-100 rounded-3xl'>
+              <span className='text-gray-300'>{key}:</span> <span className={s.value}>{value}</span>
+            </span>))}
+        </div>
+    </div>
     </>
   }
   return (
     <a
-      className={s.defaultListItem}
+      className='block px-5 mb-2 rounded-lg shadow border border-gray-50 hover:border-blue-200 hover:bg-gray-50 cursor-pointer transition-colours duration-200'
       onClick={() => onEdit && onEdit(childId)}
       data-testid='default-item-view'
     >

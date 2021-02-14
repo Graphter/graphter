@@ -18,7 +18,7 @@ export default function ValidationSummary({ config, path }: ValidationSummaryPro
   if(!someErrors) return null
 
   return (
-    <div className={s.validationSummary}>
+    <div className='mb-10'>
       {aggregatedValidationData.map((validationData, i) => {
         return (
           <div key={i}>

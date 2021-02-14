@@ -40,9 +40,9 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   } = useArrayNodeData(globalPath, originalNodeData, committed)
 
   return (
-    <div className={s.listNodeRenderer} data-nodetype='list' data-nodepath={globalPath.join('/')}>
+    <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
       <label htmlFor={config.id}>{config.name}</label>
-      {config.description && <p className={s.description}>{config.description}</p>}
+      {config.description && <p className='text-sm text-gray-400 mb-2'>{config.description}</p>}
       <div className={s.items} data-testid='items'>
         {childIds && childIds.map((childId: any, i: number) => {
           const childPath = [ ...globalPath, i ]
@@ -89,7 +89,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           )
         })}
         {!childIds.length && (
-          <div>
+          <div className='text-center p-10 text-gray-300'>
             Empty
           </div>
         )}
@@ -117,7 +117,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
       ) : (
         <button
           type='button'
-          className={s.button}
+          className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
           onClick={() => setShowNewItemUI(true)}
           data-testid='add-item-btn'
         >[+]</button>

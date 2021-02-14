@@ -57,6 +57,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
           }
         }}
         value={loading ? 'loading' : nodeData}
+        className='flex-grow p-3 rounded'
       >
         {loading && (
           <option disabled value='loading'>Loading...</option>

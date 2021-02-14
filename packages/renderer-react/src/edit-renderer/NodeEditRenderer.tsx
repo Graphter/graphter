@@ -96,7 +96,7 @@ export default function NodeEditRenderer(
   const TypeRenderer = childRegistration.Renderer
 
   return (
-    <div className={s.editRenderer}>
+    <div className='' data-testid='node-edit-renderer' >
 
       {error && <ErrorDisplayComponent err={error}/>}
 
@@ -109,8 +109,8 @@ export default function NodeEditRenderer(
         })()
       }} data-testid='form'>
 
-        <h1 className={s.name}>{topNodeConfig.name}</h1>
-        {topNodeConfig.description && <p>{topNodeConfig.description}</p>}
+        <h1 className='text-2xl mt-8'>{childConfig.name}</h1>
+        {childConfig.description && <p className='text-sm text-gray-500 mb-10'>{childConfig.description}</p>}
 
         <TypeRenderer
           committed={true}
@@ -121,13 +121,17 @@ export default function NodeEditRenderer(
           ErrorDisplayComponent={ErrorDisplayComponent}
         />
 
-        <ValidationSummary config={topNodeConfig} path={topNodePath}/>
+        <div className='border-t pt-10'>
 
-        <div className={s.controls}>
-          <button type='submit' data-testid='save' className={s.save}>Save</button>
-          <button type='button' data-testid='cancel' className={s.cancel}
-                  onClick={() => cancel(topNodeConfig.id, editingId)}>Cancel
-          </button>
+          <ValidationSummary config={topNodeConfig} path={topNodePath} />
+
+          <div className='flex justify-between'>
+            <button type='submit' data-testid='save' className='flex-grow p-3 mr-2 bg-green-500 text-white rounded'>Save</button>
+            <button type='button' data-testid='cancel' className='p-3 mr-2 bg-red-500 text-white rounded'
+                    onClick={() => cancel(topNodeConfig.id, editingId)}>Cancel
+            </button>
+          </div>
+
         </div>
       </form>
     </div>
