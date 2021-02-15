@@ -5,6 +5,7 @@ import ListNodeRenderer from './node-renderers/list';
 import InlineValidation from "./inline-validation";
 import Pagination from './pagination';
 import ErrorPanel from "./error-panel";
+import dataDisplayUtils from './utils/dataDisplay'
 
 export {
   ListItemRenderer,
@@ -13,7 +14,8 @@ export {
   ObjectNodeRenderer,
   ListNodeRenderer,
   InlineValidation,
-  ErrorPanel
+  ErrorPanel,
+  dataDisplayUtils
 };
 
 export * from './node-renderers/string'
