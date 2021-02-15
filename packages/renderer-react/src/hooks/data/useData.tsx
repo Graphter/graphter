@@ -6,42 +6,34 @@ import { useService } from "../../providers/service";
 
 interface UseDataResult {
   loading: boolean,
-  error: Error | boolean,
-  data: any
+  error?: Error,
+  data?: any
 }
 
 export const useData = (config: NodeConfig, instanceId: string | number): UseDataResult => {
-  const [ loading, setLoading ] = useState(true)
-  const [ error, setError ] = useState<Error | boolean>(false)
-  const [ data, setData ] = useState()
+  const [ result, setResult ] = useState<UseDataResult>({ loading: true })
   const treeDataInitialiser = useTreeDataInitialiser()
   const service = useService(config.id)
   useEffect(() => {
     (async () => {
-      if (isEmpty(instanceId)) {
-        setLoading(false)
+      if(isEmpty(instanceId)) {
+        setResult({ loading: false })
       } else {
         try {
           const getResult = await service.get(instanceId);
-          setLoading(false)
           if (!getResult.item) {
-            setError(new Error(`Couldn't find a '${config.name}' with ID '${instanceId}'`))
+            setResult({ loading: false, error: new Error(`Couldn't find a '${config.name}' with ID '${instanceId}'`) })
             return;
           }
           treeDataInitialiser(config, [ config.id, instanceId ], true, getResult.item)
-          setData(getResult.item)
+          setResult({ loading: false, data: getResult.item })
         } catch (err) {
           console.error(err)
-          setLoading(false)
-          setError(new Error(`There was a problem loading that ${config.name}: ${err.message}`));
+          setResult({ loading: false, error: new Error(`There was a problem loading that ${config.name}: ${err.message}`) })
           return;
         }
       }
     })()
   }, [ config, instanceId ]);
-  return {
-    loading,
-    error,
-    data
-  }
+  return result
 }

@@ -5,7 +5,7 @@ import {
   registerObjectNodeRenderer,
   registerListNodeRenderer
 } from "@graphter/renderer-component-library-react";
-import { useParams } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import { registerIdNodeRenderer } from "../../node-renderers/id";
 import { registerDataSelectNodeRenderer } from "../../node-renderers/data-select";
 import { registerConditionalNodeRenderer } from "../../node-renderers/conditional";
@@ -13,6 +13,9 @@ import { registerNestedNodeRenderer } from "../../node-renderers/nested";
 import { useHistory } from "react-router-dom";
 import { pathUtils } from "@graphter/renderer-react";
 import { useData, useConfig } from "@graphter/renderer-react";
+import { Breadcrumbs } from "@graphter/renderer-component-library-react";
+import React from "react";
+import { nodeRendererStore } from "@graphter/renderer-react";
 
 export default function Edit(){
   const backUri = `/`
@@ -21,9 +24,23 @@ export default function Edit(){
   const path = pathUtils.fromUrl(params.path)
   const topNodeConfigId = path[0]
   const editingId = path[1]
-  const topNodeConfig = useConfig(topNodeConfigId)
+  const config = useConfig(topNodeConfigId)
 
-  const { loading, error, data } = useData(topNodeConfig, editingId)
+  nodeRendererStore.registerAll([
+    registerStringNodeRenderer(),
+    registerObjectNodeRenderer(),
+    registerListNodeRenderer({
+      customItemSelectionBehaviour: (customBehaviour, config, path) => {
+        history.push(pathUtils.toUrl(path))
+      }
+    }),
+    registerIdNodeRenderer(),
+    registerDataSelectNodeRenderer(),
+    registerConditionalNodeRenderer(),
+    registerNestedNodeRenderer()
+  ])
+
+  const { loading, error, data } = useData(config, editingId)
   if(loading) return (
     <div>Loading...</div>
   )
@@ -34,24 +51,24 @@ export default function Edit(){
   }
   return (
     <>
-      {/*<Breadcrumb path={path} />*/}
+      <Breadcrumbs
+        config={config}
+        globalPath={path}
+        originalTreeData={data}
+        ItemRenderer={({ path, children }) => {
+          return (
+            <Link
+              to={pathUtils.toUrl(path)}
+              className='px-2 py-1 bg-gray-200 hover:bg-gray-300 mr-2 rounded text-gray-600 transition-colours duration-200'
+            >
+              {children}
+            </Link>
+          )
+      }} />
       <NodeEditRenderer
         path={path}
         errorRenderer={ErrorPanel}
         startingData={data}
-        typeRegistry={[
-          registerStringNodeRenderer(),
-          registerObjectNodeRenderer(),
-          registerListNodeRenderer({
-            customItemSelectionBehaviour: (customBehaviour, config, path) => {
-              history.push(pathUtils.toUrl(path))
-            }
-          }),
-          registerIdNodeRenderer(),
-          registerDataSelectNodeRenderer(),
-          registerConditionalNodeRenderer(),
-          registerNestedNodeRenderer()
-        ]}
         cancel={() => history.push(backUri)}
         onSaved={() => history.push(backUri)}
       />

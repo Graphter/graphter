@@ -17,7 +17,6 @@ export interface NodeEditRendererProps {
   errorRenderer?: ComponentType<ErrorRendererProps>
   onSaved?: (modelId: string, instance: any) => void
   cancel: (modelId: string | undefined, instance: any) => void
-  typeRegistry: Array<NodeRendererRegistration>,
   startingData: any
 }
 
@@ -26,7 +25,6 @@ export default function NodeEditRenderer(
     path,
     errorRenderer,
     cancel,
-    typeRegistry,
     startingData
   }: NodeEditRendererProps) {
 
@@ -36,7 +34,6 @@ export default function NodeEditRenderer(
 
   if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />
 
-  nodeRendererStore.registerAll(typeRegistry)
 
   const topNodeConfigId = path[0]
   const editingId = path[1]

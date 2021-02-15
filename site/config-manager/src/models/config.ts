@@ -83,6 +83,7 @@ const config:NodeConfig = {
     },
     {
       id: 'children',
+      name: 'Children',
       type: 'conditional',
       children: [
         {
