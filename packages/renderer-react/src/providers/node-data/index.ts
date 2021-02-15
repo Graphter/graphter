@@ -1,5 +1,6 @@
 import NodeDataProvider, {
   useNodeData,
+  useMultipleNodeData,
   useTreeDataInitialiser,
   useTreeDataCallback,
   useTreeData,
@@ -11,6 +12,7 @@ export default NodeDataProvider;
 
 export {
   useNodeData,
+  useMultipleNodeData,
   useTreeDataInitialiser,
   useTreeDataCallback,
   useTreeData,
@@ -21,6 +23,7 @@ export {
 export * from './TreeDataInitialiserHook'
 export * from './ArrayNodeDataHook'
 export * from './NodeDataHook'
+export * from './MultipleNodeDataHook'
 export * from './TreeDataHook'
 export * from './TreePathsHook'
 export * from './TreeDataCallbackHook'

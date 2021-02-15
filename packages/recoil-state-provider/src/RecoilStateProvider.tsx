@@ -4,6 +4,7 @@ import { NodeValidatorRegistration } from "@graphter/core";
 import { useRecoilNodeValidation } from "./validation/useRecoilNodeValidation";
 import { useRecoilAggregateNodeValidation } from "./validation/useRecoilAggregateNodeValidation";
 import { useRecoilNodeData } from "./data/useRecoilNodeData";
+import { useRecoilMultipleNodeData } from "./data/useRecoilMultipleNodeData";
 import { useRecoilTreeDataCallback } from "./data/useRecoilTreeDataCallback";
 import { useRecoilTreePaths } from "./data/useRecoilTreePaths";
 import { useRecoilArrayNodeData } from "./data/useRecoilArrayNodeData";
@@ -33,6 +34,7 @@ export function RecoilStateProvider(
           treeDataHook={useRecoilTreeData}
           treeDataInitialiserHook={useRecoilTreeDataInitialiser}
           nodeDataHook={useRecoilNodeData}
+          multipleNodeDataHook={useRecoilMultipleNodeData}
           treeDataCallbackHook={useRecoilTreeDataCallback}
           treePathsHook={useRecoilTreePaths}
           arrayNodeDataHook={useRecoilArrayNodeData}

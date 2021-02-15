@@ -6,10 +6,12 @@ import { TreeDataHook } from "./TreeDataHook";
 import { TreePathsHook } from "./TreePathsHook";
 import { TreeDataInitialiserHook } from "./TreeDataInitialiserHook";
 import { TreeDataCallbackHook } from "./TreeDataCallbackHook";
+import { MultipleNodeDataHook } from "./MultipleNodeDataHook";
 
 interface DataProviderProps {
   treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
+  multipleNodeDataHook: MultipleNodeDataHook
   arrayNodeDataHook: ArrayNodeDataHook
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
@@ -20,6 +22,7 @@ interface DataProviderProps {
 const Context = createContext<{
   treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
+  multipleNodeDataHook: MultipleNodeDataHook
   arrayNodeDataHook: ArrayNodeDataHook
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
@@ -38,6 +41,14 @@ export function useNodeData<D>(
   const ctx = useContext(Context);
   if (!ctx || !ctx.nodeDataHook) throw new Error(`Couldn't find a NodeDataHook or context to use.`);
   return ctx.nodeDataHook(path);
+}
+
+export function useMultipleNodeData(
+  paths: Array<Array<PathSegment>>
+): Array<{ path: Array<PathSegment>, data: any }> {
+  const ctx = useContext(Context);
+  if (!ctx || !ctx.multipleNodeDataHook) throw new Error(`Couldn't find a MultipleNodeDataHook or context to use.`);
+  return ctx.multipleNodeDataHook(paths);
 }
 
 export function useArrayNodeData<D>(
@@ -80,6 +91,7 @@ export default function NodeDataProvider(
   {
     treeDataInitialiserHook,
     nodeDataHook,
+    multipleNodeDataHook,
     treeDataHook,
     treeDataCallbackHook,
     treePathsHook,
@@ -91,6 +103,7 @@ export default function NodeDataProvider(
     <Context.Provider value={{
       treeDataInitialiserHook,
       nodeDataHook,
+      multipleNodeDataHook,
       treeDataCallbackHook,
       arrayNodeDataHook,
       treeDataHook,
