@@ -2,8 +2,6 @@ import { NodeConfig, NodeRendererRegistration, PathSegment } from "@graphter/cor
 
 export interface NodeDataHook {
   (
-    path: Array<PathSegment>,
-    originalNodeData: any,
-    committed: boolean,
+    path: Array<PathSegment>
   ): [ any, (value: any) => void ]
 }

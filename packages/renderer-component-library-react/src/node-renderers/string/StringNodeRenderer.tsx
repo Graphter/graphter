@@ -15,7 +15,7 @@ const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 ) => {
   const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData(globalPath, originalNodeData, committed)
+  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
   const validationResults = useNodeValidation(config, globalPath)
   return (
     <>

@@ -98,12 +98,7 @@ describe('<NodeDataProvider />', () => {
 
   describe('when using useNodeData', () => {
     function DataConsumerMock(props: any) {
-      useNodeData(
-        props.path,
-        props.config,
-        props.originalNodeData,
-        props.committed
-      )
+      useNodeData(props.path)
       return null
     }
     it('should use the hook supplied to the provider to retrieve node data', () => {
@@ -177,10 +172,7 @@ describe('<NodeDataProvider />', () => {
   describe('when using useArrayNodeData', () => {
     function ArrayDataConsumerMock<D>(props: any) {
       useArrayNodeData(
-        props.path,
-        props.config,
-        props.originalChildData,
-        props.committed
+        props.path
       )
       return null
     }

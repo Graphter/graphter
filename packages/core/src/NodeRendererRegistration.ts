@@ -19,8 +19,8 @@ export interface InitialiseNodeDataFn {
   (
     config: NodeConfig,
     path: Array<PathSegment>,
-    originalTreeData: any,
-    initialise: (path: Array<PathSegment>, originalTreeData: any) => void
+    initialise: (path: Array<PathSegment>, originalTreeData?: any) => void,
+    originalTreeData?: any,
   ): any
 }
 

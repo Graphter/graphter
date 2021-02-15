@@ -29,7 +29,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   if(!valuePathValidation.valid) throw new Error(`Invalid value path: ${valuePathValidation.reason}`)
   const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData(globalPath, originalNodeData, committed)
+  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
   const validationResults = useNodeValidation(config, globalPath)
   const dataService = useService(config.options?.service)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)

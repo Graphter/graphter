@@ -8,6 +8,7 @@ import DefaultItemView from "./DefaultItemView";
 import DefaultNewItemWrapper from "./DefaultNewItemWrapper";
 import DefaultEditItemWrapper from "./DefaultEditItemWrapper";
 import { pathUtils } from "@graphter/renderer-react";
+import { useTreeDataInitialiser } from "@graphter/renderer-react";
 
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -32,6 +33,8 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
   if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${globalPath.join('/')}/${childConfig.id}`)
   const ChildTypeRenderer = childRendererRegistration.Renderer
+
+  const treeDataInitialiser = useTreeDataInitialiser()
 
   const {
     childIds,
@@ -118,7 +121,10 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         <button
           type='button'
           className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
-          onClick={() => setShowNewItemUI(true)}
+          onClick={() => {
+            treeDataInitialiser(childConfig, [ ...globalPath, childIds.length ], false)
+            setShowNewItemUI(true)
+          }}
           data-testid='add-item-btn'
         >[+]</button>
       )}

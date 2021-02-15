@@ -2,9 +2,7 @@ import { PathSegment } from "@graphter/core";
 
 export interface ArrayNodeDataHook {
   (
-    path: Array<PathSegment>,
-    originalNodeData: Array<any>,
-    committed: boolean,
+    path: Array<PathSegment>
   ): {
     childIds: Array<string>,
     removeItem: (index: number) => void,

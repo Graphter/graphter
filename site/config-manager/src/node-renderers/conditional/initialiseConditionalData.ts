@@ -3,13 +3,16 @@ import { nodeRendererStore } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
 
-export const initialiseConditionalData:InitialiseNodeDataFn = (config, path, originalTreeData, initialise) => {
+const NoMatch = 'no-match-4acbdcce-9225-4fee-b845-7159110763eb'
+
+export const initialiseConditionalData:InitialiseNodeDataFn = (config, path, initialise, originalTreeData) => {
   const localParentPath = path.slice(2, -1)
   const targetPath = [...localParentPath, ...config.options.siblingPath]
-  const targetNodeData = pathUtils.getValue(originalTreeData, targetPath)
+  const targetNodeData = pathUtils.getValue(originalTreeData, targetPath, NoMatch)
+  if(targetNodeData === NoMatch) return
   const matchingConfig = getMatchingConfig(config, targetNodeData)
   if(!matchingConfig) return
   const transparentPath: Array<PathSegment> = [ ...path ]
   const matchingRendererRegistration = nodeRendererStore.get(matchingConfig.type)
-  matchingRendererRegistration.initialiseData(matchingConfig, transparentPath, originalTreeData, initialise)
+  matchingRendererRegistration.initialiseData(matchingConfig, transparentPath, initialise, originalTreeData)
 }

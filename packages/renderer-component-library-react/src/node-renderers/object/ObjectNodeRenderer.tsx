@@ -15,8 +15,6 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     ErrorDisplayComponent
   }: NodeRendererProps
 ) => {
-  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, {}))
-  useNodeData(globalPath, originalNodeData, committed)
   return (
     <div className='flex flex-col' data-nodetype='object' data-nodepath={globalPath.join('/')}>
       {config.children && config.children.map((childConfig, i) => {

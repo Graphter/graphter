@@ -13,7 +13,7 @@ import {
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
-import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/node-data/NodeDataProvider";
+import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/node-data";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
@@ -71,7 +71,7 @@ export default function NodeEditRenderer(
             setError(new Error(`Couldn't find a ${topNodeConfig.name} with ID '${editingId}'`))
             return;
           }
-          treeDataInitialiser(topNodeConfig, path.slice(0, 2), getResult.item)
+          treeDataInitialiser(topNodeConfig, path.slice(0, 2), true, getResult.item)
           setStartingData(getResult.item)
         } catch (err) {
           console.error(err)

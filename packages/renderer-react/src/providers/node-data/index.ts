@@ -1,5 +1,7 @@
 import NodeDataProvider, {
   useNodeData,
+  useTreeDataInitialiser,
+  useTreeDataCallback,
   useTreeData,
   useTreePaths,
   useArrayNodeData
@@ -9,6 +11,8 @@ export default NodeDataProvider;
 
 export {
   useNodeData,
+  useTreeDataInitialiser,
+  useTreeDataCallback,
   useTreeData,
   useTreePaths,
   useArrayNodeData

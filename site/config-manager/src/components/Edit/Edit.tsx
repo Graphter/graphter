@@ -37,28 +37,6 @@ export default function Edit(){
               history.push(pathUtils.toUrl(path))
             }
           }),
-          {
-            type: 'multiline-string',
-            name: 'Long text',
-            description: 'Manage larger, multi-line plain text',
-            initialiseData: createValueInitialiser(''),
-            Renderer: ({ config, originalTreeData, committed, globalPath, ErrorDisplayComponent }) => {
-              const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
-              const [ touched, setTouched ] = useState(false)
-              const [ nodeData, setNodeData ] = useNodeData(path, originalNodeData, committed)
-              const htmlId = path.join('-')
-              return (
-                <div>
-                  <label htmlFor={htmlId}>{config.name}</label>
-                  {config.description && <p>{config.description}</p>}
-                  <textarea id={htmlId} value={nodeData} onChange={(e) => {
-                    if(!touched) setTouched(true)
-                    setNodeData && setNodeData(e.currentTarget.value);
-                  }}/>
-                </div>
-              );
-            }
-          },
           registerIdNodeRenderer(),
           registerDataSelectNodeRenderer(),
           registerConditionalNodeRenderer(),

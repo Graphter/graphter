@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from 'react';
-import { NodeConfig, PathSegment } from "@graphter/core";
+import { PathSegment } from "@graphter/core";
 import { NodeDataHook } from "./NodeDataHook";
 import { ArrayNodeDataHook } from "./ArrayNodeDataHook";
 import { TreeDataHook } from "./TreeDataHook";
@@ -33,19 +33,15 @@ export const useTreeDataInitialiser: TreeDataInitialiserHook = () => {
 }
 
 export function useNodeData<D>(
-  path: Array<PathSegment>,
-  originalNodeData: D,
-  committed: boolean = true,
+  path: Array<PathSegment>
 ): [D, (nodeData: D) => void] {
   const ctx = useContext(Context);
   if (!ctx || !ctx.nodeDataHook) throw new Error(`Couldn't find a NodeDataHook or context to use.`);
-  return ctx.nodeDataHook(path, originalNodeData, committed);
+  return ctx.nodeDataHook(path);
 }
 
 export function useArrayNodeData<D>(
-  path: Array<PathSegment>,
-  originalChildData: Array<D>,
-  committed: boolean = true,
+  path: Array<PathSegment>
 ): {
   childIds: Array<string>,
   removeItem: (index: number) => void,
@@ -54,7 +50,7 @@ export function useArrayNodeData<D>(
   const ctx = useContext(Context)
   if (!ctx || !ctx.arrayNodeDataHook) throw new Error(`Couldn't find an ArrayNodeDataHook or context to use.`)
 
-  return ctx.arrayNodeDataHook(path, originalChildData, committed)
+  return ctx.arrayNodeDataHook(path)
 }
 
 export const useTreeData:TreeDataHook = (
