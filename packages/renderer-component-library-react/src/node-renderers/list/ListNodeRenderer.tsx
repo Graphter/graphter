@@ -40,7 +40,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     childIds,
     removeItem,
     commitItem,
-  } = useArrayNodeData(globalPath, originalNodeData, committed)
+  } = useArrayNodeData(globalPath)
 
   return (
     <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
