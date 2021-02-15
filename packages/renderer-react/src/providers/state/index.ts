@@ -1,4 +1,4 @@
-import NodeDataProvider, {
+import StateProvider, {
   useNodeData,
   useMultipleNodeData,
   useTreeDataInitialiser,
@@ -6,9 +6,9 @@ import NodeDataProvider, {
   useTreeData,
   useTreePaths,
   useArrayNodeData
-} from "./NodeDataProvider";
+} from "./StateProvider";
 
-export default NodeDataProvider;
+export default StateProvider;
 
 export {
   useNodeData,

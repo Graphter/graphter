@@ -1,6 +1,6 @@
 import { render } from '@testing-library/react';
 
-import NodeDataProvider,
+import StateProvider,
 {
   useNodeData,
   useTreeDataInitialiser,
@@ -8,11 +8,11 @@ import NodeDataProvider,
   useTreeData,
   useTreePaths,
   useTreeDataCallback
-} from './NodeDataProvider'
+} from './StateProvider'
 import * as React from "react";
 
 
-describe('<NodeDataProvider />', () => {
+describe('<StateProvider />', () => {
 
   beforeEach(() => {
     jest.resetAllMocks()
@@ -20,15 +20,16 @@ describe('<NodeDataProvider />', () => {
 
   it('should render children', () => {
     const { queryByText } = render(
-      <NodeDataProvider
+      <StateProvider
         nodeDataHook={jest.fn()}
         treeDataInitialiserHook={jest.fn()}
         treeDataHook={jest.fn()}
+        multipleNodeDataHook={jest.fn()}
         treeDataCallbackHook={jest.fn()}
         treePathsHook={jest.fn()}
         arrayNodeDataHook={jest.fn()} >
         <div>Some child component</div>
-      </NodeDataProvider>
+      </StateProvider>
     )
     expect(queryByText('Some child component')).not.toBeNull();
   })
@@ -43,8 +44,9 @@ describe('<NodeDataProvider />', () => {
       const initialiserMock = jest.fn()
       const treeDataInitialiserHookMock = jest.fn().mockReturnValue(initialiserMock)
       render(
-        <NodeDataProvider
+        <StateProvider
           nodeDataHook={jest.fn()}
+          multipleNodeDataHook={jest.fn()}
           treeDataInitialiserHook={treeDataInitialiserHookMock}
           treeDataHook={jest.fn()}
           treeDataCallbackHook={jest.fn()}
@@ -55,7 +57,7 @@ describe('<NodeDataProvider />', () => {
             path={['/']}
             originalNodeData='The original data'
           />
-        </NodeDataProvider>
+        </StateProvider>
       )
       expect(initialiserMock).toHaveBeenCalledWith(
         { id: 'some-id', type: 'some-type' },
@@ -77,8 +79,9 @@ describe('<NodeDataProvider />', () => {
     it('should error if no hook is supplied to the provider', () => {
       expect(() => {
         render(
-          <NodeDataProvider
+          <StateProvider
             nodeDataHook={jest.fn()}
+            multipleNodeDataHook={jest.fn()}
             // @ts-ignore
             treeDataInitialiserHook={null}
             treeDataHook={jest.fn()}
@@ -90,7 +93,7 @@ describe('<NodeDataProvider />', () => {
               path={['/']}
               originalNodeData='The Name'
             />
-          </NodeDataProvider>
+          </StateProvider>
         )
       }).toThrowErrorMatchingSnapshot()
     })
@@ -104,8 +107,9 @@ describe('<NodeDataProvider />', () => {
     it('should use the hook supplied to the provider to retrieve node data', () => {
       const nodeDataHookMock = jest.fn().mockReturnValue([ ])
       render(
-        <NodeDataProvider
+        <StateProvider
           nodeDataHook={nodeDataHookMock}
+          multipleNodeDataHook={jest.fn()}
           treeDataInitialiserHook={jest.fn()}
           treeDataHook={jest.fn()}
           treeDataCallbackHook={jest.fn()}
@@ -120,7 +124,7 @@ describe('<NodeDataProvider />', () => {
             originalNodeData='The Name'
             committed={true}
           />
-        </NodeDataProvider>
+        </StateProvider>
       )
       expect(nodeDataHookMock).toHaveBeenCalledWith(
         ['/'],
@@ -146,9 +150,10 @@ describe('<NodeDataProvider />', () => {
     it('should error if no hook is supplied to the provider', () => {
       expect(() => {
         render(
-          <NodeDataProvider
+          <StateProvider
             // @ts-ignore
             nodeDataHook={null}
+            multipleNodeDataHook={jest.fn()}
             treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             treeDataCallbackHook={jest.fn()}
@@ -163,7 +168,7 @@ describe('<NodeDataProvider />', () => {
               originalNodeData='The Name'
               committed={true}
             />
-          </NodeDataProvider>
+          </StateProvider>
         )
       }).toThrowErrorMatchingSnapshot()
     })
@@ -179,8 +184,9 @@ describe('<NodeDataProvider />', () => {
     it('should use the hook supplied to the provider to retrieve array data', () => {
       const arrayNodeDataHookMock = jest.fn().mockReturnValue({})
       render(
-        <NodeDataProvider
+        <StateProvider
           nodeDataHook={jest.fn()}
+          multipleNodeDataHook={jest.fn()}
           treeDataInitialiserHook={jest.fn()}
           treeDataHook={jest.fn()}
           treeDataCallbackHook={jest.fn()}
@@ -195,7 +201,7 @@ describe('<NodeDataProvider />', () => {
             originalChildData={[ 'tagA', 'tagB' ]}
             committed={true}
           />
-        </NodeDataProvider>
+        </StateProvider>
       )
       expect(arrayNodeDataHookMock).toHaveBeenCalledWith(
         ['/'],
@@ -225,8 +231,9 @@ describe('<NodeDataProvider />', () => {
     it('should error if no hook is supplied to the provider', () => {
       expect(() => {
         render(
-          <NodeDataProvider
+          <StateProvider
             nodeDataHook={jest.fn()}
+            multipleNodeDataHook={jest.fn()}
             treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             treeDataCallbackHook={jest.fn()}
@@ -242,15 +249,16 @@ describe('<NodeDataProvider />', () => {
               originalChildData={[ 'tagA', 'tagB' ]}
               committed={true}
             />
-          </NodeDataProvider>
+          </StateProvider>
         )
       }).toThrowErrorMatchingSnapshot()
     })
     it('should error if original data is not an array', () => {
       expect(() => {
         render(
-          <NodeDataProvider
+          <StateProvider
             nodeDataHook={jest.fn()}
+            multipleNodeDataHook={jest.fn()}
             treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             treeDataCallbackHook={jest.fn()}
@@ -265,7 +273,7 @@ describe('<NodeDataProvider />', () => {
               originalChildData={'string data'}
               committed={true}
             />
-          </NodeDataProvider>
+          </StateProvider>
         )
       }).toThrowErrorMatchingSnapshot()
     })
@@ -282,8 +290,9 @@ describe('<NodeDataProvider />', () => {
     it('should use the hook supplied to the provider to retrieve tree data', () => {
       const treeDataHookMock = jest.fn().mockReturnValue([ ])
       render(
-        <NodeDataProvider
+        <StateProvider
           nodeDataHook={jest.fn()}
+          multipleNodeDataHook={jest.fn()}
           treeDataInitialiserHook={jest.fn()}
           treeDataHook={treeDataHookMock}
           treeDataCallbackHook={jest.fn()}
@@ -296,7 +305,7 @@ describe('<NodeDataProvider />', () => {
               id: 'some-node'
             }}
           />
-        </NodeDataProvider>
+        </StateProvider>
       )
       expect(treeDataHookMock).toHaveBeenCalledWith(
         {
@@ -323,8 +332,9 @@ describe('<NodeDataProvider />', () => {
     it('should error if no hook is supplied to the provider', () => {
       expect(() => {
         render(
-          <NodeDataProvider
+          <StateProvider
             nodeDataHook={jest.fn()}
+            multipleNodeDataHook={jest.fn()}
             treeDataInitialiserHook={jest.fn()}
             // @ts-ignore
             treeDataHook={null}
@@ -340,7 +350,7 @@ describe('<NodeDataProvider />', () => {
               originalNodeData='The Name'
               committed={true}
             />
-          </NodeDataProvider>
+          </StateProvider>
         )
       }).toThrowErrorMatchingSnapshot()
     })
@@ -359,8 +369,9 @@ describe('<NodeDataProvider />', () => {
       const treeDataCallbackHookMock = jest.fn().mockReturnValue([ ])
       const callbackFn = () => {}
       render(
-        <NodeDataProvider
+        <StateProvider
           nodeDataHook={jest.fn()}
+          multipleNodeDataHook={jest.fn()}
           treeDataInitialiserHook={jest.fn()}
           treeDataHook={jest.fn()}
           treeDataCallbackHook={treeDataCallbackHookMock}
@@ -374,7 +385,7 @@ describe('<NodeDataProvider />', () => {
               id: 'some-node'
             }}
           />
-        </NodeDataProvider>
+        </StateProvider>
       )
       expect(treeDataCallbackHookMock).toHaveBeenCalledWith(
         callbackFn,
@@ -402,8 +413,9 @@ describe('<NodeDataProvider />', () => {
     it('should error if no hook is supplied to the provider', () => {
       expect(() => {
         render(
-          <NodeDataProvider
+          <StateProvider
             nodeDataHook={jest.fn()}
+            multipleNodeDataHook={jest.fn()}
             treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             // @ts-ignore
@@ -419,7 +431,7 @@ describe('<NodeDataProvider />', () => {
               originalNodeData='The Name'
               committed={true}
             />
-          </NodeDataProvider>
+          </StateProvider>
         )
       }).toThrowErrorMatchingSnapshot()
     })
@@ -436,8 +448,9 @@ describe('<NodeDataProvider />', () => {
     it('should use the hook supplied to the provider to retrieve tree data', () => {
       const treePathsHookMock = jest.fn().mockReturnValue([ ])
       render(
-        <NodeDataProvider
+        <StateProvider
           nodeDataHook={jest.fn()}
+          multipleNodeDataHook={jest.fn()}
           treeDataInitialiserHook={jest.fn()}
           treeDataHook={jest.fn()}
           treeDataCallbackHook={jest.fn()}
@@ -449,7 +462,7 @@ describe('<NodeDataProvider />', () => {
             }}
             path={['/']}
           />
-        </NodeDataProvider>
+        </StateProvider>
       )
       expect(treePathsHookMock).toHaveBeenCalledWith(
         ['/'],
@@ -476,8 +489,9 @@ describe('<NodeDataProvider />', () => {
     it('should error if no hook is supplied to the provider', () => {
       expect(() => {
         render(
-          <NodeDataProvider
+          <StateProvider
             nodeDataHook={jest.fn()}
+            multipleNodeDataHook={jest.fn()}
             treeDataInitialiserHook={jest.fn()}
             treeDataHook={jest.fn()}
             treeDataCallbackHook={jest.fn()}
@@ -493,7 +507,7 @@ describe('<NodeDataProvider />', () => {
               originalNodeData='The Name'
               committed={true}
             />
-          </NodeDataProvider>
+          </StateProvider>
         )
       }).toThrowErrorMatchingSnapshot()
     })

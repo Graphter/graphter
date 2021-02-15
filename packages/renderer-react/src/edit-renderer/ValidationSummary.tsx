@@ -1,8 +1,7 @@
-import React, { useEffect, useState } from 'react';
-import s from './ValidationSummary.pcss';
+import React  from 'react';
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { useAggregateNodeValidation } from "../providers/node-validation";
-import { useTreePaths } from "../providers/node-data";
+import { useTreePaths } from "../providers/state";
 
 export interface ValidationSummaryProps {
   config: NodeConfig,

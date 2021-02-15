@@ -87,7 +87,7 @@ export const useTreePaths:TreePathsHook = (config, path) => {
   return ctx.treePathsHook(config, path)
 }
 
-export default function NodeDataProvider(
+export default function StateProvider(
   {
     treeDataInitialiserHook,
     nodeDataHook,

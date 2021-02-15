@@ -13,7 +13,7 @@ import {
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
-import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/node-data";
+import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/state";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
