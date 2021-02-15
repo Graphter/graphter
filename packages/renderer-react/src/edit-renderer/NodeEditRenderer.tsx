@@ -1,10 +1,7 @@
 /***
  * This module needs to be broken up and much of it moved out of the package
  */
-import React, { ComponentType, useEffect, useState } from "react";
-import s from './NodeEditRenderer.pcss';
-import { isEmpty } from "../util/id";
-import { useService } from "../providers/service";
+import React, { ComponentType } from "react";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps,
@@ -13,14 +10,15 @@ import {
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
-import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/state";
+import { useTreeDataCallback } from "../providers/state";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
   errorRenderer?: ComponentType<ErrorRendererProps>
   onSaved?: (modelId: string, instance: any) => void
   cancel: (modelId: string | undefined, instance: any) => void
-  typeRegistry: Array<NodeRendererRegistration>
+  typeRegistry: Array<NodeRendererRegistration>,
+  startingData: any
 }
 
 export default function NodeEditRenderer(
@@ -28,7 +26,8 @@ export default function NodeEditRenderer(
     path,
     errorRenderer,
     cancel,
-    typeRegistry
+    typeRegistry,
+    startingData
   }: NodeEditRendererProps) {
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError
@@ -45,43 +44,13 @@ export default function NodeEditRenderer(
   const topNodePath = path.slice(0, 2)
 
   const topNodeConfig = useConfig(topNodeConfigId)
-  const service = useService(topNodeConfigId)
 
-  const [ loading, setLoading ] = useState(true)
-  const [ error, setError ] = useState<Error>()
-  const [ startingData, setStartingData ] = useState<any>(undefined)
-  const treeDataInitialiser = useTreeDataInitialiser()
   const save = useTreeDataCallback(
     (treeData) => {
       console.log('saving model ', treeData)
     },
     topNodeConfig,
     path)
-
-
-  useEffect(() => {
-    (async () => {
-      if (isEmpty(editingId)) {
-        setLoading(false)
-      } else {
-        try {
-          const getResult = await service.get(editingId);
-          setLoading(false)
-          if (!getResult.item) {
-            setError(new Error(`Couldn't find a ${topNodeConfig.name} with ID '${editingId}'`))
-            return;
-          }
-          treeDataInitialiser(topNodeConfig, path.slice(0, 2), true, getResult.item)
-          setStartingData(getResult.item)
-        } catch (err) {
-          console.error(err)
-          setLoading(false)
-          setError(new Error(`There was a problem loading that ${topNodeConfig.name}: ${err.message}`));
-          return;
-        }
-      }
-    })()
-  }, [ editingId, path ]);
 
   if (!startingData) return null
 
@@ -97,10 +66,6 @@ export default function NodeEditRenderer(
 
   return (
     <div className='' data-testid='node-edit-renderer' >
-
-      {error && <ErrorDisplayComponent err={error}/>}
-
-      {loading && <div className={s.editRenderer} data-testid='loading'>loading...</div>}
 
       <form onSubmit={e => {
         e.preventDefault();
