@@ -5,6 +5,9 @@ const config:NodeConfig = {
   name: 'Graphter Config',
   description: 'The configuration that drives Graphter models',
   type: 'object',
+  validation: [
+
+  ],
   children: [
     {
       id: 'id',
@@ -85,6 +88,13 @@ const config:NodeConfig = {
       id: 'children',
       name: 'Children',
       type: 'conditional',
+      validation: [ ],
+      options: {
+        siblingPath: ['type'],
+        branches: [
+          { condition: 'object', childId: 'object-children' }
+        ]
+      },
       children: [
         {
           id: 'object-children',
@@ -107,18 +117,8 @@ const config:NodeConfig = {
             itemSelectionBehaviour: 'CUSTOM'
           }
         }
-      ],
-      validation: [ ],
-      options: {
-        siblingPath: ['type'],
-        branches: [
-          { condition: 'object', childId: 'object-children' }
-        ]
-      }
+      ]
     }
-  ],
-  validation: [
-
   ],
 }
 

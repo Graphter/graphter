@@ -54,11 +54,11 @@ export default function NodeEditRenderer(
   const registration = nodeRendererStore.get(topNodeConfig.type)
   if(!registration) throw new Error(`No renderer found for type '${topNodeConfig.type}'`)
   const configs = registration.getChildConfig ?
-    registration.getChildConfig([ topNodeConfig ], localPath, localPath, startingData) :
-    [ topNodeConfig ]
+    registration.getChildConfig(topNodeConfig, [], [ ...localPath ], startingData) :
+    [ { config: topNodeConfig, path: localPath } ]
   const childConfig = configs[configs.length - 1]
-  const childRegistration = nodeRendererStore.get(childConfig.type)
-  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.type}'`)
+  const childRegistration = nodeRendererStore.get(childConfig.config.type)
+  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.config.type}'`)
   const TypeRenderer = childRegistration.Renderer
 
   return (
@@ -71,13 +71,13 @@ export default function NodeEditRenderer(
         })()
       }} data-testid='form'>
 
-        <h1 className='text-2xl mt-8'>{childConfig.name}</h1>
-        {childConfig.description && <p className='text-sm text-gray-500 mb-10'>{childConfig.description}</p>}
+        <h1 className='text-2xl mt-8'>{childConfig.config.name}</h1>
+        {childConfig.config.description && <p className='text-sm text-gray-500 mb-10'>{childConfig.config.description}</p>}
 
         <TypeRenderer
           committed={true}
           globalPath={path}
-          config={childConfig}
+          config={childConfig.config}
           originalTreeData={startingData}
           options={registration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}

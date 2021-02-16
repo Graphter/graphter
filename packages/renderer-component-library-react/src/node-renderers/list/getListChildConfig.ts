@@ -1,21 +1,19 @@
-import { GetChildConfigFn, NodeConfig } from "@graphter/core";
+import { GetChildConfigFn } from "@graphter/core";
 import { nodeRendererStore } from "@graphter/renderer-react";
 
-export const getListChildConfig: GetChildConfigFn = (configs, absolutePath, processingPath, treeData) => {
-  if(!processingPath.length) return configs
-  const remainingPathToProcess = [ ...processingPath ]
-  remainingPathToProcess.splice(0, 1)
-  const config = configs[configs.length - 1]
+export const getListChildConfig: GetChildConfigFn = (config, path, absolutePath, treeData) => {
   if(!config.children) throw new Error(`List config must have exactly one child`)
+  const pathConfig = { path, config }
+  if(path.length === absolutePath.length) return [ pathConfig ]
   const childConfig = config.children[0]
-  const childRenderer = nodeRendererStore.get(childConfig.type)
-  const newConfigs = [ ...configs, childConfig ]
-  return childRenderer.getChildConfig ?
-    childRenderer.getChildConfig(
-      newConfigs,
+  const childRendererRegistration = nodeRendererStore.get(childConfig.type)
+  if(childRendererRegistration.getChildConfig){
+    return [ pathConfig, ...childRendererRegistration.getChildConfig(
+      childConfig,
+      [ ...path, absolutePath[path.length] ],
       absolutePath,
-      remainingPathToProcess,
       treeData
-    ) :
-    newConfigs
+    )]
+  }
+  return [ pathConfig ]
 }

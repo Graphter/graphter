@@ -64,7 +64,7 @@ export default function ListRenderer(
       {items.map((item, i) => (
         renderItem && (
           <ErrorBoundary
-            key={getItemId(config.identityPath, item)}
+            key={i}
             errorRenderer={ErrorDisplayComponent}>
             {renderWithErrorHandling(() => renderItem({ item }))}
           </ErrorBoundary>)

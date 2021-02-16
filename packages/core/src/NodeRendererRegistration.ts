@@ -26,11 +26,11 @@ export interface InitialiseNodeDataFn {
 
 export interface GetChildConfigFn {
   (
-    configs: Array<NodeConfig>,
+    config: NodeConfig,
+    path: Array<PathSegment>,
     absolutePath: Array<PathSegment>,
-    relativePath: Array<PathSegment>,
     treeData: any
-  ): Array<NodeConfig>
+  ): Array<{ path: Array<PathSegment>, config: NodeConfig }>
 }
 
 export interface GetChildDataFn {
