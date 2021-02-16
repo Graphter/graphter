@@ -61,9 +61,12 @@ const Breadcrumbs = ({ config, globalPath, ItemRenderer, originalTreeData }: Bre
   if(nodePaths.length !== displayPaths.length || displayPaths.length !== displayPathsDataResult.length) throw new Error('Something has gone wrong')
   const displayPathsData = displayPathsDataResult
     .map((nodeData, i) => {
-      if(!Array.isArray(nodeData.data)) return nodeData.data
-      const arrayConfig = configs[i]
-      return arrayConfig.name || arrayConfig.id
+      if(Array.isArray(nodeData.data)){
+        const arrayConfig = configs[i]
+        return arrayConfig.name || arrayConfig.id
+      }
+      if(typeof nodeData.data === 'object') return 'Empty'
+      return nodeData.data
     })
 
   return (
