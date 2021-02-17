@@ -19,10 +19,7 @@ const configs: NodeConfig[] = [
           {
             id: 'author',
             name: 'Author',
-            type: 'nested',
-            options: {
-              configId: 'author'
-            }
+            type: 'string'
           },
         ]
       }

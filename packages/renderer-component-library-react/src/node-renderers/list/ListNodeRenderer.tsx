@@ -44,8 +44,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   return (
     <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
-      <label htmlFor={config.id}>{config.name}</label>
-      {config.description && <p className='text-sm text-gray-400 mb-2'>{config.description}</p>}
       <div className={s.items} data-testid='items'>
         {childIds && childIds.map((childId: any, i: number) => {
           const childPath = [ ...globalPath, i ]

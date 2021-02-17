@@ -1,6 +1,7 @@
 import { GetChildDataFn } from "@graphter/core";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
+import { isConditionalConfig } from "./isConditionalConfig";
 
 export const getConditionalChildData: GetChildDataFn = (config, path, getNodeValue) => {
   if (!config) throw new Error(`Couldn't find config for node at path '${path.join('/')}'`)
@@ -10,13 +11,14 @@ export const getConditionalChildData: GetChildDataFn = (config, path, getNodeVal
 
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const targetNodeData = getNodeValue(targetPath)
+  if(!isConditionalConfig(config)) throw new Error()
   const matchingChildConfig = getMatchingConfig(config, targetNodeData)
   if(!matchingChildConfig){
-    const defaultType = typeof config.options.defaultValue
+    const defaultType = typeof config.options.noMatchValue
     switch (defaultType){
       case 'undefined': return null
-      case 'function': return typeof config.options.defaultValue()
-      default: return typeof config.options.defaultValue
+      case 'function': return typeof config.options.noMatchValue()
+      default: return typeof config.options.noMatchValue
     }
   }
   const transparentPath = [ ...path ]

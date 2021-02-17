@@ -4,6 +4,9 @@ import { getNestedChildData } from "./getNestedChildData";
 import { getNestedChildPaths } from "./getNestedChildPaths";
 import { initialiseNestedData } from "./initialiseNestedData";
 import { getNestedChildConfig } from "./getNestedChildConfig";
+import { newGetNestedChildConfig } from "./newGetNestedChildConfig";
+import { mergeNestedChildData } from "./mergeNestedChildData";
+import { newGetNestedChildPaths } from "./newGetNestedChildPaths";
 
 export interface NestedNodeRendererOptions {
   type: string,
@@ -18,6 +21,9 @@ export function registerNestedNodeRenderer(options?: NestedNodeRendererOptions):
     getChildConfig: getNestedChildConfig,
     getChildData: getNestedChildData,
     getChildPaths: getNestedChildPaths,
+    newGetChildConfig: newGetNestedChildConfig,
+    newGetChildPaths: newGetNestedChildPaths,
+    mergeChildData: mergeNestedChildData,
     Renderer: NestedNodeRenderer,
     options
   }

@@ -1,4 +1,4 @@
-import { GetChildDataFn } from "@graphter/core";
+ import { GetChildDataFn } from "@graphter/core";
 import { nodeRendererStore } from "@graphter/renderer-react";
 
 export const getListChildData: GetChildDataFn = (config, path, getNodeValue) => {

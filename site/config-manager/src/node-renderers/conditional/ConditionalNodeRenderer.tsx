@@ -6,6 +6,8 @@ import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { getValue } from "@graphter/renderer-react";
+import { isConditionalConfig } from "./isConditionalConfig";
+import { useTreeDataInitialiser } from "@graphter/renderer-react";
 
 const NoMatch = 'no-match-4acbdcce-9225-4fee-b845-7159110763eb'
 
@@ -24,19 +26,27 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
 
   const targetGlobalPath = [...globalPath.slice(0, -1), ...config.options.siblingPath]
+  const treeDataInitialiser = useTreeDataInitialiser()
 
   const [ targetNodeData ] = useNodeData<any>(targetGlobalPath)
+  if(!isConditionalConfig(config)) throw new Error()
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
     if(!matchingChildConfig) return null
     const rendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
     if(!rendererRegistration) return null
+    treeDataInitialiser(matchingChildConfig, globalPath, true)
     return [ matchingChildConfig, rendererRegistration ]
   }, [ targetNodeData ])
 
-  if(!match) return null
+
+  if(!match) return (
+    <div className='text-center p-10 text-gray-300'>N/A</div>
+  )
 
   const [ matchingChildConfig, matchingChildRendererRegistration ] = match
+
+
 
   return (
     <>

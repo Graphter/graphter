@@ -4,6 +4,9 @@ import { getListChildData } from "./getListChildData";
 import { getListChildPaths } from "./getListChildPaths";
 import { initialiseListData } from "./initialiseListData";
 import { getListChildConfig } from "./getListChildConfig";
+import { newListGetChildConfig } from "./newListGetChildConfig";
+import { mergeListChildData } from "./mergeListChildData";
+import { newGetListChildPaths } from "./newGetListChildPaths";
 
 export interface ListNodeRendererOptions {
   type?: string,
@@ -19,6 +22,10 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     getChildConfig: getListChildConfig,
     getChildData: getListChildData,
     getChildPaths: getListChildPaths,
+    newGetChildConfig: newListGetChildConfig,
+    newGetChildPaths: newGetListChildPaths,
+    mergeChildData: mergeListChildData,
+    createFallbackDefaultValue: () => ([]),
     Renderer: ListNodeRenderer,
     options
   }

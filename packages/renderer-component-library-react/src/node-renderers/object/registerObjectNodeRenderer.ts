@@ -4,6 +4,9 @@ import { getObjectChildData } from "./getObjectChildData";
 import { getObjectChildPaths } from "./getObjectChildPaths";
 import { initialiseObjectData } from "./initialiseObjectData";
 import { getObjectChildConfig } from "./getObjectChildConfig";
+import { newGetObjectChildConfig } from "./newGetObjectChildConfig";
+import { mergeObjectChildData } from "./mergeObjectChildData";
+import { newGetObjectChildPaths } from "./newGetObjectChildPaths";
 
 export interface ObjectNodeRendererOptions {
   type: string
@@ -19,6 +22,10 @@ export function registerObjectNodeRenderer(options?: ObjectNodeRendererOptions):
     getChildConfig: getObjectChildConfig,
     getChildData: getObjectChildData,
     getChildPaths: getObjectChildPaths,
+    newGetChildConfig: newGetObjectChildConfig,
+    newGetChildPaths: newGetObjectChildPaths,
+    createFallbackDefaultValue: () => ({}),
+    mergeChildData: mergeObjectChildData,
     Renderer: ObjectNodeRenderer,
     options
   }

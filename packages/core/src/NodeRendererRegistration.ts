@@ -13,6 +13,12 @@ export interface NodeRendererRegistration {
   getChildPaths?: GetChildPathsFn
   Renderer: ComponentType<NodeRendererProps>
   options?: any
+
+
+  newGetChildConfig?: NewGetChildConfigFn
+  newGetChildPaths?: NewGetChildPathsFn
+  mergeChildData?: MergeChildDataFn
+  createFallbackDefaultValue?: ((config: NodeConfig) => any)
 }
 
 export interface InitialiseNodeDataFn {
@@ -47,4 +53,27 @@ export interface GetChildPathsFn {
     path: Array<PathSegment>,
     getNodeValue: <T>(path: Array<PathSegment>) => T
   ): Array<Array<PathSegment>>
+}
+
+export interface NewGetChildPathsFn {
+  (
+    config: NodeConfig,
+    path: Array<PathSegment>,
+    getNodeValue: <T>(path: Array<PathSegment>) => T
+  ): Array<Array<PathSegment>>
+}
+
+export interface NewGetChildConfigFn {
+  (
+    config: NodeConfig,
+    path: Array<PathSegment>,
+    childSegment: PathSegment,
+    getNodeValue: <T>(path: Array<PathSegment>) => T
+  ): NodeConfig | null
+}
+
+export interface MergeChildDataFn {
+  (
+    childData: Array<{ config?: NodeConfig, data: any }>
+  ): any
 }

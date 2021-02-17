@@ -5,6 +5,7 @@ import { createDefault, useNodeData } from "@graphter/renderer-react";
 import s from './ObjectNodeRenderer.pcss'
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
+import cs from "classnames";
 
 const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -53,7 +54,7 @@ function DefaultPropertyWrapper(
   return (
 
     <div className='flex flex-col mb-5'>
-      <label htmlFor={config.id}>{config.name}</label>
+      <label htmlFor={config.id} className={cs({'mb-2': !config.description})}>{config.name}</label>
       {config.description && <p className='text-sm text-gray-400 mb-2'>{config.description}</p>}
       {children}
     </div>

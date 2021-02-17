@@ -88,24 +88,45 @@ const config:NodeConfig = {
       id: 'children',
       name: 'Children',
       type: 'conditional',
-      validation: [ ],
+      validation: [],
+      default: [],
       options: {
         siblingPath: ['type'],
         branches: [
-          { condition: 'object', childId: 'object-children' }
+          { condition: 'object', childId: 'object-children' },
+          { condition: 'list', childId: 'list-children' }
         ]
       },
       children: [
         {
           id: 'object-children',
           name: 'Object properties',
-          description: 'Properties configured for the object type',
           type: 'list',
           children: [
             {
               id: 'child',
-              name: 'Child',
-              description: 'The configuration of a sub element of the model. For example the "name" of an "author" or the "street name" of an "address" of an "author"',
+              name: 'Object property',
+              description: 'Like an authors name or the first line of an authors address',
+              type: 'nested',
+              options: {
+                configId: 'config'
+              }
+            },
+          ],
+          validation: [ ],
+          options: {
+            itemSelectionBehaviour: 'CUSTOM'
+          }
+        },
+        {
+          id: 'list-children',
+          name: 'List types',
+          type: 'list',
+          children: [
+            {
+              id: 'child',
+              name: 'List type',
+              description: 'Define what list items look like',
               type: 'nested',
               options: {
                 configId: 'config'

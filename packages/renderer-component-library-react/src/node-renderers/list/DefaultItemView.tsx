@@ -38,7 +38,7 @@ const DefaultItemView = ({childId, config, globalPath, options, onEdit}: Default
           {significantData.description && <div className='text-sm text-gray-900'>{significantData.description}</div>}
         </div>
         {significantData.keyValues && <div className='py-3'>
-          {significantData.keyValues.map(({key, value}) => (
+          {significantData.keyValues?.map(({key, value}) => (
             <span key={key} className='inline-block px-2 py-1 text-sm bg-gray-100 rounded-3xl'>
               <span className='text-gray-300'>{key}:</span> <span className={s.value}>{value}</span>
             </span>))}

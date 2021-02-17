@@ -23,15 +23,7 @@ const DividerSvg = () => <svg className='w-4 fill-current text-gray-200 mr-2' xm
 </svg>
 
 const Breadcrumbs = ({ config, globalPath, ItemRenderer, originalTreeData }: BreadcrumbProps) => {
-  const localPath = globalPath.slice(2)
-  const registration = nodeRendererStore.get(config.type)
-  if(!registration) throw new Error(`No renderer found for type '${config.type}'`)
-  const configs = registration.getChildConfig ?
-    registration.getChildConfig(config, [ ], [ ...localPath ], originalTreeData) :
-    [ config ]
-  return <div>
-    Breadcrumbs!
-  </div>
+  return null
 }
 
 // const Breadcrumbs_old = ({ config, globalPath, ItemRenderer, originalTreeData }: BreadcrumbProps) => {
