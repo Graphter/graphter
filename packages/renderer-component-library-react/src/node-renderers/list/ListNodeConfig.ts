@@ -6,5 +6,6 @@ export interface ListNodeConfig extends NodeConfig {
 }
 
 export interface ListNodeConfigOptions {
-  itemSelectionBehaviour: 'CUSTOM' | 'INLINE'
+  itemSelectionBehaviour: 'CUSTOM' | 'INLINE',
+  maxItems?: number
 }

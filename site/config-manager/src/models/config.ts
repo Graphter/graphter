@@ -135,7 +135,8 @@ const config:NodeConfig = {
           ],
           validation: [ ],
           options: {
-            itemSelectionBehaviour: 'CUSTOM'
+            itemSelectionBehaviour: 'CUSTOM',
+            maxItems: 1
           }
         }
       ]

@@ -8,6 +8,7 @@ import DefaultNewItemWrapper from "./DefaultNewItemWrapper";
 import DefaultEditItemWrapper from "./DefaultEditItemWrapper";
 import { pathUtils } from "@graphter/renderer-react";
 import { useTreeDataInitialiser } from "@graphter/renderer-react";
+import { isListConfig } from "./isListConfig";
 
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -19,11 +20,9 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     options
   }: NodeRendererProps
 ) => {
-  if (!config) throw new Error(`<ListNodeRenderer /> component at '${globalPath.join('/')}' is missing config`)
+  if (!isListConfig(config)) throw new Error('Invalid config')
   const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, []))
   if (!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
-  if (!config.children || !config.children.length) throw new Error(`'${config.type}' renderer must have at least one child config`)
-  if (config.children.length > 1) throw new Error('Only one child list type is currently supported')
 
   const [ showNewItemUI, setShowNewItemUI ] = useState(false)
   const [ editingItems, setEditingItems ] = useState<Set<string>>(new Set())
@@ -113,15 +112,17 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           />
         </DefaultNewItemWrapper>
       ) : (
-        <button
-          type='button'
-          className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
-          onClick={() => {
-            treeDataInitialiser(childConfig, [ ...globalPath, childIds.length ], false)
-            setShowNewItemUI(true)
-          }}
-          data-testid='add-item-btn'
-        >[+]</button>
+        (!config.options.maxItems || childIds.length < config.options.maxItems) && (
+          <button
+            type='button'
+            className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
+            onClick={() => {
+              treeDataInitialiser(childConfig, [ ...globalPath, childIds.length ], false)
+              setShowNewItemUI(true)
+            }}
+            data-testid='add-item-btn'
+          >[+]</button>
+        )
       )}
 
     </div>
