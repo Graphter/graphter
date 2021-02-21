@@ -25,7 +25,7 @@ export const getTreeData = (config: NodeConfig, path: Array<PathSegment>, getPro
   if (!childPaths.length) {
     return createDefault(config, renderer.createFallbackDefaultValue ? renderer.createFallbackDefaultValue(config) : null)
   }
-  return renderer.mergeChildData(childPaths.map(childPath => {
+  return renderer.mergeChildData(config, path, getPropValue, childPaths.map(childPath => {
     if (!renderer.newGetChildConfig) throw new Error()
     const childSegment = childPath[childPath.length - 1]
     if (!typeof childSegment === undefined) throw new Error()

@@ -74,6 +74,9 @@ export interface NewGetChildConfigFn {
 
 export interface MergeChildDataFn {
   (
+    config: NodeConfig,
+    path: Array<PathSegment>,
+    getNodeValue: <T>(path: Array<PathSegment>) => T,
     childData: Array<{ config?: NodeConfig, data: any }>
   ): any
 }
