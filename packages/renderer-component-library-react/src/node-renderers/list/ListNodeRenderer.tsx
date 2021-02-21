@@ -91,11 +91,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
             </DefaultEditItemWrapper>
           )
         })}
-        {!childIds.length && (
-          <div className='text-center p-10 text-gray-300'>
-            Empty
-          </div>
-        )}
       </div>
       {showNewItemUI ? (
         <DefaultNewItemWrapper
