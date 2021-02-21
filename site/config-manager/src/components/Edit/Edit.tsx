@@ -55,16 +55,24 @@ export default function Edit(){
         config={config}
         globalPath={path}
         originalTreeData={data}
-        ItemRenderer={({ path, children }) => {
+        AncestorCrumb={({ path, children }) => {
           return (
             <Link
               to={pathUtils.toUrl(path)}
-              className='px-2 py-1 bg-gray-200 hover:bg-gray-300 mr-2 rounded text-gray-600 transition-colours duration-200'
+              className='px-2 py-1 border border-gray-200 hover:bg-gray-100 mr-2 rounded text-gray-600 transition-colours duration-200'
             >
               {children}
             </Link>
           )
-      }} />
+      }}
+        CurrentCrumb={({ children }) => {
+        return (
+          <span className='px-2 py-1 border border-gray-200 bg-gray-100 mr-2 rounded text-gray-600'>
+            {children}
+          </span>
+        )
+      }}
+      />
       <NodeEditRenderer
         path={path}
         errorRenderer={ErrorPanel}

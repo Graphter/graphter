@@ -69,9 +69,10 @@ export default function NodeEditRenderer(
           await save()
         })()
       }} data-testid='form'>
-
-        <h1 className='text-2xl mt-8'>{childConfig.name}</h1>
-        {childConfig.description && <p className='text-sm text-gray-500 mb-10'>{childConfig.description}</p>}
+        <div className='mt-8 mb-10'>
+          <h1 className='text-2xl'>{childConfig.name}</h1>
+          {childConfig.description && <p className='text-sm text-gray-500'>{childConfig.description}</p>}
+        </div>
 
         <TypeRenderer
           committed={true}
