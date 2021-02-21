@@ -1,8 +1,7 @@
 import { RecoilValueReadOnly, selector } from "recoil";
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { propDataStore } from "./propDataStore";
-import { getNodeData } from "@graphter/renderer-react";
-import { getNodePaths } from "@graphter/renderer-react";
+import { getTreeData, getTreePaths } from "@graphter/renderer-react";
 
 const treeDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
 const descendentPathDataMap: { [key: string]: RecoilValueReadOnly<Array<Array<PathSegment>>> } = {};
@@ -26,7 +25,7 @@ const treeDataStore: TreeDataStore = {
     treeDataMap[key] = treeDataSelector = selector<any>({
       key: key,
       get: ({ get }) => {
-        return getNodeData(config, path, (path:Array<PathSegment>) => {
+        return getTreeData(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
@@ -45,7 +44,7 @@ const treeDataStore: TreeDataStore = {
     descendentPathDataMap[key] = descendentPathSelector = selector<any>({
       key: key,
       get: ({ get }) => {
-        return getNodePaths(config, path, (path:Array<PathSegment>) => {
+        return getTreePaths(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })

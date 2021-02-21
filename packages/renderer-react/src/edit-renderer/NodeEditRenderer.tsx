@@ -11,6 +11,8 @@ import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
 import { useTreeDataCallback } from "../providers/state";
+import { getConfigAt } from "../util/node";
+import { getValue } from "../util/path";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
@@ -37,7 +39,6 @@ export default function NodeEditRenderer(
 
   const topNodeConfigId = path[0]
   const editingId = path[1]
-  const localPath = path.slice(2)
   const topNodePath = path.slice(0, 2)
 
   const topNodeConfig = useConfig(topNodeConfigId)
@@ -53,12 +54,10 @@ export default function NodeEditRenderer(
 
   const registration = nodeRendererStore.get(topNodeConfig.type)
   if(!registration) throw new Error(`No renderer found for type '${topNodeConfig.type}'`)
-  const configs = registration.getChildConfig ?
-    registration.getChildConfig(topNodeConfig, [], [ ...localPath ], startingData) :
-    [ { config: topNodeConfig, path: localPath } ]
-  const childConfig = configs[configs.length - 1]
-  const childRegistration = nodeRendererStore.get(childConfig.config.type)
-  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.config.type}'`)
+  const childConfig = getConfigAt(topNodeConfig, path.slice(2), (path => getValue(startingData, path)))
+  if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
+  const childRegistration = nodeRendererStore.get(childConfig.type)
+  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.type}'`)
   const TypeRenderer = childRegistration.Renderer
 
   return (
@@ -71,13 +70,13 @@ export default function NodeEditRenderer(
         })()
       }} data-testid='form'>
 
-        <h1 className='text-2xl mt-8'>{childConfig.config.name}</h1>
-        {childConfig.config.description && <p className='text-sm text-gray-500 mb-10'>{childConfig.config.description}</p>}
+        <h1 className='text-2xl mt-8'>{childConfig.name}</h1>
+        {childConfig.description && <p className='text-sm text-gray-500 mb-10'>{childConfig.description}</p>}
 
         <TypeRenderer
           committed={true}
           globalPath={path}
-          config={childConfig.config}
+          config={childConfig}
           originalTreeData={startingData}
           options={registration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}
