@@ -1,7 +1,6 @@
 import React, { ComponentType, useState } from 'react'
 import { NodeRendererProps } from "@graphter/core";
 import { nodeRendererStore, createDefault } from "@graphter/renderer-react";
-import s from './ListNodeRenderer.pcss'
 import { useArrayNodeData } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import DefaultItemView from "./DefaultItemView";
@@ -20,9 +19,9 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     options
   }: NodeRendererProps
 ) => {
-  if(!config) throw new Error(`<ListNodeRenderer /> component at '${globalPath.join('/')}' is missing config`)
+  if (!config) throw new Error(`<ListNodeRenderer /> component at '${globalPath.join('/')}' is missing config`)
   const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, []))
-  if(!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
+  if (!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
   if (!config.children || !config.children.length) throw new Error(`'${config.type}' renderer must have at least one child config`)
   if (config.children.length > 1) throw new Error('Only one child list type is currently supported')
 
@@ -44,25 +43,28 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   return (
     <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
-      <div className={s.items} data-testid='items'>
+      <div className='' data-testid='items'>
         {childIds && childIds.map((childId: any, i: number) => {
           const childPath = [ ...globalPath, i ]
-          if(!editingItems.has(childId)) return (
+          if (!editingItems.has(childId)) return (
             <DefaultItemView
               key={childId}
               childId={childId}
               config={childConfig}
               globalPath={childPath}
-              onEdit={() => {
-                if(config.options?.itemSelectionBehaviour === 'INLINE' || !config.options?.itemSelectionBehaviour){
+              onSelect={() => {
+                if (config.options?.itemSelectionBehaviour === 'INLINE' || !config.options?.itemSelectionBehaviour) {
                   const newEditingItems = new Set(editingItems)
                   newEditingItems.add(childId)
                   setEditingItems(newEditingItems)
                   return
                 }
-                if(config.options?.itemSelectionBehaviour === 'CUSTOM' && typeof options?.customItemSelectionBehaviour === 'function'){
+                if (config.options?.itemSelectionBehaviour === 'CUSTOM' && typeof options?.customItemSelectionBehaviour === 'function') {
                   options.customItemSelectionBehaviour(config.options?.itemSelectionBehaviour, childConfig, childPath)
                 }
+              }}
+              onRemove={() => {
+                removeItem(i)
               }}
             />
           )
