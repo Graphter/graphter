@@ -8,9 +8,6 @@ export interface NodeRendererRegistration {
   name: string
   description?: string
   initialiseData: InitialiseNodeDataFn
-  getChildConfig?: GetChildConfigFn
-  getChildData?: GetChildDataFn
-  getChildPaths?: GetChildPathsFn
   Renderer: ComponentType<NodeRendererProps>
   options?: any
 
