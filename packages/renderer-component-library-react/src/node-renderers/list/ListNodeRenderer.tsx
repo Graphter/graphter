@@ -117,7 +117,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
             type='button'
             className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
             onClick={() => {
-              treeDataInitialiser(childConfig, [ ...globalPath, childIds.length ], false)
+              treeDataInitialiser(childConfig, [ ...globalPath, childIds.length ], false, originalTreeData)
               setShowNewItemUI(true)
             }}
             data-testid='add-item-btn'

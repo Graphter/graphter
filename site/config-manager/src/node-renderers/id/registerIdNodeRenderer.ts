@@ -11,7 +11,7 @@ export function registerIdNodeRenderer(options?: IdNodeRendererOptions): NodeRen
     type: options?.type || 'id',
     name: 'ID',
     description: 'Manage a human readable and web-friendly ID',
-    initialiseData: createValueInitialiser(''),
+    createFallbackDefaultValue: () => '',
     Renderer: IdNodeRenderer,
     options
   }

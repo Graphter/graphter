@@ -35,7 +35,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     if(!matchingChildConfig) return null
     const rendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
     if(!rendererRegistration) return null
-    treeDataInitialiser(matchingChildConfig, globalPath, true)
+    treeDataInitialiser(matchingChildConfig, globalPath, true, originalTreeData)
     return [ matchingChildConfig, rendererRegistration ]
   }, [ targetNodeData ])
 

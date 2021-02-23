@@ -1,6 +1,5 @@
 import ObjectNodeRenderer from "./ObjectNodeRenderer";
 import { NodeRendererRegistration } from "@graphter/core";
-import { initialiseObjectData } from "./initialiseObjectData";
 import { newGetObjectChildConfig } from "./newGetObjectChildConfig";
 import { mergeObjectChildData } from "./mergeObjectChildData";
 import { newGetObjectChildPaths } from "./newGetObjectChildPaths";
@@ -15,7 +14,6 @@ export function registerObjectNodeRenderer(options?: ObjectNodeRendererOptions):
     type: type,
     name: 'Object',
     description: 'Manage complex nested structures',
-    initialiseData: initialiseObjectData,
     newGetChildConfig: newGetObjectChildConfig,
     newGetChildPaths: newGetObjectChildPaths,
     createFallbackDefaultValue: () => ({}),

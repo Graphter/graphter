@@ -1,5 +1,5 @@
 import { NodeConfig, PathSegment } from "@graphter/core";
-import React, { ComponentType } from "react";
+import React, { ComponentType, Fragment } from "react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getValue } from "@graphter/renderer-react";
 import { getConfigAt } from "@graphter/renderer-react";
@@ -77,10 +77,10 @@ const Breadcrumbs = ({config, globalPath, AncestorCrumb, CurrentCrumb, originalT
           crumbData.display.label
         )
         return (
-          <>
+          <Fragment key={key}>
             {i < crumbsData.length - 1 ? (
               <>
-                <AncestorCrumb key={key} path={crumbData.path}>
+                <AncestorCrumb path={crumbData.path}>
                   {contents}
                 </AncestorCrumb>
                 <DividerSvg/>
@@ -90,7 +90,7 @@ const Breadcrumbs = ({config, globalPath, AncestorCrumb, CurrentCrumb, originalT
                 {contents}
               </CurrentCrumb>
             )}
-          </>
+          </Fragment>
         )
       })}
     </div>
