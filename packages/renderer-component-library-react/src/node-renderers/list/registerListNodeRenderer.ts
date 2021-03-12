@@ -1,8 +1,13 @@
 import ListNodeRenderer from "./ListNodeRenderer";
-import { NodeConfig, NodeRendererRegistration, PathSegment } from "@graphter/core";
+import {
+  NodeConfig,
+  NodeRendererRegistration,
+  PathSegment
+} from "@graphter/core";
 import { newListGetChildConfig } from "./newListGetChildConfig";
 import { mergeListChildData } from "./mergeListChildData";
 import { newGetListChildPaths } from "./newGetListChildPaths";
+import { listInitialiser } from "./listInitialiser";
 
 export interface ListNodeRendererOptions {
   type?: string,
@@ -18,6 +23,7 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     newGetChildPaths: newGetListChildPaths,
     mergeChildData: mergeListChildData,
     createFallbackDefaultValue: () => ([]),
+    initialiser: listInitialiser,
     Renderer: ListNodeRenderer,
     options
   }

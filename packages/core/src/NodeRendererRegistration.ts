@@ -13,6 +13,7 @@ export interface NodeRendererRegistration {
   newGetChildConfig?: NewGetChildConfigFn
   newGetChildPaths?: NewGetChildPathsFn
   mergeChildData?: MergeChildDataFn
+  initialiser?: NodeDataInitialiserFn
   createFallbackDefaultValue?: CreateFallbackDefaultValueFn
 }
 
@@ -81,5 +82,13 @@ export interface CreateFallbackDefaultValueFn {
     config: NodeConfig,
     path: Array<PathSegment>,
     getNodeValue: <T>(path: Array<PathSegment>) => T
+  ): any
+}
+
+export interface NodeDataInitialiserFn {
+  (
+    originalTreeData: any,
+    config: NodeConfig,
+    path: Array<PathSegment>
   ): any
 }

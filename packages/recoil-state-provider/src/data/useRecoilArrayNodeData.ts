@@ -1,8 +1,8 @@
 import { nanoid } from "nanoid";
-import { useMemo } from "react";
 import { useRecoilNodeData } from "./useRecoilNodeData";
 import { propDataStore } from "../store/propDataStore";
 import { ArrayNodeDataHook } from "@graphter/renderer-react";
+import { useState } from "react";
 
 /**
  * @param path
@@ -11,7 +11,9 @@ export const useRecoilArrayNodeData: ArrayNodeDataHook = (
   path,
 ) => {
 
-  const [ childIds, setChildIds ] = useRecoilNodeData(path)
+  const [ arrayItems ] = useRecoilNodeData(path)
+
+  const [ childIds, setChildIds ] = useState(arrayItems.map(() => nanoid()))
 
   return {
     childIds,

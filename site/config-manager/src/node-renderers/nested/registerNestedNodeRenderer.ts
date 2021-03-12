@@ -3,6 +3,7 @@ import { NodeRendererRegistration } from "@graphter/core";
 import { newGetNestedChildConfig } from "./newGetNestedChildConfig";
 import { mergeNestedChildData } from "./mergeNestedChildData";
 import { newGetNestedChildPaths } from "./newGetNestedChildPaths";
+import { nestedInitialiser } from "./nestedInitialiser";
 
 export interface NestedNodeRendererOptions {
   type: string,
@@ -16,6 +17,7 @@ export function registerNestedNodeRenderer(options?: NestedNodeRendererOptions):
     newGetChildConfig: newGetNestedChildConfig,
     newGetChildPaths: newGetNestedChildPaths,
     mergeChildData: mergeNestedChildData,
+    initialiser: nestedInitialiser,
     Renderer: NestedNodeRenderer,
     options
   }

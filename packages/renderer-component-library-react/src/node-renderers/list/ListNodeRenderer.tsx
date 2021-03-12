@@ -1,5 +1,11 @@
 import React, { ComponentType, useState } from 'react'
-import { NodeRendererProps } from "@graphter/core";
+import {
+  ErrorRendererProps,
+  NodeConfig,
+  NodeRendererProps,
+  NodeRendererRegistration,
+  PathSegment
+} from "@graphter/core";
 import { nodeRendererStore, createDefault } from "@graphter/renderer-react";
 import { useArrayNodeData } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
@@ -9,6 +15,15 @@ import DefaultEditItemWrapper from "./DefaultEditItemWrapper";
 import { pathUtils } from "@graphter/renderer-react";
 import { useTreeDataInitialiser } from "@graphter/renderer-react";
 import { isListConfig } from "./isListConfig";
+import { nanoid } from 'nanoid'
+import { useNodeData } from "@graphter/renderer-react";
+
+export interface ItemMeta {
+  item: any
+  key: string
+  committed: boolean
+  deleted: boolean
+}
 
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -25,7 +40,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   if (!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
 
   const [ showNewItemUI, setShowNewItemUI ] = useState(false)
-  const [ editingItems, setEditingItems ] = useState<Set<string>>(new Set())
+  const [ editingItems ] = useState<Set<string>>(new Set())
 
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
@@ -34,90 +49,91 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const {
-    childIds,
-    removeItem,
-    commitItem,
-  } = useArrayNodeData(globalPath)
+  const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(globalPath)
+
+  // const {
+  //   childIds,
+  //   removeItem,
+  //   commitItem,
+  // } = useArrayNodeData(globalPath)
+
+  function removeItem(key: string) {
+    setItemsMeta([ ...itemsMeta.map(itemMeta => {
+      if(itemMeta.key === key) return {
+        ...itemMeta,
+        deleted: true
+      }
+      return itemMeta
+    })])
+  }
+  function commitItem(key: string) {
+    setItemsMeta([ ...itemsMeta.map(itemMeta => {
+      if(itemMeta.key === key) return {
+        ...itemMeta,
+        committed: true
+      }
+      return itemMeta
+    })])
+  }
 
   return (
     <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
       <div className='' data-testid='items'>
-        {childIds && childIds.map((childId: any, i: number) => {
+        {itemsMeta && itemsMeta.map((itemMeta: ItemMeta, i: number) => {
+          if(itemMeta.deleted) return null
           const childPath = [ ...globalPath, i ]
-          if (!editingItems.has(childId)) return (
-            <DefaultItemView
-              key={childId}
-              childId={childId}
-              config={childConfig}
-              globalPath={childPath}
-              onSelect={() => {
-                if (config.options?.itemSelectionBehaviour === 'INLINE' || !config.options?.itemSelectionBehaviour) {
-                  const newEditingItems = new Set(editingItems)
-                  newEditingItems.add(childId)
-                  setEditingItems(newEditingItems)
-                  return
-                }
-                if (config.options?.itemSelectionBehaviour === 'CUSTOM' && typeof options?.customItemSelectionBehaviour === 'function') {
-                  options.customItemSelectionBehaviour(config.options?.itemSelectionBehaviour, childConfig, childPath)
-                }
-              }}
-              onRemove={() => {
-                removeItem(i)
-              }}
-            />
-          )
-          return (
-            <DefaultEditItemWrapper
-              key={childId}
-              onRemove={() => {
-                removeItem(i)
-              }}
-              onDone={() => {
-                const newEditingItems = new Set(editingItems)
-                newEditingItems.delete(childId)
-                setEditingItems(newEditingItems)
-              }}
-            >
-              <ChildTypeRenderer
-                config={childConfig}
-                globalPath={childPath}
-                committed={committed}
-                originalTreeData={originalTreeData}
-                ErrorDisplayComponent={ErrorDisplayComponent}
-                options={childRendererRegistration.options}
-              />
-            </DefaultEditItemWrapper>
-          )
+
+          function setEditMode(key: string, editMode: boolean) {
+            editMode ? editingItems.add(key) : editingItems.delete(key)
+          }
+
+          if (itemMeta.committed) {
+            return renderCommittedItem(
+              config,
+              options,
+              childConfig,
+              childPath,
+              childRendererRegistration,
+              editingItems.has(itemMeta.key),
+              setEditMode,
+              itemMeta,
+              removeItem,
+              originalTreeData,
+              ErrorDisplayComponent)
+          } else {
+            return renderUncommittedItem(
+              config,
+              childConfig,
+              childPath,
+              childRendererRegistration,
+              itemMeta,
+              commitItem,
+              removeItem,
+              originalTreeData,
+              ErrorDisplayComponent)
+          }
         })}
       </div>
-      {showNewItemUI ? (
-        <DefaultNewItemWrapper
-          config={config}
-          onAdd={() => {
-            setShowNewItemUI(false)
-            commitItem(childIds.length)
-          }}
-          onCancel={() => {
-            setShowNewItemUI(false)
-          }}
-        >
-          <ChildTypeRenderer
-            config={childConfig}
-            globalPath={[ ...globalPath, childIds.length ]}
-            committed={false}
-            originalTreeData={originalTreeData}
-            ErrorDisplayComponent={ErrorDisplayComponent}
-            options={childRendererRegistration.options}
-          />
-        </DefaultNewItemWrapper>
-      ) : (
-        (!config.options.maxItems || childIds.length < config.options.maxItems) && (
+      {!showNewItemUI && (
+        (!config.options.maxItems || itemsMeta.length < config.options.maxItems) && (
           <button
             type='button'
             className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
             onClick={() => {
-              treeDataInitialiser(childConfig, [ ...globalPath, childIds.length ], false, originalTreeData)
+              const childPath = [ ...globalPath, itemsMeta.length ]
+              const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
+                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValue(originalTreeData, path)) :
+                null
+              setItemsMeta([
+                ...itemsMeta,
+                {
+                  item: createDefault(childConfig, childFallbackValue),
+                  key: nanoid(),
+                  committed: false,
+                  deleted: false
+                }
+              ])
+              treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], false, originalTreeData)
               setShowNewItemUI(true)
             }}
             data-testid='add-item-btn'
@@ -128,5 +144,96 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     </div>
   )
 })
+
+function renderCommittedItem(
+  parentConfig: NodeConfig,
+  parentOptions: any,
+  childConfig: NodeConfig,
+  childPath: Array<PathSegment>,
+  childRendererRegistration: NodeRendererRegistration,
+  isEditing: boolean,
+  setEditMode: (key: string, editMode: boolean) => void,
+  itemMeta: ItemMeta,
+  removeItem: (key: string) => void,
+  originalTreeData: any,
+  ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
+) {
+  if (isEditing) {
+    const ChildTypeRenderer = childRendererRegistration.Renderer
+    return (
+      <DefaultEditItemWrapper
+        key={itemMeta.key}
+        onRemove={() => {
+          removeItem(itemMeta.key)
+        }}
+        onDone={() => {
+          setEditMode(itemMeta.key, false)
+        }}
+      >
+        <ChildTypeRenderer
+          config={childConfig}
+          globalPath={childPath}
+          committed={itemMeta.committed}
+          originalTreeData={originalTreeData}
+          ErrorDisplayComponent={ErrorDisplayComponent}
+          options={childRendererRegistration.options}
+        />
+      </DefaultEditItemWrapper>
+    )
+  }
+
+  return (
+    <DefaultItemView
+      key={itemMeta.key}
+      childId={itemMeta.key}
+      config={childConfig}
+      globalPath={childPath}
+      onSelect={() => {
+        if (parentConfig.options?.itemSelectionBehaviour === 'INLINE' || !parentConfig.options?.itemSelectionBehaviour) {
+          setEditMode(itemMeta.key, true)
+        } else if (parentConfig.options?.itemSelectionBehaviour === 'CUSTOM' && typeof parentOptions?.customItemSelectionBehaviour === 'function') {
+          parentOptions.customItemSelectionBehaviour(parentConfig.options?.itemSelectionBehaviour, childConfig, childPath)
+        }
+      }}
+      onRemove={() => {
+        removeItem(itemMeta.key)
+      }}
+    />
+  )
+}
+
+function renderUncommittedItem(
+  parentConfig: NodeConfig,
+  childConfig: NodeConfig,
+  childPath: Array<PathSegment>,
+  childRendererRegistration: NodeRendererRegistration,
+  itemMeta: ItemMeta,
+  commitItem: (key: string) => void,
+  removeItem: (key: string) => void,
+  originalTreeData: any,
+  ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
+) {
+  const ChildTypeRenderer = childRendererRegistration.Renderer
+  return (
+    <DefaultNewItemWrapper
+      config={parentConfig}
+      onAdd={() => {
+        commitItem(itemMeta.key)
+      }}
+      onCancel={() => {
+        removeItem(itemMeta.key)
+      }}
+    >
+      <ChildTypeRenderer
+        config={childConfig}
+        globalPath={childPath}
+        committed={false}
+        originalTreeData={originalTreeData}
+        ErrorDisplayComponent={ErrorDisplayComponent}
+        options={childRendererRegistration.options}
+      />
+    </DefaultNewItemWrapper>
+  )
+}
 
 export default ListNodeRenderer

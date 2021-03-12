@@ -3,6 +3,7 @@ import { NodeRendererRegistration } from "@graphter/core";
 import { newGetConditionalChildConfig } from "./newGetConditionalChildConfig";
 import { mergeConditionalChildData } from "./mergeConditionalChildData";
 import { newGetConditionalChildPaths } from "./newGetConditionalChildPaths";
+import { conditionalInitialiser } from "./conditionalInitialiser";
 
 export interface ConditionalNodeRendererOptions {
   type: string,
@@ -17,6 +18,7 @@ export function registerConditionalNodeRenderer(options?: ConditionalNodeRendere
     newGetChildPaths: newGetConditionalChildPaths,
     mergeChildData: mergeConditionalChildData,
     createFallbackDefaultValue: () => ([]),
+    initialiser: conditionalInitialiser,
     Renderer: ConditionalNodeRenderer,
     options
   }
