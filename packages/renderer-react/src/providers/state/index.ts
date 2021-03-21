@@ -5,7 +5,6 @@ import StateProvider, {
   useTreeDataCallback,
   useTreeData,
   useTreePaths,
-  useArrayNodeData
 } from "./StateProvider";
 
 export default StateProvider;
@@ -17,7 +16,6 @@ export {
   useTreeDataCallback,
   useTreeData,
   useTreePaths,
-  useArrayNodeData
 }
 
 export * from './TreeDataInitialiserHook'

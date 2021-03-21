@@ -51,19 +51,6 @@ export function useMultipleNodeData(
   return ctx.multipleNodeDataHook(paths);
 }
 
-export function useArrayNodeData<D>(
-  path: Array<PathSegment>
-): {
-  childIds: Array<string>,
-  removeItem: (index: number) => void,
-  commitItem: (index: number) => void
-} {
-  const ctx = useContext(Context)
-  if (!ctx || !ctx.arrayNodeDataHook) throw new Error(`Couldn't find an ArrayNodeDataHook or context to use.`)
-
-  return ctx.arrayNodeDataHook(path)
-}
-
 export const useTreeData:TreeDataHook = (
   config,
   path: Array<PathSegment>) => {

@@ -7,7 +7,6 @@ import {
   PathSegment
 } from "@graphter/core";
 import { nodeRendererStore, createDefault } from "@graphter/renderer-react";
-import { useArrayNodeData } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import DefaultItemView from "./DefaultItemView";
 import DefaultNewItemWrapper from "./DefaultNewItemWrapper";
@@ -50,12 +49,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   const treeDataInitialiser = useTreeDataInitialiser()
 
   const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(globalPath)
-
-  // const {
-  //   childIds,
-  //   removeItem,
-  //   commitItem,
-  // } = useArrayNodeData(globalPath)
 
   function removeItem(key: string) {
     setItemsMeta([ ...itemsMeta.map(itemMeta => {
