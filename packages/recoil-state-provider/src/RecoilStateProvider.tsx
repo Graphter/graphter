@@ -7,7 +7,6 @@ import { useRecoilNodeData } from "./data/useRecoilNodeData";
 import { useRecoilMultipleNodeData } from "./data/useRecoilMultipleNodeData";
 import { useRecoilTreeDataCallback } from "./data/useRecoilTreeDataCallback";
 import { useRecoilTreePaths } from "./data/useRecoilTreePaths";
-import { useRecoilArrayNodeData } from "./data/useRecoilArrayNodeData";
 import { StateProvider, NodeValidationProvider } from "@graphter/renderer-react";
 import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 import { useRecoilTreeData } from "./data/useRecoilTreeData";
@@ -37,7 +36,6 @@ export function RecoilStateProvider(
           multipleNodeDataHook={useRecoilMultipleNodeData}
           treeDataCallbackHook={useRecoilTreeDataCallback}
           treePathsHook={useRecoilTreePaths}
-          arrayNodeDataHook={useRecoilArrayNodeData}
         >
           {children}
         </StateProvider>

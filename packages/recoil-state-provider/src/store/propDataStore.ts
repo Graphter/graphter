@@ -12,9 +12,11 @@ const pathToKey = (path: Array<PathSegment>) => path.join('[88484d0d-33e8-47b4-a
 
 export const get = (
   path: Array<PathSegment>
-): RecoilState<any> | null => {
+): RecoilState<any> => {
   checkPathArg(path)
-  return propStatePathMap.get(pathToKey(path)) || null
+  const state = propStatePathMap.get(pathToKey(path))
+  if(!state) throw new Error(`Couldn't find state at ${path.join('/')}`)
+  return state
 }
 
 export const set = (
@@ -45,7 +47,7 @@ function checkPathArg(path: Array<PathSegment>){
 }
 
 export interface PropDataStore {
-  get: (path: Array<PathSegment>) => RecoilState<any> | null
+  get: (path: Array<PathSegment>) => RecoilState<any>
   set: (
     path: Array<PathSegment>,
     committed: boolean,

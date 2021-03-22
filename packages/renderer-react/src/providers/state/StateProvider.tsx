@@ -1,7 +1,6 @@
 import React, { createContext, useContext } from 'react';
 import { PathSegment } from "@graphter/core";
 import { NodeDataHook } from "./NodeDataHook";
-import { ArrayNodeDataHook } from "./ArrayNodeDataHook";
 import { TreeDataHook } from "./TreeDataHook";
 import { TreePathsHook } from "./TreePathsHook";
 import { TreeDataInitialiserHook } from "./TreeDataInitialiserHook";
@@ -12,7 +11,6 @@ interface DataProviderProps {
   treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
   multipleNodeDataHook: MultipleNodeDataHook
-  arrayNodeDataHook: ArrayNodeDataHook
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
   treePathsHook: TreePathsHook
@@ -23,7 +21,6 @@ const Context = createContext<{
   treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
   multipleNodeDataHook: MultipleNodeDataHook
-  arrayNodeDataHook: ArrayNodeDataHook
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
   treePathsHook: TreePathsHook
@@ -82,7 +79,6 @@ export default function StateProvider(
     treeDataHook,
     treeDataCallbackHook,
     treePathsHook,
-    arrayNodeDataHook,
     children
   }: DataProviderProps
 ) {
@@ -92,7 +88,6 @@ export default function StateProvider(
       nodeDataHook,
       multipleNodeDataHook,
       treeDataCallbackHook,
-      arrayNodeDataHook,
       treeDataHook,
       treePathsHook
     }}>
