@@ -25,7 +25,7 @@ export const useData = (config: NodeConfig, instanceId: string | number): UseDat
             setResult({ loading: false, error: new Error(`Couldn't find a '${config.name}' with ID '${instanceId}'`) })
             return;
           }
-          treeDataInitialiser(config, [ config.id, instanceId ], true, getResult.item)
+          treeDataInitialiser(config, [ config.id, instanceId ], getResult.item)
           setResult({ loading: false, data: getResult.item })
         } catch (err) {
           console.error(err)

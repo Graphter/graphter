@@ -124,7 +124,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
                   deleted: false
                 }
               ])
-              treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], false, originalTreeData)
+              treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], originalTreeData)
               setShowNewItemUI(true)
             }}
             data-testid='add-item-btn'
@@ -164,7 +164,6 @@ function renderCommittedItem(
         <ChildTypeRenderer
           config={childConfig}
           globalPath={childPath}
-          committed={itemMeta.committed}
           originalTreeData={originalTreeData}
           ErrorDisplayComponent={ErrorDisplayComponent}
           options={childRendererRegistration.options}
@@ -218,7 +217,6 @@ function renderUncommittedItem(
       <ChildTypeRenderer
         config={childConfig}
         globalPath={childPath}
-        committed={false}
         originalTreeData={originalTreeData}
         ErrorDisplayComponent={ErrorDisplayComponent}
         options={childRendererRegistration.options}

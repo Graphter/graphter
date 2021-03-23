@@ -12,8 +12,6 @@ const filterRegExpGlobal = /[^a-z0-9-]/g
 const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    originalTreeData,
-    committed = true,
     globalPath
   }: NodeRendererProps
 ) => {

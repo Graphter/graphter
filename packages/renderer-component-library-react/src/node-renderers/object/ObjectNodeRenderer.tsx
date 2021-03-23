@@ -12,7 +12,6 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     config,
     originalTreeData,
     globalPath,
-    committed,
     ErrorDisplayComponent
   }: NodeRendererProps
 ) => {
@@ -25,7 +24,6 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         return (
           <DefaultPropertyWrapper config={childConfig} key={childConfig.id}>
             <ChildTypeRenderer
-              committed={committed}
               config={childConfig}
               globalPath={[ ...globalPath, childConfig.id ]}
               originalTreeData={originalTreeData}

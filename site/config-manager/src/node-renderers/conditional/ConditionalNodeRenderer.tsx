@@ -5,17 +5,13 @@ import { pathUtils } from "@graphter/renderer-react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
 import { setupNodeRenderer } from "@graphter/renderer-react";
-import { getValue } from "@graphter/renderer-react";
 import { isConditionalConfig } from "./isConditionalConfig";
 import { useTreeDataInitialiser } from "@graphter/renderer-react";
-
-const NoMatch = 'no-match-4acbdcce-9225-4fee-b845-7159110763eb'
 
 const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalTreeData,
-    committed = true,
     globalPath,
     ErrorDisplayComponent,
   }: NodeRendererProps
@@ -35,7 +31,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     if(!matchingChildConfig) return null
     const rendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
     if(!rendererRegistration) return null
-    treeDataInitialiser(matchingChildConfig, globalPath, true, originalTreeData)
+    treeDataInitialiser(matchingChildConfig, globalPath, originalTreeData)
     return [ matchingChildConfig, rendererRegistration ]
   }, [ targetNodeData ])
 
@@ -46,12 +42,9 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
 
   const [ matchingChildConfig, matchingChildRendererRegistration ] = match
 
-
-
   return (
     <>
       <matchingChildRendererRegistration.Renderer
-        committed={committed}
         config={matchingChildConfig}
         globalPath={[ ...globalPath ]}
         originalTreeData={originalTreeData}

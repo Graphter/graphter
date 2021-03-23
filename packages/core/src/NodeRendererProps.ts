@@ -14,10 +14,6 @@ export interface NodeRendererProps {
   done?: () => void
   options?: any
   /**
-   * Track new items in an enumerable before they're added
-   */
-  committed: boolean
-  /**
    * To track current location in graph
    */
   globalPath: Array<PathSegment>

@@ -75,7 +75,6 @@ export default function NodeEditRenderer(
         </div>
 
         <TypeRenderer
-          committed={true}
           globalPath={path}
           config={childConfig}
           originalTreeData={startingData}

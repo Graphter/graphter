@@ -18,7 +18,6 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   {
     config,
     originalTreeData,
-    committed = true,
     globalPath
   }: NodeRendererProps
 ) => {
