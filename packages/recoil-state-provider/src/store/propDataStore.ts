@@ -21,7 +21,6 @@ export const get = (
 
 export const set = (
   path: Array<PathSegment>,
-  committed: boolean,
   originalValue?: any
 ) => {
   checkPathArg(path)
@@ -50,7 +49,6 @@ export interface PropDataStore {
   get: (path: Array<PathSegment>) => RecoilState<any>
   set: (
     path: Array<PathSegment>,
-    committed: boolean,
     originalValue?: any
   ) => void
   has: (path: Array<string | number>) => boolean

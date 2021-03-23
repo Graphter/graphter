@@ -61,7 +61,7 @@ describe('treeDataStore', () => {
       when(nodeRendererStoreMock.get)
         .calledWith('unicorn')
         .mockReturnValueOnce({})
-      propDataStore.set([ 'page' ], true, 'the-page-value')
+      propDataStore.set([ 'page' ], 'the-page-value')
       const {container} = render(
         <RecoilRoot>
           <ConsumerComponent config={config}/>

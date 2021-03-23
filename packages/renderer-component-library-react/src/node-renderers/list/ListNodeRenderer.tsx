@@ -28,7 +28,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalTreeData,
-    committed,
     globalPath,
     ErrorDisplayComponent,
     options
@@ -44,7 +43,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
   if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${globalPath.join('/')}/${childConfig.id}`)
-  const ChildTypeRenderer = childRendererRegistration.Renderer
 
   const treeDataInitialiser = useTreeDataInitialiser()
 

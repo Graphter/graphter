@@ -26,7 +26,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       const rendererReg = nodeRendererStore.get(nodeMeta.config.type)
       if(rendererReg.initialiser){
         const initialData = rendererReg.initialiser(originalTreeData, nodeMeta.config, nodeMeta.path)
-        propDataStore.set(globalPath, true, initialData)
+        propDataStore.set(globalPath, initialData)
       } else {
         let initialData = getValue(originalTreeData, nodeMeta.path, NO_MATCH)
         if (initialData === NO_MATCH) {
@@ -37,7 +37,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
               null
           )
         }
-        propDataStore.set(globalPath, true, initialData)
+        propDataStore.set(globalPath, initialData)
       }
 
 
