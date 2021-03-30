@@ -48,6 +48,11 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(globalPath)
 
+  if(!itemsMeta){
+    setItemsMeta([])
+    return null
+  }
+
   function removeItem(key: string) {
     setItemsMeta([ ...itemsMeta.map(itemMeta => {
       if(itemMeta.key === key) return {
