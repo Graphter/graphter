@@ -1,7 +1,7 @@
 import { RecoilValueReadOnly, selector } from "recoil";
 import { NodeConfig, PathSegment } from "@graphter/core";
-import { nodeRendererStore } from "@graphter/renderer-react";
 import { propDataStore } from "./propDataStore";
+import { getTreeData, getTreePaths } from "@graphter/renderer-react";
 
 const treeDataMap: { [key: string]: RecoilValueReadOnly<any> } = {};
 const descendentPathDataMap: { [key: string]: RecoilValueReadOnly<Array<Array<PathSegment>>> } = {};
@@ -25,16 +25,10 @@ const treeDataStore: TreeDataStore = {
     treeDataMap[key] = treeDataSelector = selector<any>({
       key: key,
       get: ({ get }) => {
-        const getNodeValue = (path:Array<PathSegment>) => {
+        return getTreeData(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
-        }
-        const renderer = nodeRendererStore.get(config.type)
-        if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
-
-        return renderer.getChildData ?
-          renderer.getChildData(config, path, getNodeValue) :
-          getNodeValue(path)
+        })
       }
     });
 
@@ -50,14 +44,10 @@ const treeDataStore: TreeDataStore = {
     descendentPathDataMap[key] = descendentPathSelector = selector<any>({
       key: key,
       get: ({ get }) => {
-        const renderer = nodeRendererStore.get(config.type)
-        if(!renderer) throw new Error(`Couldn't find renderer for type '${config.type}'`)
-        if(!renderer.getChildPaths) return []
-        const childPaths = renderer.getChildPaths(config, path, (path:Array<PathSegment>) => {
+        return getTreePaths(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
-        return childPaths
       }
     })
     return descendentPathSelector

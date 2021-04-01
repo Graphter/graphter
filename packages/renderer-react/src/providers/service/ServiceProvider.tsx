@@ -2,7 +2,7 @@ import React, {createContext, useContext} from 'react';
 import { PathSegment, Service } from "@graphter/core";
 
 export interface ServiceRegistration {
-  id: string,
+  id: string | number,
   service: Service
 }
 
@@ -15,14 +15,14 @@ const Context = createContext<Map<PathSegment, Service> | null>(null);
 
 let serviceMap: Map<PathSegment, Service>
 
-export function getService(id: string): Service {
+export function getService(id: string | number): Service {
   if(!serviceMap) throw new Error(`Couldn't find the API service registry. Make sure you've declared a <ServiceProvider /> and passed it a valid service.`)
   const service = serviceMap.get(id)
   if(!service) throw new Error(`Missing a service to handle '${id}' data`)
   return service
 }
 
-export function useService(id: string): Service {
+export function useService(id: string | number): Service {
   const serviceMap = useContext(Context)
   if(!serviceMap) throw new Error(`Couldn't find the API service registry. Make sure you've declared a <ServiceProvider /> and passed it a valid service.`)
   const service = serviceMap.get(id)

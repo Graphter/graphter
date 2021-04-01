@@ -1,11 +1,17 @@
 import ListNodeRenderer from "./ListNodeRenderer";
-import { NodeRendererRegistration } from "@graphter/core";
-import { getListChildData } from "./getListChildData";
-import { getListChildPaths } from "./getListChildPaths";
-import { initialiseListData } from "./initialiseListData";
+import {
+  NodeConfig,
+  NodeRendererRegistration,
+  PathSegment
+} from "@graphter/core";
+import { newListGetChildConfig } from "./newListGetChildConfig";
+import { mergeListChildData } from "./mergeListChildData";
+import { newGetListChildPaths } from "./newGetListChildPaths";
+import { listInitialiser } from "./listInitialiser";
 
 export interface ListNodeRendererOptions {
-  type: string
+  type?: string,
+  customItemSelectionBehaviour?: (behaviour: string, config: NodeConfig, path: Array<PathSegment>) => void
 }
 
 export function registerListNodeRenderer(options?: ListNodeRendererOptions): NodeRendererRegistration {
@@ -13,9 +19,11 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     type: options?.type || 'list',
     name: 'List',
     description: 'Manage lists of data',
-    initialiseData: initialiseListData,
-    getChildData: getListChildData,
-    getChildPaths: getListChildPaths,
+    newGetChildConfig: newListGetChildConfig,
+    newGetChildPaths: newGetListChildPaths,
+    mergeChildData: mergeListChildData,
+    createFallbackDefaultValue: () => ([]),
+    initialiser: listInitialiser,
     Renderer: ListNodeRenderer,
     options
   }

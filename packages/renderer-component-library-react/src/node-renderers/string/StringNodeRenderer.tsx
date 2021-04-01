@@ -1,44 +1,34 @@
 import React, { ComponentType, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
-import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
-import s from './StringNodeRenderer.pcss'
+import { useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
+import InlineValidation from "../../inline-validation";
 
 const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    originalNodeData,
-    committed = true,
-    path
+    globalPath
   }: NodeRendererProps
 ) => {
-  const isNew = typeof originalNodeData === 'undefined'
-  if(isNew) originalNodeData = createDefault(config, '')
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
+  const validationResults = useNodeValidation(config, globalPath)
   return (
     <>
       <input
         type='text'
         value={nodeData}
         data-nodetype='string'
-        data-nodepath={path.join('/')}
-        className={s.input}
+        data-nodepath={globalPath.join('/')}
+        className='flex-grow p-3 rounded'
         onChange={(e) => {
           if(!touched) setTouched(true)
           setNodeData && setNodeData(e.currentTarget.value);
         }} />
-      {touched &&
-      validationResults &&
-      validationResults.value === nodeData &&
-      validationResults.results.map((result, i) => (
-        result.valid ? null : (
-          <div className={s.error} key={i} data-testid='validation-error'>
-            {result.errorMessage}
-          </div>
-        )
-      ))}
+      <InlineValidation
+        touched={touched}
+        validationData={validationResults}
+        nodeData={nodeData} />
     </>
   )
 })

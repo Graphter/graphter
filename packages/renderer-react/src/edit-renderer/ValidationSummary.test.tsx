@@ -1,9 +1,9 @@
 import { render } from "@testing-library/react";
-import React from "react";
 import ValidationSummary from "./ValidationSummary";
 import { NodeValidationProvider } from "../providers/node-validation";
-import NodeDataProvider from "../providers/node-data";
+import StateProvider from "../providers/state";
 import { when } from "jest-when";
+import React from "react";
 
 
 describe('<ValidationSummary />', () => {
@@ -33,23 +33,23 @@ describe('<ValidationSummary />', () => {
         }
       ])
     const {queryByText} = render(
-      <NodeDataProvider
-        instanceId={'some-id'}
+      <StateProvider
         treeDataInitialiserHook={jest.fn()}
         nodeDataHook={jest.fn()}
+        multipleNodeDataHook={jest.fn()}
         arrayNodeDataHook={jest.fn()}
         treeDataHook={jest.fn()}
+        treeDataCallbackHook={jest.fn()}
         treePathsHook={useTreePathsHookMock}
       >
         <NodeValidationProvider
-          instanceId={'some-id'}
           nodeValidationHook={jest.fn()}
           aggregateNodeValidationHook={aggregateNodeValidationMock}
           validatorRegistry={[]}
         >
           <ValidationSummary config={config} path={[ 'page' ]}/>
         </NodeValidationProvider>
-      </NodeDataProvider>
+      </StateProvider>
     )
     expect(queryByText('page/0: This is an error')).not.toBeNull()
     expect(queryByText('page/0: This is another error')).not.toBeNull()
@@ -62,23 +62,23 @@ describe('<ValidationSummary />', () => {
       type: 'object'
     }
     const { container } = render(
-      <NodeDataProvider
-        instanceId={'some-id'}
+      <StateProvider
         treeDataInitialiserHook={jest.fn()}
         nodeDataHook={jest.fn()}
+        multipleNodeDataHook={jest.fn()}
         arrayNodeDataHook={jest.fn()}
         treeDataHook={jest.fn()}
+        treeDataCallbackHook={jest.fn()}
         treePathsHook={jest.fn()}
       >
         <NodeValidationProvider
-          instanceId={'some-id'}
           nodeValidationHook={jest.fn()}
           aggregateNodeValidationHook={aggregateValidationDataMock}
           validatorRegistry={[]}
         >
           <ValidationSummary config={config} path={[ 'page' ]}/>
         </NodeValidationProvider>
-      </NodeDataProvider>
+      </StateProvider>
     )
     expect(container.childElementCount).toBe(0)
   })

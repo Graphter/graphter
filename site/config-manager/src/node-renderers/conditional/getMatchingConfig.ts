@@ -1,10 +1,8 @@
 import stringify from "fast-json-stable-stringify";
-import { NodeConfig } from "@graphter/core";
-import { Branch } from "./Branch";
-import { nodeRendererStore } from "@graphter/renderer-react";
+import { ConditionalNodeBranch, ConditionalNodeConfig } from "./ConditionalNodeConfig";
 
-export const getMatchingConfig = (config: NodeConfig, targetNodeData: any) => {
- const matchingBranch = config.options.branches.find((branch: Branch) => typeof branch.condition === 'function' ?
+export const getMatchingConfig = (config: ConditionalNodeConfig, targetNodeData: any) => {
+ const matchingBranch = config.options.branches.find((branch: ConditionalNodeBranch) => typeof branch.condition === 'function' ?
    branch.condition(targetNodeData) :
    stringify(targetNodeData) === stringify(branch.condition))
  if(!matchingBranch) return null

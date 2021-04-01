@@ -1,93 +1,67 @@
-import React, { ComponentType, useEffect, useState } from "react";
-import s from './NodeEditRenderer.pcss';
-import { isEmpty } from "../util/id";
-import { useService } from "../providers/service";
+/***
+ * This module needs to be broken up and much of it moved out of the package
+ */
+import React, { ComponentType } from "react";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps,
-  NodeRendererRegistration,
+  NodeRendererRegistration, PathSegment,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
-import { useTreeData } from "../providers/node-data";
 import { useConfig } from "../providers/config";
-import { useTreeDataCallback, useTreeDataInitialiser } from "../providers/node-data/NodeDataProvider";
+import { useTreeDataCallback } from "../providers/state";
+import { getConfigAt } from "../util/node";
+import { getValue } from "../util/path";
 
 export interface NodeEditRendererProps {
-  configId: string
-  editingId?: string | number
+  path: Array<PathSegment>
   errorRenderer?: ComponentType<ErrorRendererProps>
   onSaved?: (modelId: string, instance: any) => void
   cancel: (modelId: string | undefined, instance: any) => void
-  typeRegistry: Array<NodeRendererRegistration>
+  startingData: any
 }
 
 export default function NodeEditRenderer(
   {
-    editingId,
-    configId,
+    path,
     errorRenderer,
     cancel,
-    typeRegistry
+    startingData
   }: NodeEditRendererProps) {
 
-  const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
+  const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError
 
-  if (!configId) return <ErrorDisplayComponent err={new Error('A config ID is required')} />;
-  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />;
+  if(path?.length < 2) return <ErrorDisplayComponent err={new Error('An absolute path (containing at least two path segments) is required.')} />
 
-  nodeRendererStore.registerAll(typeRegistry)
+  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />
 
-  const config = useConfig(configId)
 
-  const service = useService(configId)
+  const topNodeConfigId = path[0]
+  const editingId = path[1]
+  const topNodePath = path.slice(0, 2)
 
-  const [ loading, setLoading ] = useState(true);
-  const [ error, setError ] = useState<Error>();
-  const [ startingData, setStartingData ] = useState<any>(undefined);
-  const path = [ config.id, editingId !== undefined ? editingId : 'new' ]
-  const treeDataInitialiser = useTreeDataInitialiser()
+  const topNodeConfig = useConfig(topNodeConfigId)
+
   const save = useTreeDataCallback(
     (treeData) => {
       console.log('saving model ', treeData)
     },
-    config,
+    topNodeConfig,
     path)
 
-  useEffect(() => {
-    (async () => {
-      if (isEmpty(editingId)) {
-        setLoading(false);
-      } else {
-        try {
-          const getResult = await service.get(editingId);
-          setLoading(false);
-          if (!getResult.item) {
-            setError(new Error(`Couldn't find a ${config.name} with ID '${editingId}'`));
-            return;
-          }
-          treeDataInitialiser(config, path, getResult.item)
-          setStartingData(getResult.item)
-        } catch (err) {
-          console.error(err);
-          setLoading(false);
-          setError(new Error(`There was a problem loading that ${config.name}: ${err.message}`));
-          return;
-        }
-      }
-    })()
-  }, [ editingId ]);
-
   if (!startingData) return null
-  const registration = nodeRendererStore.get(config.type)
-  const TypeRenderer = registration.Renderer
+
+  const registration = nodeRendererStore.get(topNodeConfig.type)
+  if(!registration) throw new Error(`No renderer found for type '${topNodeConfig.type}'`)
+  const childConfig = getConfigAt(topNodeConfig, path.slice(2), (path => getValue(startingData, path)))
+  if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
+  const childRegistration = nodeRendererStore.get(childConfig.type)
+  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.type}'`)
+  const TypeRenderer = childRegistration.Renderer
 
   return (
-    <div className={s.editRenderer}>
-
-      {error && <ErrorDisplayComponent err={error}/>}
-
-      {loading && <div className={s.editRenderer} data-testid='loading'>loading...</div>}
+    <div className='' data-testid='node-edit-renderer' >
 
       <form onSubmit={e => {
         e.preventDefault();
@@ -95,28 +69,30 @@ export default function NodeEditRenderer(
           await save()
         })()
       }} data-testid='form'>
-
-        <h1 className={s.name}>{config.name}</h1>
-        {config.description && <p>{config.description}</p>}
+        <div className='mt-8 mb-10'>
+          <h1 className='text-2xl'>{childConfig.name}</h1>
+          {childConfig.description && <p className='text-sm text-gray-500'>{childConfig.description}</p>}
+        </div>
 
         <TypeRenderer
-          committed={true}
-          path={path}
-          config={config}
-          configAncestry={[]}
-          originalNodeData={startingData}
-          originalNodeDataAncestry={[]}
+          globalPath={path}
+          config={childConfig}
+          originalTreeData={startingData}
           options={registration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}
         />
 
-        <ValidationSummary config={config} path={path}/>
+        <div className='border-t pt-10'>
 
-        <div className={s.controls}>
-          <button type='submit' data-testid='save' className={s.save}>Save</button>
-          <button type='button' data-testid='cancel' className={s.cancel}
-                  onClick={() => cancel(config.id, editingId)}>Cancel
-          </button>
+          <ValidationSummary config={topNodeConfig} path={topNodePath} />
+
+          <div className='flex justify-between'>
+            <button type='submit' data-testid='save' className='flex-grow p-3 mr-2 bg-green-500 text-white rounded'>Save</button>
+            <button type='button' data-testid='cancel' className='p-3 mr-2 bg-red-500 text-white rounded'
+                    onClick={() => cancel(topNodeConfig.id, editingId)}>Cancel
+            </button>
+          </div>
+
         </div>
       </form>
     </div>

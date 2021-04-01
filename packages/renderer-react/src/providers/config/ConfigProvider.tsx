@@ -6,18 +6,18 @@ interface ConfigProviderProps {
   children: any
 }
 
-const Context = createContext<Map<string, NodeConfig> | null>(null);
+const Context = createContext<Map<string | number, NodeConfig> | null>(null);
 
-let configMap: Map<string, NodeConfig>
+let configMap: Map<string | number, NodeConfig>
 
-export function getConfig(id: string): NodeConfig {
+export function getConfig(id: string | number): NodeConfig {
   if(!configMap) throw new Error(`Couldn't find the API service registry. Make sure you've declared a <ServiceProvider /> and passed it a valid service.`)
   const service = configMap.get(id)
   if(!service) throw new Error(`Missing '${id}' config`)
   return service
 }
 
-export function useConfig(id: string): NodeConfig {
+export function useConfig(id: string | number): NodeConfig {
   const configMap = useContext(Context)
   if(!configMap) throw new Error(`Couldn't find the config registry. Make sure you've declared a <ConfigProvider /> and passed it valid config.`)
   const config = configMap.get(id)

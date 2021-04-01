@@ -8,11 +8,8 @@ import { getConfig } from "@graphter/renderer-react";
 const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    configAncestry,
-    originalNodeData,
-    originalNodeDataAncestry,
-    committed = true,
-    path,
+    originalTreeData,
+    globalPath,
     ErrorDisplayComponent,
   }: NodeRendererProps
 ) => {
@@ -23,12 +20,9 @@ const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   return (
     <>
       <nestedRendererRegistration.Renderer
-        committed={committed}
         config={nestedConfig}
-        configAncestry={configAncestry}
-        path={[ ...path ]}
-        originalNodeData={originalNodeData}
-        originalNodeDataAncestry={originalNodeDataAncestry}
+        globalPath={[ ...globalPath ]}
+        originalTreeData={originalTreeData}
         options={nestedRendererRegistration.options}
         ErrorDisplayComponent={ErrorDisplayComponent} />
     </>

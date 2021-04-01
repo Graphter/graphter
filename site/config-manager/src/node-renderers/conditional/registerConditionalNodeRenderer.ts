@@ -1,8 +1,9 @@
 import ConditionalNodeRenderer from "./ConditionalNodeRenderer";
 import { NodeRendererRegistration } from "@graphter/core";
-import { getConditionalChildData } from "./getConditionalChildData";
-import { getConditionalChildPaths } from "./getConditionalChildPaths";
-import { initialiseConditionalData } from "./initialiseConditionalData";
+import { newGetConditionalChildConfig } from "./newGetConditionalChildConfig";
+import { mergeConditionalChildData } from "./mergeConditionalChildData";
+import { newGetConditionalChildPaths } from "./newGetConditionalChildPaths";
+import { conditionalInitialiser } from "./conditionalInitialiser";
 
 export interface ConditionalNodeRendererOptions {
   type: string,
@@ -13,9 +14,11 @@ export function registerConditionalNodeRenderer(options?: ConditionalNodeRendere
     type: options?.type || 'conditional',
     name: 'Conditional',
     description: 'Conditional data structure depending on the value of another part of the tree',
-    initialiseData: initialiseConditionalData,
-    getChildData: getConditionalChildData,
-    getChildPaths: getConditionalChildPaths,
+    newGetChildConfig: newGetConditionalChildConfig,
+    newGetChildPaths: newGetConditionalChildPaths,
+    mergeChildData: mergeConditionalChildData,
+    createFallbackDefaultValue: () => ([]),
+    initialiser: conditionalInitialiser,
     Renderer: ConditionalNodeRenderer,
     options
   }

@@ -6,7 +6,6 @@ describe('<NodeValidationProvider />', () => {
   it('should render children', () => {
     const { queryByText } = render(
       <NodeValidationProvider
-        instanceId='some-id'
         nodeValidationHook={jest.fn()}
         aggregateNodeValidationHook={jest.fn()}
         validatorRegistry={[]}
@@ -25,7 +24,6 @@ describe('<NodeValidationProvider />', () => {
       const nodeValidationHookMock = jest.fn()
       render(
         <NodeValidationProvider
-          instanceId='some-id'
           nodeValidationHook={nodeValidationHookMock}
           aggregateNodeValidationHook={jest.fn()}
           validatorRegistry={[]}
@@ -44,7 +42,6 @@ describe('<NodeValidationProvider />', () => {
       expect(() => {
         render(
           <NodeValidationProvider
-            instanceId='some-id'
             // @ts-ignore
             nodeValidationHook={null}
             aggregateNodeValidationHook={jest.fn()}
@@ -59,7 +56,6 @@ describe('<NodeValidationProvider />', () => {
       expect(() => {
         render(
           <NodeValidationProvider
-            instanceId='some-id'
             nodeValidationHook={jest.fn()}
             aggregateNodeValidationHook={jest.fn()}
             // @ts-ignore
@@ -80,7 +76,6 @@ describe('<NodeValidationProvider />', () => {
       const aggregateNodeValidationHookMock = jest.fn()
       render(
         <NodeValidationProvider
-          instanceId='some-id'
           nodeValidationHook={jest.fn()}
           aggregateNodeValidationHook={aggregateNodeValidationHookMock}
           validatorRegistry={[]}
@@ -101,7 +96,6 @@ describe('<NodeValidationProvider />', () => {
       expect(() => {
         render(
           <NodeValidationProvider
-            instanceId='some-id'
             nodeValidationHook={jest.fn()}
             // @ts-ignore
             aggregateNodeValidationHook={null}

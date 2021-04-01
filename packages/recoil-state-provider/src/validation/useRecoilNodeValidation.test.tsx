@@ -3,8 +3,8 @@ import React from "react";
 import { render } from "@testing-library/react";
 import { RecoilRoot } from 'recoil'
 import { NodeValidationHook } from "@graphter/renderer-react";
-import flushPromises from "../../test-utils/flushPromises";
 import { ValidationDataStore } from "../store/validationDataStore";
+import flushPromises from "../__test-utils__/flushPromises";
 
 describe('useRecoilNodeValidation()', () => {
   let useRecoilNodeValidation: NodeValidationHook,
@@ -36,7 +36,7 @@ describe('useRecoilNodeValidation()', () => {
   })
 
   it('should return validation data for a node', async () => {
-    propDataStore.set(['page'], true, 'the-page-data')
+    propDataStore.set(['page'], 'the-page-data')
     const config = {
       id: 'page',
       type: 'object',
@@ -78,7 +78,7 @@ describe('useRecoilNodeValidation()', () => {
     expect(result.results[1].errorMessage).toBe('Some other error message')
   })
   it('should skip any validator other than those configured to run onChange', async () => {
-    propDataStore.set(['page'], true, 'the-page-data')
+    propDataStore.set(['page'], 'the-page-data')
     const config = {
       id: 'page',
       type: 'object',
@@ -114,7 +114,7 @@ describe('useRecoilNodeValidation()', () => {
     expect(result.results[0].errorMessage).toBe('Some error message')
   })
   it('should return empty validation data if no onChange validators are found', async () => {
-    propDataStore.set(['page'], true, 'the-page-data')
+    propDataStore.set(['page'], 'the-page-data')
     const config = {
       id: 'page',
       type: 'object',
@@ -161,7 +161,7 @@ describe('useRecoilNodeValidation()', () => {
     )).toThrowErrorMatchingSnapshot()
   })
   it('should set initial validationDataStore data if none exists yet', async () => {
-    propDataStore.set(['page'], true, 'the-page-data')
+    propDataStore.set(['page'], 'the-page-data')
     const config = {
       id: 'page',
       type: 'object',
@@ -193,7 +193,7 @@ describe('useRecoilNodeValidation()', () => {
     expect(validationDataStore.has(['page'])).toBe(true)
   })
   it.each([ null, undefined ])('should error if %o config is supplied', async (noConfig) => {
-    propDataStore.set(['page'], true, 'the-page-data')
+    propDataStore.set(['page'], 'the-page-data')
     expect(() => render(
       <RecoilRoot>
         <ConsumerComponent

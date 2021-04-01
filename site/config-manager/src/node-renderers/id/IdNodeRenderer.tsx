@@ -1,9 +1,10 @@
-import React, { ComponentType, useEffect, useState } from "react";
+import React, { ComponentType, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
 import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './IdNodeRenderer.module.css'
-import { nanoid } from 'nanoid'
 import { setupNodeRenderer } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
+import { InlineValidation } from "@graphter/renderer-component-library-react";
 
 const filterRegExp = /[^a-z0-9-]/
 const filterRegExpGlobal = /[^a-z0-9-]/g
@@ -11,49 +12,42 @@ const filterRegExpGlobal = /[^a-z0-9-]/g
 const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    originalNodeData,
-    committed = true,
-    path
+    globalPath
   }: NodeRendererProps
 ) => {
-  const isNew = typeof originalNodeData === 'undefined'
-  if(isNew) originalNodeData = createDefault(config, '')
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
+  const validationResults = useNodeValidation(config, globalPath)
   const showFixButton = filterRegExp.test(nodeData)
   return (
     <>
+      <div className='flex'>
       <input
         type='text'
         value={nodeData}
         data-nodetype='id'
-        data-nodepath={path.join('/')}
-        className={s.input}
+        data-nodepath={globalPath.join('/')}
+        className='flex-grow p-3 rounded'
         onChange={(e) => {
           if(!touched) setTouched(true)
           setNodeData && setNodeData(e.currentTarget.value);
         }} />
       {touched && (
-        showFixButton ? (
+        showFixButton && (
           <button
             type='button'
+            className='flex-none p-3 rounded bg-green-500 text-white ml-3'
             onClick={() => {
               setNodeData(nodeData.toLowerCase().replace(filterRegExpGlobal, '-'))
             }}
           >Fix</button>
-        ) : (
-          <span>Ok</span>
         )
       )}
-      {touched &&
-      validationResults.results.map((result, i) => (
-        result.valid ? null : (
-          <div className={s.error} key={i} data-testid='validation-error'>
-            {result.errorMessage}
-          </div>
-        )
-      ))}
+      </div>
+      <InlineValidation
+        touched={touched}
+        validationData={validationResults}
+        nodeData={nodeData} />
     </>
   )
 })

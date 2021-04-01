@@ -17,9 +17,8 @@ import { setupNodeRenderer } from "@graphter/renderer-react";
 const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    originalNodeData,
-    committed = true,
-    path
+    originalTreeData,
+    globalPath
   }: NodeRendererProps
 ) => {
   if(!config.options?.service) throw new Error('Data select renderer requires a service ID')
@@ -27,12 +26,10 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   if(!keyPathValidation.valid) throw new Error(`Invalid key path: ${keyPathValidation.reason}`)
   const valuePathValidation = pathUtils.validate(config.options?.valuePath)
   if(!valuePathValidation.valid) throw new Error(`Invalid value path: ${valuePathValidation.reason}`)
-
-  const isNew = typeof originalNodeData === 'undefined'
-  if(isNew) originalNodeData = createDefault(config, '')
+  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData(path, config, originalNodeData, committed)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
+  const validationResults = useNodeValidation(config, globalPath)
   const dataService = useService(config.options?.service)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)
   const [ loading, setLoading ] = useState(true)
@@ -59,6 +56,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
           }
         }}
         value={loading ? 'loading' : nodeData}
+        className='flex-grow p-3 rounded'
       >
         {loading && (
           <option disabled value='loading'>Loading...</option>
