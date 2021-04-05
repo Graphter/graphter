@@ -9,6 +9,7 @@ export interface NodeRendererRegistration {
   description?: string
   Renderer: ComponentType<NodeRendererProps>
   options?: any
+  optionsConfig?: NodeConfig
 
   newGetChildConfig?: NewGetChildConfigFn
   newGetChildPaths?: NewGetChildPathsFn

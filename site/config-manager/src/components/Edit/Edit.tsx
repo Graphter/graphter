@@ -16,6 +16,7 @@ import { useData, useConfig } from "@graphter/renderer-react";
 import { Breadcrumbs } from "@graphter/renderer-component-library-react";
 import React from "react";
 import { nodeRendererStore } from "@graphter/renderer-react";
+import { registerDynamicNodeRenderer } from "../../node-renderers/dynamic/registerDynamicNodeRenderer";
 
 export default function Edit(){
   const backUri = `/`
@@ -37,7 +38,10 @@ export default function Edit(){
     registerIdNodeRenderer(),
     registerDataSelectNodeRenderer(),
     registerConditionalNodeRenderer(),
-    registerNestedNodeRenderer()
+    registerNestedNodeRenderer(),
+    registerDynamicNodeRenderer({
+      configServiceId: 'node-renderer-options-config'
+    })
   ])
 
   const { loading, error, data } = useData(config, editingId)

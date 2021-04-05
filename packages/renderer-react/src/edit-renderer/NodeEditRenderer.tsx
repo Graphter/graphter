@@ -5,7 +5,7 @@ import React, { ComponentType } from "react";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps,
-  NodeRendererRegistration, PathSegment,
+  PathSegment,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";

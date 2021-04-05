@@ -1,13 +1,11 @@
 import { AllValidationExecutionStages, NodeConfig } from "@graphter/core";
 
-const config:NodeConfig = {
+const config: NodeConfig = {
   id: 'config',
   name: 'Graphter Config',
   description: 'The configuration that drives Graphter models',
   type: 'object',
-  validation: [
-
-  ],
+  validation: [],
   children: [
     {
       id: 'id',
@@ -40,7 +38,7 @@ const config:NodeConfig = {
           type: 'id-uniqueness',
           executeOn: AllValidationExecutionStages,
           options: {
-            serviceId: 'config'
+            serviceId: 'config',
           }
         }
       ]
@@ -68,18 +66,18 @@ const config:NodeConfig = {
       name: 'Description',
       description: 'A description of the model',
       type: 'string',
-      validation: [ ]
+      validation: []
     },
     {
       id: 'type',
       name: 'Type',
       description: 'The type of data',
       type: 'data-select',
-      children: [ ],
-      validation: [ ],
+      children: [],
+      validation: [],
       default: 'text',
       options: {
-        service: 'node-renderer',
+        serviceId: 'node-renderer',
         keyPath: [ 'type' ],
         valuePath: [ 'name' ]
       }
@@ -91,10 +89,10 @@ const config:NodeConfig = {
       validation: [],
       default: [],
       options: {
-        siblingPath: ['type'],
+        siblingPath: [ 'type' ],
         branches: [
-          { condition: 'object', childId: 'object-children' },
-          { condition: 'list', childId: 'list-children' }
+          {condition: 'object', childId: 'object-children'},
+          {condition: 'list', childId: 'list-children'}
         ]
       },
       children: [
@@ -113,7 +111,7 @@ const config:NodeConfig = {
               }
             },
           ],
-          validation: [ ],
+          validation: [],
           options: {
             itemSelectionBehaviour: 'CUSTOM'
           }
@@ -133,13 +131,22 @@ const config:NodeConfig = {
               }
             },
           ],
-          validation: [ ],
+          validation: [],
           options: {
             itemSelectionBehaviour: 'CUSTOM',
             maxItems: 1
           }
         }
       ]
+    },
+    {
+      id: 'options',
+      name: 'Options',
+      type: 'renderer-options',
+      options: {
+        siblingPath: [ 'type' ],
+        serviceId: 'renderer-options-config'
+      }
     }
   ],
 }

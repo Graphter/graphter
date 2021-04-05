@@ -1,5 +1,6 @@
 import DataSelectNodeRenderer from "./DataSelectNodeRenderer";
 import { NodeRendererRegistration } from "@graphter/core";
+import { dataSelectOptionsConfig } from "./dataSelectOptionsConfig";
 
 export interface DataSelectNodeRendererOptions {
   type: string
@@ -12,6 +13,7 @@ export function registerDataSelectNodeRenderer(options?: DataSelectNodeRendererO
     description: 'Manage a selection from a set of options supplied by a data source',
     createFallbackDefaultValue: () => 'text',
     Renderer: DataSelectNodeRenderer,
-    options
+    options,
+    optionsConfig: dataSelectOptionsConfig
   }
 }

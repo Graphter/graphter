@@ -16,8 +16,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     ErrorDisplayComponent,
   }: NodeRendererProps
 ) => {
-  if(!Array.isArray((config.options?.branches))) throw new Error('Conditional renderers need branch options')
-  if(!config.children?.length) throw new Error('At least one child config is required')
+  if(!isConditionalConfig(config)) throw new Error('Invalid ConditionalNodeRenderer config')
   const pathValidation = pathUtils.validate(config.options.siblingPath)
   if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
 
@@ -25,7 +24,6 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   const treeDataInitialiser = useTreeDataInitialiser()
 
   const [ targetNodeData ] = useNodeData<any>(targetGlobalPath)
-  if(!isConditionalConfig(config)) throw new Error()
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
     if(!matchingChildConfig) return null

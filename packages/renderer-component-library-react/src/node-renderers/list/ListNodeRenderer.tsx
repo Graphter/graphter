@@ -37,7 +37,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, []))
   if (!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
 
-  const [ showNewItemUI, setShowNewItemUI ] = useState(false)
   const [ editingItems ] = useState<Set<string>>(new Set())
 
   const childConfig = config.children[0]
@@ -110,31 +109,28 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           }
         })}
       </div>
-      {!showNewItemUI && (
-        (!config.options.maxItems || itemsMeta.length < config.options.maxItems) && (
-          <button
-            type='button'
-            className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
-            onClick={() => {
-              const childPath = [ ...globalPath, itemsMeta.length ]
-              const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
-                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValue(originalTreeData, path)) :
-                null
-              setItemsMeta([
-                ...itemsMeta,
-                {
-                  item: createDefault(childConfig, childFallbackValue),
-                  key: nanoid(),
-                  committed: false,
-                  deleted: false
-                }
-              ])
-              treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], originalTreeData)
-              setShowNewItemUI(true)
-            }}
-            data-testid='add-item-btn'
-          >[+]</button>
-        )
+      {(!config.options.maxItems || itemsMeta.length < config.options.maxItems) && (
+        <button
+          type='button'
+          className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
+          onClick={() => {
+            const childPath = [ ...globalPath, itemsMeta.length ]
+            const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
+              childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValue(originalTreeData, path)) :
+              null
+            setItemsMeta([
+              ...itemsMeta,
+              {
+                item: createDefault(childConfig, childFallbackValue),
+                key: nanoid(),
+                committed: false,
+                deleted: false
+              }
+            ])
+            treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], originalTreeData)
+          }}
+          data-testid='add-item-btn'
+        >[+]</button>
       )}
 
     </div>

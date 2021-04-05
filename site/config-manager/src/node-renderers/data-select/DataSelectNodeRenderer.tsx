@@ -21,7 +21,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
     globalPath
   }: NodeRendererProps
 ) => {
-  if(!config.options?.service) throw new Error('Data select renderer requires a service ID')
+  if(!config.options?.serviceId) throw new Error('Data select renderer requires a service ID')
   const keyPathValidation = pathUtils.validate(config.options?.keyPath)
   if(!keyPathValidation.valid) throw new Error(`Invalid key path: ${keyPathValidation.reason}`)
   const valuePathValidation = pathUtils.validate(config.options?.valuePath)
@@ -30,7 +30,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   const [ touched, setTouched ] = useState(false)
   const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
   const validationResults = useNodeValidation(config, globalPath)
-  const dataService = serviceStore.get(config.options?.service)
+  const dataService = serviceStore.get(config.options?.serviceId)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)
   const [ loading, setLoading ] = useState(true)
   useEffect(() => {
