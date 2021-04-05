@@ -9,10 +9,10 @@ import React, { ComponentType, useEffect, useMemo, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
 import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './DataSelectNodeRenderer.module.css'
-import { useService } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
 import { getValue } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
+import { serviceStore } from "@graphter/renderer-react";
 
 const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -30,7 +30,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   const [ touched, setTouched ] = useState(false)
   const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
   const validationResults = useNodeValidation(config, globalPath)
-  const dataService = useService(config.options?.service)
+  const dataService = serviceStore.get(config.options?.service)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)
   const [ loading, setLoading ] = useState(true)
   useEffect(() => {

@@ -1,11 +1,10 @@
 import React, { useEffect, useState, ReactNode, ComponentType, Fragment } from 'react'
-import { getItemId } from '../util/id';
-import { useService } from "../providers/service";
 import ErrorBoundary from "../error-boundary";
 import DefaultError from "../default-error";
 import { RenderItemProps } from "./RenderItemProps";
 import { RenderPaginationProps } from "./RenderPaginationProps";
 import { ErrorRendererProps, NodeConfig } from "@graphter/core";
+import serviceStore from "../store/serviceStore";
 
 export interface ListRendererProps {
   config: NodeConfig
@@ -27,7 +26,7 @@ export default function ListRenderer(
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError;
   if(!config) return <ErrorDisplayComponent err={new Error('Model configuration is required')} />;
 
-  const service = useService(config.id);
+  const service = serviceStore.get(config.id);
 
   const [ count, setCount ] = useState(0);
   const [ items, setItems ] = useState<Array<any>>([]);

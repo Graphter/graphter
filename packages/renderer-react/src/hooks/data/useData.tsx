@@ -2,7 +2,7 @@ import React, {useEffect, useState} from 'react';
 import { NodeConfig } from "@graphter/core";
 import { isEmpty } from "../../util/id";
 import { useTreeDataInitialiser } from "../../providers/state";
-import { useService } from "../../providers/service";
+import serviceStore from "../../store/serviceStore";
 
 interface UseDataResult {
   loading: boolean,
@@ -13,7 +13,7 @@ interface UseDataResult {
 export const useData = (config: NodeConfig, instanceId: string | number): UseDataResult => {
   const [ result, setResult ] = useState<UseDataResult>({ loading: true })
   const treeDataInitialiser = useTreeDataInitialiser()
-  const service = useService(config.id)
+  const service = serviceStore.get(config.id)
   useEffect(() => {
     (async () => {
       if(isEmpty(instanceId)) {
