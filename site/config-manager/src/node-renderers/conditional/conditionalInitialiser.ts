@@ -2,7 +2,7 @@ import { NodeDataInitialiserFn } from "@graphter/core";
 import { getMatchingNodeDetails } from "./getMatchingRendererRegistration";
 import { getValue } from "@graphter/renderer-react";
 
-export const conditionalInitialiser: NodeDataInitialiserFn = (
+export const conditionalInitialiser: NodeDataInitialiserFn = async (
   originalTreeData,
   config,
   path

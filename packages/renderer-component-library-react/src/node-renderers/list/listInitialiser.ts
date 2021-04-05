@@ -2,7 +2,7 @@ import { NodeConfig, NodeDataInitialiserFn, PathSegment } from "@graphter/core";
 import { nanoid } from 'nanoid'
 import { createDefault, getValue } from "@graphter/renderer-react";
 
-export const listInitialiser: NodeDataInitialiserFn = (
+export const listInitialiser: NodeDataInitialiserFn = async (
   originalTreeData,
   config,
   path

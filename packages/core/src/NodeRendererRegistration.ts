@@ -91,5 +91,5 @@ export interface NodeDataInitialiserFn {
     originalTreeData: any,
     config: NodeConfig,
     path: Array<PathSegment>
-  ): any
+  ): Promise<any>
 }

@@ -114,20 +114,22 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           type='button'
           className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
           onClick={() => {
-            const childPath = [ ...globalPath, itemsMeta.length ]
-            const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
-              childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValue(originalTreeData, path)) :
-              null
-            setItemsMeta([
-              ...itemsMeta,
-              {
-                item: createDefault(childConfig, childFallbackValue),
-                key: nanoid(),
-                committed: false,
-                deleted: false
-              }
-            ])
-            treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], originalTreeData)
+            (async () => {
+              await treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], originalTreeData)
+              const childPath = [ ...globalPath, itemsMeta.length ]
+              const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
+                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValue(originalTreeData, path)) :
+                null
+              setItemsMeta([
+                ...itemsMeta,
+                {
+                  item: createDefault(childConfig, childFallbackValue),
+                  key: nanoid(),
+                  committed: false,
+                  deleted: false
+                }
+              ])
+            })()
           }}
           data-testid='add-item-btn'
         >[+]</button>

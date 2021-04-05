@@ -8,7 +8,7 @@ import { createDefault, nodeRendererStore } from "@graphter/renderer-react";
 const NO_MATCH = 'no-match-ac437190-4001-4fe3-bf1f-8ad03366d1dd'
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
-  return (config, path, originalTreeData) => {
+  return async (config, path, originalTreeData) => {
 
     const getNodeValue = (path: Array<PathSegment>) => {
       const result = getValue(originalTreeData, path, NO_MATCH)
