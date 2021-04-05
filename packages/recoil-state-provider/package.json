@@ -20,7 +20,7 @@
   "license": "MIT",
   "peerDependencies": {
     "react": "^16.13.1",
-    "recoil": "^0.1.2",
+    "recoil": "^0.2.0",
     "@graphter/renderer-react": "file:../renderer-react"
   },
   "dependencies": {},
@@ -43,7 +43,7 @@
     "nanoid": "^3.1.20",
     "react": "^17.0.1",
     "react-dom": "^17.0.1",
-    "recoil": "^0.1.2",
+    "recoil": "^0.2.0",
     "rollup": "^2.2.0",
     "rollup-plugin-babel": "^4.4.0",
     "rollup-plugin-commonjs": "^10.1.0",
