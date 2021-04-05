@@ -7,26 +7,25 @@
  */
 import React, { ComponentType, useEffect, useMemo, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
-import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
+import { useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './DataSelectNodeRenderer.module.css'
 import { pathUtils } from "@graphter/renderer-react";
 import { getValue } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { serviceStore } from "@graphter/renderer-react";
+import { isDataSelectNodeConfig } from "./isDataSelectNodeConfig";
 
 const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    originalTreeData,
     globalPath
   }: NodeRendererProps
 ) => {
-  if(!config.options?.serviceId) throw new Error('Data select renderer requires a service ID')
+  if(!isDataSelectNodeConfig(config)) throw new Error('Invalid DataSelectNodeRenderer config')
   const keyPathValidation = pathUtils.validate(config.options?.keyPath)
   if(!keyPathValidation.valid) throw new Error(`Invalid key path: ${keyPathValidation.reason}`)
   const valuePathValidation = pathUtils.validate(config.options?.valuePath)
   if(!valuePathValidation.valid) throw new Error(`Invalid value path: ${valuePathValidation.reason}`)
-  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, ''))
   const [ touched, setTouched ] = useState(false)
   const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
   const validationResults = useNodeValidation(config, globalPath)
