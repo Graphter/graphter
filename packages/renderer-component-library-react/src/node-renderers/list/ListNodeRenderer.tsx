@@ -1,4 +1,4 @@
-import React, { ComponentType, useState } from 'react'
+import React, { ComponentType, Suspense, useState } from 'react'
 import {
   ErrorRendererProps,
   NodeConfig,
@@ -47,35 +47,36 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(globalPath)
 
-  if(!itemsMeta){
+  if (!itemsMeta) {
     setItemsMeta([])
     return null
   }
 
   function removeItem(key: string) {
     setItemsMeta([ ...itemsMeta.map(itemMeta => {
-      if(itemMeta.key === key) return {
+      if (itemMeta.key === key) return {
         ...itemMeta,
         deleted: true
       }
       return itemMeta
-    })])
+    }) ])
   }
+
   function commitItem(key: string) {
     setItemsMeta([ ...itemsMeta.map(itemMeta => {
-      if(itemMeta.key === key) return {
+      if (itemMeta.key === key) return {
         ...itemMeta,
         committed: true
       }
       return itemMeta
-    })])
+    }) ])
   }
 
   return (
     <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
       <div className='' data-testid='items'>
         {itemsMeta && itemsMeta.map((itemMeta: ItemMeta, i: number) => {
-          if(itemMeta.deleted) return null
+          if (itemMeta.deleted) return null
           const childPath = [ ...globalPath, i ]
 
           function setEditMode(key: string, editMode: boolean) {
@@ -176,22 +177,25 @@ function renderCommittedItem(
   }
 
   return (
-    <DefaultItemView
-      key={itemMeta.key}
-      childId={itemMeta.key}
-      config={childConfig}
-      globalPath={childPath}
-      onSelect={() => {
-        if (parentConfig.options?.itemSelectionBehaviour === 'INLINE' || !parentConfig.options?.itemSelectionBehaviour) {
-          setEditMode(itemMeta.key, true)
-        } else if (parentConfig.options?.itemSelectionBehaviour === 'CUSTOM' && typeof parentOptions?.customItemSelectionBehaviour === 'function') {
-          parentOptions.customItemSelectionBehaviour(parentConfig.options?.itemSelectionBehaviour, childConfig, childPath)
-        }
-      }}
-      onRemove={() => {
-        removeItem(itemMeta.key)
-      }}
-    />
+
+    <Suspense fallback={<div>Loading...</div>}>
+      <DefaultItemView
+        key={itemMeta.key}
+        childId={itemMeta.key}
+        config={childConfig}
+        globalPath={childPath}
+        onSelect={() => {
+          if (parentConfig.options?.itemSelectionBehaviour === 'INLINE' || !parentConfig.options?.itemSelectionBehaviour) {
+            setEditMode(itemMeta.key, true)
+          } else if (parentConfig.options?.itemSelectionBehaviour === 'CUSTOM' && typeof parentOptions?.customItemSelectionBehaviour === 'function') {
+            parentOptions.customItemSelectionBehaviour(parentConfig.options?.itemSelectionBehaviour, childConfig, childPath)
+          }
+        }}
+        onRemove={() => {
+          removeItem(itemMeta.key)
+        }}
+      />
+    </Suspense>
   )
 }
 
