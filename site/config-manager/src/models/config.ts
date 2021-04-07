@@ -142,7 +142,7 @@ const config: NodeConfig = {
     {
       id: 'options',
       name: 'Options',
-      type: 'renderer-options',
+      type: 'dynamic',
       options: {
         siblingPath: [ 'type' ],
         serviceId: 'renderer-options-config'

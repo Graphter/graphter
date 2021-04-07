@@ -17,7 +17,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
     }
 
     const localPath = path.slice(2)
-    const treeMeta = getTreeMeta(config, localPath, getNodeValue)
+    const treeMeta = await getTreeMeta(config, localPath, getNodeValue)
 
     for (const nodeMeta of treeMeta) {
       if (!nodeMeta.path.length) continue
@@ -25,7 +25,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       if (propDataStore.has(globalPath)) continue
       const rendererReg = nodeRendererStore.get(nodeMeta.config.type)
       if(rendererReg.initialiser){
-        const initialData = rendererReg.initialiser(originalTreeData, nodeMeta.config, nodeMeta.path)
+        const initialData = await rendererReg.initialiser(originalTreeData, nodeMeta.config, nodeMeta.path)
         propDataStore.set(globalPath, initialData)
       } else {
         let initialData = getValue(originalTreeData, nodeMeta.path, NO_MATCH)
@@ -33,7 +33,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
           initialData = createDefault(
             nodeMeta.config,
             rendererReg.createFallbackDefaultValue ?
-              rendererReg.createFallbackDefaultValue(nodeMeta.config, globalPath, getNodeValue) :
+              await rendererReg.createFallbackDefaultValue(nodeMeta.config, globalPath, getNodeValue) :
               null
           )
         }

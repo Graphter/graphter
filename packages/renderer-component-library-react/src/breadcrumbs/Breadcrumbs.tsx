@@ -1,5 +1,5 @@
 import { NodeConfig, PathSegment } from "@graphter/core";
-import React, { ComponentType, Fragment } from "react";
+import React, { ComponentType, Fragment, useEffect, useState } from "react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getValue } from "@graphter/renderer-react";
 import { getConfigAt } from "@graphter/renderer-react";
@@ -43,26 +43,33 @@ const DividerSvg = () => <svg className='inline-block w-4 fill-current text-gray
 const Breadcrumbs = ({config, globalPath, AncestorCrumb, CurrentCrumb, originalTreeData}: BreadcrumbsProps) => {
   const starting = globalPath.slice(0, 1)
   const remaining = globalPath.slice(1)
-  const crumbsData = (remaining.reduce<{ current: Array<PathSegment>, crumbsData: Array<CrumbData> }>(
-    (a, c) => {
-      a.current.push(c)
-      const localCurrent = a.current.slice(2)
-      const pathConfig = getConfigAt(config, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
-      if (!pathConfig) throw new Error(`Couldn't find config at ${localCurrent.join('/')}`)
-      const display: { path?: Array<PathSegment>, label: string } = {
-        label: pathConfig?.name || pathConfig?.id || 'Unknown'
-      }
-      const renderer = nodeRendererStore.get(pathConfig.type)
-      if (renderer.newGetChildPaths) {
-        const childPaths = renderer.newGetChildPaths(pathConfig, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
-        const displayPathSegment = getDisplayPathSegment(childPaths)
-        if (displayPathSegment) {
-          display.path = [ ...a.current, displayPathSegment ]
-        }
-      }
-      a.crumbsData.push({config: pathConfig, display, path: [ ...a.current ]})
-      return a
-    }, {current: starting, crumbsData: []})).crumbsData
+  const [ crumbsData, setCrumbsData ] = useState<Array<CrumbData>>([])
+  useEffect(() => {
+    (async () => {
+      const crumbsData = (await remaining.reduce<Promise<{ current: Array<PathSegment>, crumbsData: Array<CrumbData> }>>(
+        async (accPromise, c) => {
+          const a = await accPromise
+          a.current.push(c)
+          const localCurrent = a.current.slice(2)
+          const pathConfig = await getConfigAt(config, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
+          if (!pathConfig) throw new Error(`Couldn't find config at ${localCurrent.join('/')}`)
+          const display: { path?: Array<PathSegment>, label: string } = {
+            label: pathConfig?.name || pathConfig?.id || 'Unknown'
+          }
+          const renderer = nodeRendererStore.get(pathConfig.type)
+          if (renderer.newGetChildPaths) {
+            const childPaths = await renderer.newGetChildPaths(pathConfig, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
+            const displayPathSegment = getDisplayPathSegment(childPaths)
+            if (displayPathSegment) {
+              display.path = [ ...a.current, displayPathSegment ]
+            }
+          }
+          a.crumbsData.push({config: pathConfig, display, path: [ ...a.current ]})
+          return Promise.resolve(a)
+        }, Promise.resolve({current: starting, crumbsData: []}))).crumbsData
+      setCrumbsData(crumbsData)
+    })()
+  }, [ globalPath ])
 
   return (
     <div>

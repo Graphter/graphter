@@ -31,7 +31,6 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
 
     const [ childConfig, setChildConfig ] = useState<NodeConfig | null>(null)
     const [ rendererRegistration, setRendererRegistration ] = useState<NodeRendererRegistration | null>(null)
-    const configService = serviceStore.get(configServiceId)
 
     useEffect(() => {
       (async () => {
@@ -41,7 +40,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
         setChildConfig(getConfigResult.item)
         const rendererRegistration = nodeRendererStore.get(getConfigResult.item.type)
         if(!rendererRegistration) return
-        treeDataInitialiser(getConfigResult.item, globalPath, originalTreeData)
+        await treeDataInitialiser(getConfigResult.item, globalPath, originalTreeData)
         setRendererRegistration(rendererRegistration)
       })()
     }, [ targetNodeData ])

@@ -1,7 +1,7 @@
 import { NewGetChildPathsFn } from "@graphter/core";
 import { getMatchingNodeDetails } from "./getMatchingRendererRegistration";
 
-export const newGetConditionalChildPaths: NewGetChildPathsFn = (config, path, getNodeValue) => {
+export const newGetConditionalChildPaths: NewGetChildPathsFn = async (config, path, getNodeValue) => {
   const {
     matchingConfig,
     matchingRendererRegistration

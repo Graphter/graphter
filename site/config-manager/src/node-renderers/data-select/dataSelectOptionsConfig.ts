@@ -4,6 +4,11 @@ export const dataSelectOptionsConfig: NodeConfig = {
   id: 'options',
   name: 'Data Select Options',
   type: 'object',
+  default: {
+    serviceId: '',
+    keyPath: [],
+    valuePath: []
+  },
   children: [
     {
       id: 'serviceId',

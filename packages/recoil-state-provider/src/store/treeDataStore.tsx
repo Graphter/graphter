@@ -24,11 +24,12 @@ const treeDataStore: TreeDataStore = {
 
     treeDataMap[key] = treeDataSelector = selector<any>({
       key: key,
-      get: ({ get }) => {
-        return getTreeData(config, path, (path:Array<PathSegment>) => {
+      get: async ({ get }) => {
+        const treeData = await getTreeData(config, path, (path:Array<PathSegment>) => {
           const state = propDataStore.get(path)
           return get(state)
         })
+        return treeData
       }
     });
 

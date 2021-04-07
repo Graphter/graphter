@@ -2,7 +2,7 @@ import { NewGetChildConfigFn } from "@graphter/core";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingNodeDetails } from "./getMatchingRendererRegistration";
 
-export const newGetConditionalChildConfig: NewGetChildConfigFn = (config, path, childSegment, getNodeValue) => {
+export const newGetConditionalChildConfig: NewGetChildConfigFn = async (config, path, childSegment, getNodeValue) => {
   const {
     matchingConfig,
     matchingRendererRegistration
