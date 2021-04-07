@@ -14,8 +14,10 @@ export const get = (
   path: Array<PathSegment>
 ): RecoilState<any> => {
   checkPathArg(path)
-  const state = propStatePathMap.get(pathToKey(path))
-  if(!state) throw new Error(`Couldn't find state at ${path.join('/')}`)
+  const key = pathToKey(path)
+  if(!propStatePathMap.has(key)) throw new Error(`Couldn't find state at ${path.join('/')}`)
+  const state = propStatePathMap.get(key)
+  if(typeof state === 'undefined') throw new Error('Should not happen')
   return state
 }
 
@@ -24,8 +26,9 @@ export const set = (
   originalValue?: any
 ) => {
   checkPathArg(path)
+  if(has(path)) throw new Error(`A value is already set for '${path.join('/')}'`)
   propStatePathMap.set(pathToKey(path), atom({
-    key: nanoid(),
+    key: pathToKey(path),
     default: originalValue
   }))
 }
