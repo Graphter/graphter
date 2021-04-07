@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { ComponentType, useEffect, useState } from "react";
 import { NodeConfig, NodeRendererProps, NodeRendererRegistration } from "@graphter/core";
 import { useNodeData } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
@@ -8,7 +8,9 @@ import { nodeRendererStore, useTreeDataInitialiser } from "@graphter/renderer-re
 import { serviceStore } from "@graphter/renderer-react";
 
 const createDynamicNodeRenderer = (configServiceId: string) => {
-  return setupNodeRenderer((
+  const configService = serviceStore.get(configServiceId)
+
+  const dynamicNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     {
       config,
       originalTreeData,
@@ -60,6 +62,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
       </>
     )
   })
+  return dynamicNodeRenderer
 }
 
 export default createDynamicNodeRenderer
