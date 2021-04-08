@@ -13,6 +13,7 @@ import { useConfig } from "../providers/config";
 import { useTreeDataCallback } from "../providers/state";
 import { getConfigAt } from "../util/node";
 import { getValue } from "../util/path";
+import { useTreeDataSnapshot } from "../hooks/data";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
@@ -61,16 +62,23 @@ export default function NodeEditRenderer(
     topNodeConfig,
     path)
 
+  const treeData = useTreeDataSnapshot(topNodeConfig, path)
+
   useEffect(() => {
+    if(!treeData) return
     (async () => {
-      const childConfig = await getConfigAt(topNodeConfig, path.slice(2), (path => getValue(startingData, path)))
+      const childConfig = await getConfigAt(topNodeConfig, path.slice(2), (path => {
+        console.log(treeData)
+        return getValue(treeData, path)
+      }))
+
       if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
       setLoadedTreeState({
         childPath: path,
         childConfig
       })
     })()
-  }, [ topNodeConfig, path ])
+  }, [ topNodeConfig, path, treeData ])
 
   if (!startingData) return null
   if(!loadedTreeState.childConfig) return null

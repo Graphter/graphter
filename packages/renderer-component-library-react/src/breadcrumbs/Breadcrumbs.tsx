@@ -4,6 +4,7 @@ import { nodeRendererStore } from "@graphter/renderer-react";
 import { getValue } from "@graphter/renderer-react";
 import { getConfigAt } from "@graphter/renderer-react";
 import DynamicCrumb from "./DynamicCrumb";
+import { useTreeDataSnapshot } from "@graphter/renderer-react";
 
 interface BreadcrumbsProps {
   config: NodeConfig
@@ -44,32 +45,41 @@ const Breadcrumbs = ({config, globalPath, AncestorCrumb, CurrentCrumb, originalT
   const starting = globalPath.slice(0, 1)
   const remaining = globalPath.slice(1)
   const [ crumbsData, setCrumbsData ] = useState<Array<CrumbData>>([])
+  const treeData = useTreeDataSnapshot(config, globalPath)
+
   useEffect(() => {
+    if(!treeData) return
     (async () => {
       const crumbsData = (await remaining.reduce<Promise<{ current: Array<PathSegment>, crumbsData: Array<CrumbData> }>>(
         async (accPromise, c) => {
           const a = await accPromise
           a.current.push(c)
           const localCurrent = a.current.slice(2)
-          const pathConfig = await getConfigAt(config, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
+          const pathConfig = await getConfigAt(config, localCurrent, (path: Array<PathSegment>) => {
+            console.log(treeData)
+            return getValue(treeData, path)
+          })
           if (!pathConfig) throw new Error(`Couldn't find config at ${localCurrent.join('/')}`)
           const display: { path?: Array<PathSegment>, label: string } = {
             label: pathConfig?.name || pathConfig?.id || 'Unknown'
           }
           const renderer = nodeRendererStore.get(pathConfig.type)
           if (renderer.newGetChildPaths) {
-            const childPaths = await renderer.newGetChildPaths(pathConfig, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
+            const childPaths = await renderer.newGetChildPaths(pathConfig, localCurrent, (path: Array<PathSegment>) => {
+              console.log(treeData)
+              return getValue(treeData, path)
+            })
             const displayPathSegment = getDisplayPathSegment(childPaths)
             if (displayPathSegment) {
               display.path = [ ...a.current, displayPathSegment ]
             }
           }
-          a.crumbsData.push({config: pathConfig, display, path: [ ...a.current ]})
+          a.crumbsData.push({ config: pathConfig, display, path: [ ...a.current ] })
           return Promise.resolve(a)
-        }, Promise.resolve({current: starting, crumbsData: []}))).crumbsData
+        }, Promise.resolve({ current: starting, crumbsData: [] }))).crumbsData
       setCrumbsData(crumbsData)
     })()
-  }, [ globalPath ])
+  }, [ globalPath, treeData ])
 
   return (
     <div>
