@@ -64,20 +64,26 @@ export default function NodeEditRenderer(
 
   const treeData = useTreeDataSnapshot(topNodeConfig, path)
 
-  useEffect(() => {
-    if(!treeData) return
-    (async () => {
-      const childConfig = await getConfigAt(topNodeConfig, path.slice(2), (path => {
-        console.log(treeData)
-        return getValue(treeData, path)
-      }))
+  const initialise = useTreeDataCallback(
+    (treeData: any) => {
+      (async () => {
+        const childConfig = await getConfigAt(topNodeConfig, path.slice(2), (path => {
+          console.log(treeData)
+          return getValue(treeData, path)
+        }))
 
-      if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
-      setLoadedTreeState({
-        childPath: path,
-        childConfig
-      })
-    })()
+        if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
+        setLoadedTreeState({
+          childPath: path,
+          childConfig
+        })
+      })()
+    },
+    topNodeConfig,
+    path.slice(0, 2))
+
+  useEffect(() => {
+    initialise()
   }, [ topNodeConfig, path, treeData ])
 
   if (!startingData) return null
