@@ -54,7 +54,6 @@ const Breadcrumbs = ({config, globalPath, AncestorCrumb, CurrentCrumb, originalT
             a.current.push(c)
             const localCurrent = a.current.slice(2)
             const pathConfig = await getConfigAt(config, localCurrent, (path: Array<PathSegment>) => {
-              console.log(treeData)
               return getValue(treeData, path)
             })
             if (!pathConfig) throw new Error(`Couldn't find config at ${localCurrent.join('/')}`)
@@ -64,7 +63,6 @@ const Breadcrumbs = ({config, globalPath, AncestorCrumb, CurrentCrumb, originalT
             const renderer = nodeRendererStore.get(pathConfig.type)
             if (renderer.newGetChildPaths) {
               const childPaths = await renderer.newGetChildPaths(pathConfig, localCurrent, (path: Array<PathSegment>) => {
-                console.log(treeData)
                 return getValue(treeData, path)
               })
               const displayPathSegment = getDisplayPathSegment(childPaths)
