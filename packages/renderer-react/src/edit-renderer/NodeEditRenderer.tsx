@@ -12,7 +12,7 @@ import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
 import { useTreeDataCallback } from "../providers/state";
 import { getConfigAt } from "../util/node";
-import { getValue } from "../util/path";
+import { pathUtils } from "../util/path";
 import { useTreeDataSnapshot } from "../hooks/data";
 
 export interface NodeEditRendererProps {
@@ -67,9 +67,9 @@ export default function NodeEditRenderer(
   const initialise = useTreeDataCallback(
     (treeData: any) => {
       (async () => {
-        const childConfig = await getConfigAt(topNodeConfig, path.slice(2), (path => {
+        const childConfig = await getConfigAt(topNodeConfig, path, (path => {
           console.log(treeData)
-          return getValue(treeData, path)
+          return pathUtils.getValueByGlobalPath(treeData, path)
         }))
 
         if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
@@ -108,7 +108,7 @@ export default function NodeEditRenderer(
         </div>
 
         <TypeRenderer
-          globalPath={loadedTreeState.childPath}
+          path={loadedTreeState.childPath}
           config={loadedTreeState.childConfig}
           originalTreeData={startingData}
           options={childRegistration.options}

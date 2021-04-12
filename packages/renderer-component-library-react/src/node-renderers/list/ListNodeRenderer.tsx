@@ -28,24 +28,24 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalTreeData,
-    globalPath,
+    path,
     ErrorDisplayComponent,
     options
   }: NodeRendererProps
 ) => {
   if (!isListConfig(config)) throw new Error('Invalid config')
-  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, []))
+  const originalNodeData = pathUtils.getValueByGlobalPath(originalTreeData, path, createDefault(config, []))
   if (!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
 
   const [ editingItems ] = useState<Set<string>>(new Set())
 
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
-  if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${globalPath.join('/')}/${childConfig.id}`)
+  if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${path.join('/')}/${childConfig.id}`)
 
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(globalPath)
+  const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(path)
 
   if (!itemsMeta) {
     setItemsMeta([])
@@ -73,11 +73,11 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   }
 
   return (
-    <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
+    <div className='flex flex-col' data-nodetype='list' data-nodepath={path.join('/')}>
       <div className='' data-testid='items'>
         {itemsMeta && itemsMeta.map((itemMeta: ItemMeta, i: number) => {
           if (itemMeta.deleted) return null
-          const childPath = [ ...globalPath, i ]
+          const childPath = [ ...path, i ]
 
           function setEditMode(key: string, editMode: boolean) {
             editMode ? editingItems.add(key) : editingItems.delete(key)
@@ -120,10 +120,10 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
           onClick={() => {
             (async () => {
-              await treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], originalTreeData)
-              const childPath = [ ...globalPath, itemsMeta.length ]
+              await treeDataInitialiser(childConfig, [ ...path, itemsMeta.length ], originalTreeData)
+              const childPath = [ ...path, itemsMeta.length ]
               const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
-                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValue(originalTreeData, path)) :
+                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValueByGlobalPath(originalTreeData, path)) :
                 null
               setItemsMeta([
                 ...itemsMeta,
@@ -183,7 +183,7 @@ function CommittedItem(
       >
         <ChildTypeRenderer
           config={childConfig}
-          globalPath={childPath}
+          path={childPath}
           originalTreeData={originalTreeData}
           ErrorDisplayComponent={ErrorDisplayComponent}
           options={childRendererRegistration.options}
@@ -198,7 +198,7 @@ function CommittedItem(
       <DefaultItemView
         childId={itemMeta.key}
         config={childConfig}
-        globalPath={childPath}
+        path={childPath}
         onSelect={() => {
           if (parentConfig.options?.itemSelectionBehaviour === 'INLINE' || !parentConfig.options?.itemSelectionBehaviour) {
             setEditMode(itemMeta.key, true)
@@ -250,7 +250,7 @@ function UncommittedItem(
     >
       <ChildTypeRenderer
         config={childConfig}
-        globalPath={childPath}
+        path={childPath}
         originalTreeData={originalTreeData}
         ErrorDisplayComponent={ErrorDisplayComponent}
         options={childRendererRegistration.options}

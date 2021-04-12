@@ -7,7 +7,7 @@ import dataDisplayUtils from "../../utils/dataDisplay";
 interface DefaultItemViewProps {
   childId: string
   config: NodeConfig
-  globalPath: Array<PathSegment>
+  path: Array<PathSegment>
   options?: DefaultExistingItemViewOptions
   onSelect?: (childId: string) => void
   onRemove?: (childId: string) => void
@@ -24,8 +24,8 @@ interface KeyValueDefinition {
   valuePaths: Array<Array<PathSegment>>
 }
 
-const DefaultItemView = ({childId, config, globalPath, options, onSelect, onRemove}: DefaultItemViewProps) => {
-  const data = useTreeData(config, globalPath)
+const DefaultItemView = ({childId, config, path, options, onSelect, onRemove}: DefaultItemViewProps) => {
+  const data = useTreeData(config, path)
   let significantData = dataDisplayUtils.extractSignificantData(data)
   return (
     <div className='flex flex-row'>

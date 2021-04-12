@@ -16,7 +16,7 @@ export interface NodeRendererProps {
   /**
    * To track current location in graph
    */
-  globalPath: Array<PathSegment>
+  path: Array<PathSegment>
 
   ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
 }

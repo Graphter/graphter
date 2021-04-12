@@ -2,14 +2,14 @@ import { useState, useEffect } from 'react';
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { useTreeDataCallback } from "../../providers/state";
 
-export const useTreeDataSnapshot = (config: NodeConfig, globalPath: Array<PathSegment>) => {
+export const useTreeDataSnapshot = (config: NodeConfig, path: Array<PathSegment>) => {
   const [ treeData, setTreeData ] = useState<any>(null)
   const getTreeData = useTreeDataCallback(
     (treeData: any) => {
       setTreeData(treeData)
     },
     config,
-    globalPath.slice(0, 2))
+    path.slice(0, 2))
 
   useEffect(() => {
     (async () => {

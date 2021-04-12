@@ -1,6 +1,6 @@
 import { NodeDataInitialiserFn } from "@graphter/core";
 import { getMatchingNodeDetails } from "./getMatchingRendererRegistration";
-import { getValue } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 
 export const conditionalInitialiser: NodeDataInitialiserFn = async (
   originalTreeData,
@@ -11,10 +11,10 @@ export const conditionalInitialiser: NodeDataInitialiserFn = async (
     matchingConfig,
     matchingRendererRegistration
   } = getMatchingNodeDetails(config, path, (path) => {
-    return getValue(originalTreeData, path, null)
+    return pathUtils.getValueByGlobalPath(originalTreeData, path, null)
   })
   if(!matchingRendererRegistration || !matchingConfig) return
   return matchingRendererRegistration.initialiser ?
     matchingRendererRegistration.initialiser(originalTreeData, config, path) :
-    getValue(originalTreeData, path)
+    pathUtils.getValueByGlobalPath(originalTreeData, path)
 }

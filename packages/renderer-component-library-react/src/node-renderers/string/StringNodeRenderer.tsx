@@ -7,19 +7,19 @@ import InlineValidation from "../../inline-validation";
 const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    globalPath
+    path
   }: NodeRendererProps
 ) => {
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
-  const validationResults = useNodeValidation(config, globalPath)
+  const [ nodeData, setNodeData ] = useNodeData<string>(path)
+  const validationResults = useNodeValidation(config, path)
   return (
     <>
       <input
         type='text'
         value={nodeData}
         data-nodetype='string'
-        data-nodepath={globalPath.join('/')}
+        data-nodepath={path.join('/')}
         className='flex-grow p-3 rounded'
         onChange={(e) => {
           if(!touched) setTouched(true)

@@ -25,6 +25,7 @@ export const set = (
   path: Array<PathSegment>,
   originalValue?: any
 ) => {
+  console.log(`Setting state '${path.join('/')}' to ${JSON.stringify(originalValue)}`)
   checkPathArg(path)
   if(has(path)) throw new Error(`A value is already set for '${path.join('/')}'`)
   propStatePathMap.set(pathToKey(path), atom({

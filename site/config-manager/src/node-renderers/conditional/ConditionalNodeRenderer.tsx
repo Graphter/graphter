@@ -12,7 +12,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   {
     config,
     originalTreeData,
-    globalPath,
+    path,
     ErrorDisplayComponent,
   }: NodeRendererProps
 ) => {
@@ -20,16 +20,16 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   const pathValidation = pathUtils.validate(config.options.siblingPath)
   if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
 
-  const targetGlobalPath = [...globalPath.slice(0, -1), ...config.options.siblingPath]
+  const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ targetNodeData ] = useNodeData<any>(targetGlobalPath)
+  const [ targetNodeData ] = useNodeData<any>(targetPath)
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
     if(!matchingChildConfig) return null
     const rendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
     if(!rendererRegistration) return null
-    treeDataInitialiser(matchingChildConfig, globalPath, originalTreeData)
+    treeDataInitialiser(matchingChildConfig, path, originalTreeData)
     return [ matchingChildConfig, rendererRegistration ]
   }, [ targetNodeData ])
 
@@ -44,7 +44,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     <>
       <matchingChildRendererRegistration.Renderer
         config={matchingChildConfig}
-        globalPath={[ ...globalPath ]}
+        path={[ ...path ]}
         originalTreeData={originalTreeData}
         options={matchingChildRendererRegistration.options}
         ErrorDisplayComponent={ErrorDisplayComponent} />

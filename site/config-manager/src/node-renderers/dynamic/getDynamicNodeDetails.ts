@@ -3,14 +3,14 @@ import { isDynamicConfig } from "./isDynamicConfig";
 import { nodeRendererStore } from "@graphter/renderer-react";
 
 export const getDynamicNodeDetails = async (
-  globalPath: Array<PathSegment>,
+  path: Array<PathSegment>,
   config: NodeConfig,
   configService: Service,
   getNodeValue: (path: Array<PathSegment>) => any
 ): Promise<[ NodeConfig | null, NodeRendererRegistration | null ]> => {
   if(!isDynamicConfig(config)) throw new Error('Invalid DynamicNodeRenderer config')
-  const targetGlobalPath = [...globalPath.slice(0, -1), ...config.options.siblingPath]
-  const targetNodeData = getNodeValue(targetGlobalPath)
+  const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
+  const targetNodeData = getNodeValue(targetPath)
   const targetNodeDataType = typeof targetNodeData
   if(targetNodeDataType === 'undefined' || targetNodeData === null) return [ null, null ]
   const dynamicConfigResult = await configService.get(targetNodeData)

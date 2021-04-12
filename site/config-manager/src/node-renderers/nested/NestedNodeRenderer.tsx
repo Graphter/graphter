@@ -9,7 +9,7 @@ const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
     originalTreeData,
-    globalPath,
+    path,
     ErrorDisplayComponent,
   }: NodeRendererProps
 ) => {
@@ -21,7 +21,7 @@ const NestedNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     <>
       <nestedRendererRegistration.Renderer
         config={nestedConfig}
-        globalPath={[ ...globalPath ]}
+        path={[ ...path ]}
         originalTreeData={originalTreeData}
         options={nestedRendererRegistration.options}
         ErrorDisplayComponent={ErrorDisplayComponent} />

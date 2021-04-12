@@ -10,7 +10,6 @@ import { NodeRendererProps } from "@graphter/core";
 import { useNodeData, useNodeValidation } from "@graphter/renderer-react";
 import s from './DataSelectNodeRenderer.module.css'
 import { pathUtils } from "@graphter/renderer-react";
-import { getValue } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { serviceStore } from "@graphter/renderer-react";
 import { isDataSelectNodeConfig } from "./isDataSelectNodeConfig";
@@ -18,7 +17,7 @@ import { isDataSelectNodeConfig } from "./isDataSelectNodeConfig";
 const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    globalPath
+    path
   }: NodeRendererProps
 ) => {
   if(!isDataSelectNodeConfig(config)) throw new Error('Invalid DataSelectNodeRenderer config')
@@ -27,8 +26,8 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   const valuePathValidation = pathUtils.validate(config.options?.valuePath)
   if(!valuePathValidation.valid) throw new Error(`Invalid value path: ${valuePathValidation.reason}`)
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
-  const validationResults = useNodeValidation(config, globalPath)
+  const [ nodeData, setNodeData ] = useNodeData<string>(path)
+  const validationResults = useNodeValidation(config, path)
   const dataService = serviceStore.get(config.options?.serviceId)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)
   const [ loading, setLoading ] = useState(true)
@@ -36,8 +35,8 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
     (async () => {
       const options = (await dataService.list()).items
         .map((item: any) => ({
-          key: getValue(item, config.options?.keyPath),
-          value: getValue(item, config.options?.valuePath)
+          key: pathUtils.getValueByLocalPath(item, config.options?.keyPath),
+          value: pathUtils.getValueByLocalPath(item, config.options?.valuePath)
         }))
       setOptions(options)
       setLoading(false)

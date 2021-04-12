@@ -1,7 +1,7 @@
 import { NodeDataInitialiserFn } from "@graphter/core";
 import { isDynamicConfig } from "./isDynamicConfig";
 import { serviceStore } from "@graphter/renderer-react";
-import { getValue } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 import { createDefault } from "@graphter/renderer-react";
 import { getDynamicNodeDetails } from "./getDynamicNodeDetails";
 
@@ -17,7 +17,7 @@ export const createDynamicInitialiser = (configServiceId: string) => {
       dynamicConfig,
       dynamicRendererReg
       ] = await getDynamicNodeDetails(path, config, configService, (path) => {
-        return getValue(originalTreeData, path, createDefault(config, null))
+        return pathUtils.getValueByGlobalPath(originalTreeData, path, createDefault(config, null))
     })
     if(!dynamicConfig) return null
     return dynamicRendererReg?.initialiser ?

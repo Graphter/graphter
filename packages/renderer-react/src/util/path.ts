@@ -28,22 +28,26 @@ export function validate(path?: Array<PathSegment> | null){
   }
 }
 
-export const getValue = (data: any, path?: Array<PathSegment> | null, defaultVal?: any) => {
-  const targetData = path?.reduce((data: any, pathSegment: PathSegment) => {
+export const getValueByLocalPath = (data: any, localPath?: Array<PathSegment> | null, defaultVal?: any) => {
+  const targetData = localPath?.reduce((data: any, pathSegment: PathSegment) => {
     if(typeof data !== 'undefined') return data[pathSegment]
   }, data)
   if(typeof targetData === 'undefined'){
     if(typeof defaultVal === 'undefined')
-      throw new Error(`Could not find a value at ${path?.join('/')} within: ${JSON.stringify(data)} and no default value was given.`)
+      throw new Error(`Could not find a value at ${localPath?.join('/')} within: ${JSON.stringify(data)} and no default value was given.`)
     else return defaultVal
   }
   return targetData
 }
 
+export const getValueByGlobalPath = (data: any, globalPath?: Array<PathSegment> | null, defaultVal?: any) => {
+  return getValueByLocalPath(data, globalPath?.slice(2), defaultVal)
+}
+
 const safeNumberStringSalt = 'f3b1856b-59ee-4fe3-8538-ffee42ad7245'
 
-export const toUrl = (globalPath:Array<PathSegment>): string => {
-  return `/${globalPath
+export const toUrl = (path:Array<PathSegment>): string => {
+  return `/${path
     .map((segment: number | string) => {
       if(typeof segment === 'number') return segment
       if(!isNaN(parseInt(segment))) return `${segment}-${safeNumberStringSalt}`
@@ -69,5 +73,6 @@ export const pathUtils = {
   toUrl,
   fromUrl,
   validate,
-  getValue
+  getValueByGlobalPath,
+  getValueByLocalPath
 }

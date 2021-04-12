@@ -14,7 +14,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
     {
       config,
       originalTreeData,
-      globalPath,
+      path,
       ErrorDisplayComponent
     }: NodeRendererProps
   ) => {
@@ -22,10 +22,10 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
     const pathValidation = pathUtils.validate(config.options.siblingPath)
     if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
 
-    const targetGlobalPath = [...globalPath.slice(0, -1), ...config.options.siblingPath]
+    const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
     const treeDataInitialiser = useTreeDataInitialiser()
 
-    const [ targetNodeData ] = useNodeData<any>(targetGlobalPath)
+    const [ targetNodeData ] = useNodeData<any>(targetPath)
     const targetNodeDataType = typeof targetNodeData
     if(!['undefined', 'string', 'number'].includes(targetNodeDataType) && targetNodeData !== null){
       throw new Error(`RendererOptionsNodeRenderer target data type '${targetNodeDataType}' is unsupported`)
@@ -42,7 +42,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
         setChildConfig(getConfigResult.item)
         const rendererRegistration = nodeRendererStore.get(getConfigResult.item.type)
         if(!rendererRegistration) return
-        await treeDataInitialiser(getConfigResult.item, globalPath, originalTreeData)
+        await treeDataInitialiser(getConfigResult.item, path, originalTreeData)
         setRendererRegistration(rendererRegistration)
       })()
     }, [ targetNodeData ])
@@ -55,7 +55,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
       <>
         <rendererRegistration.Renderer
           config={childConfig}
-          globalPath={[ ...globalPath ]}
+          path={[ ...path ]}
           originalTreeData={originalTreeData}
           options={rendererRegistration.options}
           ErrorDisplayComponent={ErrorDisplayComponent} />
