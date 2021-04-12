@@ -1,4 +1,4 @@
-import React, { ComponentType, Suspense, useState } from 'react'
+import React, { ComponentType, Suspense, useEffect, useState } from 'react'
 import {
   ErrorRendererProps,
   NodeConfig,
@@ -47,8 +47,13 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(path)
 
+  useEffect(() => {
+    if (!itemsMeta) {
+      setItemsMeta([])
+    }
+  }, [ ])
+
   if (!itemsMeta) {
-    setItemsMeta([])
     return null
   }
 
