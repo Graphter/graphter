@@ -84,29 +84,33 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           }
 
           if (itemMeta.committed) {
-            return renderCommittedItem(
-              config,
-              options,
-              childConfig,
-              childPath,
-              childRendererRegistration,
-              editingItems.has(itemMeta.key),
-              setEditMode,
-              itemMeta,
-              removeItem,
-              originalTreeData,
-              ErrorDisplayComponent)
+            return <CommittedItem
+              key={itemMeta.key}
+              parentConfig={config}
+              parentOptions={options}
+              childConfig={childConfig}
+              childPath={childPath}
+              childRendererRegistration={childRendererRegistration}
+              isEditing={editingItems.has(itemMeta.key)}
+              setEditMode={setEditMode}
+              itemMeta={itemMeta}
+              removeItem={removeItem}
+              originalTreeData={originalTreeData}
+              ErrorDisplayComponent={ErrorDisplayComponent}
+            />
           } else {
-            return renderUncommittedItem(
-              config,
-              childConfig,
-              childPath,
-              childRendererRegistration,
-              itemMeta,
-              commitItem,
-              removeItem,
-              originalTreeData,
-              ErrorDisplayComponent)
+            return <UncommittedItem
+              key={itemMeta.key}
+              parentConfig={config}
+              childConfig={childConfig}
+              childPath={childPath}
+              childRendererRegistration={childRendererRegistration}
+              itemMeta={itemMeta}
+              commitItem={commitItem}
+              removeItem={removeItem}
+              originalTreeData={originalTreeData}
+              ErrorDisplayComponent={ErrorDisplayComponent}
+            />
           }
         })}
       </div>
@@ -140,24 +144,36 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   )
 })
 
-function renderCommittedItem(
-  parentConfig: NodeConfig,
-  parentOptions: any,
-  childConfig: NodeConfig,
-  childPath: Array<PathSegment>,
-  childRendererRegistration: NodeRendererRegistration,
-  isEditing: boolean,
-  setEditMode: (key: string, editMode: boolean) => void,
-  itemMeta: ItemMeta,
-  removeItem: (key: string) => void,
-  originalTreeData: any,
-  ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
-) {
+function CommittedItem(
+  {
+    parentConfig,
+    parentOptions,
+    childConfig,
+    childPath,
+    childRendererRegistration,
+    isEditing,
+    setEditMode,
+    itemMeta,
+    removeItem,
+    originalTreeData,
+    ErrorDisplayComponent,
+  }: {
+    parentConfig: NodeConfig,
+    parentOptions: any,
+    childConfig: NodeConfig,
+    childPath: Array<PathSegment>,
+    childRendererRegistration: NodeRendererRegistration,
+    isEditing: boolean,
+    setEditMode: (key: string, editMode: boolean) => void,
+    itemMeta: ItemMeta,
+    removeItem: (key: string) => void,
+    originalTreeData: any,
+    ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
+  }) {
   if (isEditing) {
     const ChildTypeRenderer = childRendererRegistration.Renderer
     return (
       <DefaultEditItemWrapper
-        key={itemMeta.key}
         onRemove={() => {
           removeItem(itemMeta.key)
         }}
@@ -178,9 +194,8 @@ function renderCommittedItem(
 
   return (
 
-    <Suspense fallback={<div>Loading...</div>}>
+    <Suspense key={itemMeta.key} fallback={<div>Loading...</div>}>
       <DefaultItemView
-        key={itemMeta.key}
         childId={itemMeta.key}
         config={childConfig}
         globalPath={childPath}
@@ -199,16 +214,28 @@ function renderCommittedItem(
   )
 }
 
-function renderUncommittedItem(
-  parentConfig: NodeConfig,
-  childConfig: NodeConfig,
-  childPath: Array<PathSegment>,
-  childRendererRegistration: NodeRendererRegistration,
-  itemMeta: ItemMeta,
-  commitItem: (key: string) => void,
-  removeItem: (key: string) => void,
-  originalTreeData: any,
-  ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
+function UncommittedItem(
+  {
+    parentConfig,
+    childConfig,
+    childPath,
+    childRendererRegistration,
+    itemMeta,
+    commitItem,
+    removeItem,
+    originalTreeData,
+    ErrorDisplayComponent,
+  }: {
+    parentConfig: NodeConfig,
+    childConfig: NodeConfig,
+    childPath: Array<PathSegment>,
+    childRendererRegistration: NodeRendererRegistration,
+    itemMeta: ItemMeta,
+    commitItem: (key: string) => void,
+    removeItem: (key: string) => void,
+    originalTreeData: any,
+    ErrorDisplayComponent?: ComponentType<ErrorRendererProps>,
+  }
 ) {
   const ChildTypeRenderer = childRendererRegistration.Renderer
   return (
