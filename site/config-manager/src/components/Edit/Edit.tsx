@@ -50,7 +50,7 @@ export default function Edit(){
   )
   if(error){
     return (
-      <div>Error: ${error}</div>
+      <div>Error: ${error.message}</div>
     )
   }
   return (
