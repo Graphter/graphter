@@ -22,7 +22,12 @@ const configs: NodeConfig[] = [
             type: 'string'
           },
         ]
-      }
+      },
+      {
+        id: 'type',
+        name: 'Type',
+        type: 'data-select',
+      },
     ]
   },
   {
