@@ -1,7 +1,7 @@
 /***
  * This module needs to be broken up and much of it moved out of the package
  */
-import React, { ComponentType, ReactNode, useEffect, useState } from "react";
+import React, { ComponentType, ReactNode, Suspense, useEffect, useState } from "react";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps, NodeConfig,
@@ -11,7 +11,7 @@ import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
 import { useTreeDataCallback } from "../providers/state";
-import { getConfigAt } from "../util/node";
+import { getConfigAt, getConfigsTo } from "../util/node";
 import { pathUtils } from "../util/path";
 import { useTreeDataSnapshot } from "../hooks/data";
 
@@ -21,12 +21,6 @@ export interface NodeEditRendererProps {
   onSaved?: (modelId: string, instance: any) => void
   cancel: (modelId: string | undefined, instance: any) => void
   startingData: any
-}
-
-class Suspense extends React.Component<{ fallback: JSX.Element, children: ReactNode }> {
-  render() {
-    return null;
-  }
 }
 
 export default function NodeEditRenderer(
@@ -39,13 +33,16 @@ export default function NodeEditRenderer(
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError
 
-  if(path?.length < 2) return <ErrorDisplayComponent err={new Error('An absolute path (containiedng at least two path segments) is required.')} />
-
-  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />
-
-  const [ loadedTreeState, setLoadedTreeState ] = useState<{ childPath: Array<PathSegment>, childConfig: NodeConfig | null }>({
+  const [ loadedTreeState, setLoadedTreeState ] = useState<
+    {
+      childPath: Array<PathSegment>,
+      childConfig: NodeConfig | null,
+      configs: Array<NodeConfig> | null
+    }
+  >({
     childPath: path,
-    childConfig: null
+    childConfig: null,
+    configs: null
   })
 
 
@@ -67,14 +64,16 @@ export default function NodeEditRenderer(
   const initialise = useTreeDataCallback(
     (treeData: any) => {
       (async () => {
-        const childConfig = await getConfigAt(topNodeConfig, path, (path => {
+        const configs = await getConfigsTo(topNodeConfig, path, (path) => {
           console.log(treeData)
           return pathUtils.getValueByGlobalPath(treeData, path)
-        }))
+        })
+        if(!configs?.length) throw new Error(`Couldn't find config at ${path.join('/')}`)
+        const childConfig = configs[configs.length - 1]
 
-        if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
         setLoadedTreeState({
           childPath: path,
+          configs,
           childConfig
         })
       })()
@@ -86,8 +85,7 @@ export default function NodeEditRenderer(
     initialise()
   }, [ topNodeConfig, path, treeData ])
 
-  if (!startingData) return null
-  if(!loadedTreeState.childConfig) return null
+  if(!startingData || !loadedTreeState.childConfig || !loadedTreeState.configs) return null
 
   const childRegistration = nodeRendererStore.get(loadedTreeState.childConfig.type)
   if(!childRegistration) throw new Error(`No child renderer found for type '${loadedTreeState.childConfig.type}'`)
@@ -107,19 +105,21 @@ export default function NodeEditRenderer(
           {loadedTreeState.childConfig.description && <p className='text-sm text-gray-500'>{loadedTreeState.childConfig.description}</p>}
         </div>
 
+        <Suspense fallback={<div>Loading validation...</div>}>
         <TypeRenderer
           path={loadedTreeState.childPath}
           config={loadedTreeState.childConfig}
+          configAncestry={loadedTreeState.configs}
           originalTreeData={startingData}
           options={childRegistration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}
         />
-
+        </Suspense>
         <div className='border-t pt-10'>
 
-          <Suspense fallback={<div>Loading validation...</div>}>
+          {/*<Suspense fallback={<div>Loading validation...</div>}>
             <ValidationSummary config={topNodeConfig} path={topNodePath} />
-          </Suspense>
+          </Suspense>*/}
 
           <div className='flex justify-between'>
             <button type='submit' data-testid='save' className='flex-grow p-3 mr-2 bg-green-500 text-white rounded'>Save</button>

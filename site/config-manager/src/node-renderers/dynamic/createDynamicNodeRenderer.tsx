@@ -13,6 +13,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
   const dynamicNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
     {
       config,
+      configAncestry,
       originalTreeData,
       path,
       ErrorDisplayComponent
@@ -55,6 +56,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
       <>
         <rendererRegistration.Renderer
           config={childConfig}
+          configAncestry={[...configAncestry, config]}
           path={[ ...path ]}
           originalTreeData={originalTreeData}
           options={rendererRegistration.options}

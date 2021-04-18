@@ -1,4 +1,4 @@
-import React, { ComponentType, useMemo } from "react";
+import React, { ComponentType, useEffect, useMemo } from "react";
 import { NodeConfig, NodeRendererProps, NodeRendererRegistration } from "@graphter/core";
 import { useNodeData } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
@@ -11,6 +11,7 @@ import { useTreeDataInitialiser } from "@graphter/renderer-react";
 const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
+    configAncestry,
     originalTreeData,
     path,
     ErrorDisplayComponent,
@@ -44,6 +45,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     <>
       <matchingChildRendererRegistration.Renderer
         config={matchingChildConfig}
+        configAncestry={[...configAncestry, config]}
         path={[ ...path ]}
         originalTreeData={originalTreeData}
         options={matchingChildRendererRegistration.options}

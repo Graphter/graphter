@@ -83,25 +83,35 @@ export const getTreePaths = async (
 }
 
 export const getConfigAt = async (
-  config: NodeConfig,
-  path: Array<PathSegment>,
+  startingConfig: NodeConfig,
+  targetPath: Array<PathSegment>,
   getPropValue: (path: Array<PathSegment>) => any
-): Promise<NodeConfig> => {
-  let currentConfig: NodeConfig = config
-  let currentPath: Array<PathSegment> = path.slice(0, 2)
+): Promise<NodeConfig | null> => {
+  const configs = await getConfigsTo(startingConfig, targetPath, getPropValue)
+  return configs?.length ? configs[configs.length - 1] : null
+}
 
-  while (currentPath < path) {
+export const getConfigsTo = async (
+  startingConfig: NodeConfig,
+  targetPath: Array<PathSegment>,
+  getPropValue: (path: Array<PathSegment>) => any
+): Promise<Array<NodeConfig> | null> => {
+  let currentConfig: NodeConfig = startingConfig
+  let currentPath: Array<PathSegment> = targetPath.slice(0, 2)
+  let configs: Array<NodeConfig> = [ startingConfig ]
+  while (currentPath < targetPath) {
 
     const renderer = nodeRendererStore.get(currentConfig.type)
-    if (!renderer.newGetChildConfig) return currentConfig
+    if (!renderer.newGetChildConfig) break
 
-    const childSegment = path[currentPath.length]
+    const childSegment = targetPath[currentPath.length]
 
     const nextConfig = await renderer.newGetChildConfig(currentConfig, currentPath, childSegment, getPropValue)
-    if (!nextConfig) return currentConfig
+    if (!nextConfig) break
     currentPath.push(childSegment)
+    configs.push(nextConfig)
     currentConfig = nextConfig
   }
 
-  return currentConfig
+  return configs
 }

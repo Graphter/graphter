@@ -6,6 +6,7 @@ import { ComponentType } from "react";
 
 export interface NodeRendererProps {
   config: NodeConfig
+  configAncestry: Array<NodeConfig>
   originalTreeData: Array<any>
   /**
    * Used by a node renderer to indicate a completion action.
