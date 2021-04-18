@@ -50,19 +50,22 @@ export function useMultipleNodeData(
 
 export const useTreeData:TreeDataHook = (
   config,
-  path: Array<PathSegment>) => {
+  path: Array<PathSegment>,
+  depth?: number
+) => {
   const ctx = useContext(Context)
   if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataHook or context to use.`)
-  return ctx.treeDataHook(config, path)
+  return ctx.treeDataHook(config, path, depth)
 }
 
 export const useTreeDataCallback:TreeDataCallbackHook = (
   fn: (data: any) => void,
   config,
-  path: Array<PathSegment>) => {
+  path: Array<PathSegment>,
+  depth?: number) => {
   const ctx = useContext(Context)
   if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataCallbackHook or context to use.`)
-  return ctx.treeDataCallbackHook(fn, config, path)
+  return ctx.treeDataCallbackHook(fn, config, path, depth)
 }
 
 export const useTreePaths:TreePathsHook = (config, path) => {

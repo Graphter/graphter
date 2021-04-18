@@ -15,7 +15,8 @@ export function createDefault(config: NodeConfig, fallbackValue: any = undefined
   return clone()(config.default)
 }
 
-export const getTreeData = async (config: NodeConfig, path: Array<PathSegment>, getPropValue: (path: Array<PathSegment>) => any): Promise<any> => {
+export const getTreeData = async (config: NodeConfig, path: Array<PathSegment>, getPropValue: (path: Array<PathSegment>) => any, depth?: number): Promise<any> => {
+  if(depth !== undefined && depth === 0) return null
   const renderer = nodeRendererStore.get(config.type)
   if (!renderer.newGetChildPaths || !renderer.newGetChildConfig || !renderer.mergeChildData) {
     return getPropValue(path)
@@ -33,7 +34,7 @@ export const getTreeData = async (config: NodeConfig, path: Array<PathSegment>, 
       config,
       data: createDefault(config, renderer.createFallbackDefaultValue ? renderer.createFallbackDefaultValue(config, path, getPropValue) : null)
     }
-    const childData = await getTreeData(childConfig, childPath, getPropValue)
+    const childData = await getTreeData(childConfig, childPath, getPropValue, depth === undefined ? undefined : depth - 1)
     return {config: childConfig, data: childData}
   }))
   return renderer.mergeChildData(config, path, getPropValue, childData)

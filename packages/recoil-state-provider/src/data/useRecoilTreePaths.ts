@@ -4,5 +4,5 @@ import treeDataStore from '../store/treeDataStore';
 import { TreePathsHook } from '@graphter/renderer-react';
 
 export const useRecoilTreePaths:TreePathsHook = (config, path) => {
-  return useRecoilValue<Array<Array<PathSegment>>>(treeDataStore.getDescendentPaths(config, path))
+  return useRecoilValue<Array<Array<PathSegment>>>(treeDataStore.getBranchPaths(config, path))
 }

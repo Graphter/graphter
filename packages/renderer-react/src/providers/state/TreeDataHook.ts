@@ -4,5 +4,6 @@ export interface TreeDataHook {
   (
     config: NodeConfig,
     path: Array<PathSegment>,
+    depth?: number
   ): () => void
 }
