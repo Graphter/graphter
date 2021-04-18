@@ -1,6 +1,6 @@
 /**
  * This is a good candidate for promotion to a core package. Still some questions to answer:
- * - Should the data accessed by this renderer also be defined by a configuration?
+ * - ~~Should the data accessed by this renderer also be defined by a configuration?~~
  * - Can we do better with options typing? Does it have to be type 'any' or can we get some compile-time safety?
  *
  * Summary: wait until more battle tested before promotion
@@ -28,16 +28,19 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   const [ touched, setTouched ] = useState(false)
   const [ nodeData, setNodeData ] = useNodeData<string>(path)
   const validationResults = useNodeValidation(config, path)
-  const dataService = serviceStore.get(config.options?.serviceId)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)
   const [ loading, setLoading ] = useState(true)
   useEffect(() => {
     (async () => {
+      const dataService = serviceStore.get(config.options?.serviceId)
       const options = (await dataService.list()).items
         .map((item: any) => ({
           key: pathUtils.getValueByLocalPath(item, config.options?.keyPath),
           value: pathUtils.getValueByLocalPath(item, config.options?.valuePath)
         }))
+      if(!nodeData && options.length && !options.some(option => option.key === '')){
+        setNodeData(options[0].key)
+      }
       setOptions(options)
       setLoading(false)
     })()
