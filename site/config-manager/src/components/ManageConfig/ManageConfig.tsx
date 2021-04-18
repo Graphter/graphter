@@ -11,10 +11,12 @@ import { nodeRendererService } from "../../services/nodeRendererService";
 import configConfig from '../../models/config'
 import { serviceStore } from "@graphter/renderer-react";
 import { nodeRendererOptionsConfigService } from "../../services/nodeRendererOptionsConfigService";
+import { serviceService } from "../../services/serviceService";
 
 serviceStore.register('config', configService)
 serviceStore.register('node-renderer', nodeRendererService)
 serviceStore.register('node-renderer-options-config', nodeRendererOptionsConfigService)
+serviceStore.register('service', serviceService)
 
 export default function ManageConfig() {
   return (
