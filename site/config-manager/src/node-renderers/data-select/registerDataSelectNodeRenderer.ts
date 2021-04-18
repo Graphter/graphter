@@ -11,7 +11,7 @@ export function registerDataSelectNodeRenderer(options?: DataSelectNodeRendererO
     type: options?.type || 'data-select',
     name: 'Data Select',
     description: 'Manage a selection from a set of options supplied by a data source',
-    createFallbackDefaultValue: () => Promise.resolve('text'),
+    createFallbackDefaultValue: () => Promise.resolve(''),
     Renderer: DataSelectNodeRenderer,
     options,
     optionsConfig: dataSelectOptionsConfig
