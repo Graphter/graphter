@@ -13,13 +13,13 @@ interface UseDataResult {
 export const useData = (config: NodeConfig, instanceId: string | number): UseDataResult => {
   const [ result, setResult ] = useState<UseDataResult>({ loading: true })
   const treeDataInitialiser = useTreeDataInitialiser()
-  const service = serviceStore.get(config.id)
   useEffect(() => {
     (async () => {
       if(isEmpty(instanceId)) {
         setResult({ loading: false })
       } else {
         try {
+          const service = serviceStore.get(config.id)
           const getResult = await service.get(instanceId);
           if (!getResult.item) {
             setResult({ loading: false, error: new Error(`Couldn't find a '${config.name}' with ID '${instanceId}'`) })
