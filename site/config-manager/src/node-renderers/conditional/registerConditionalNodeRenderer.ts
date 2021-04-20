@@ -17,7 +17,7 @@ export function registerConditionalNodeRenderer(options?: ConditionalNodeRendere
     newGetChildConfig: newGetConditionalChildConfig,
     newGetChildPaths: newGetConditionalChildPaths,
     mergeChildData: mergeConditionalChildData,
-    createFallbackDefaultValue: () => ([]),
+    createFallbackDefaultValue: () => Promise.resolve([]),
     initialiser: conditionalInitialiser,
     Renderer: ConditionalNodeRenderer,
     options

@@ -5,6 +5,6 @@ import { PathSegment } from "./PathSegment";
 
 export interface Service {
   list: (skip?: number, take?: number) => Promise<ListResult>,
-  get: (id: string | number) => Promise<GetResult>,
-  save: (id: string | number, data: any) => Promise<SaveResult>
+  get: (id: PathSegment) => Promise<GetResult>,
+  save?: (id: PathSegment, data: any) => Promise<SaveResult>
 }

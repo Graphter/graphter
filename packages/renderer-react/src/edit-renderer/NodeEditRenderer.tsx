@@ -1,18 +1,19 @@
 /***
  * This module needs to be broken up and much of it moved out of the package
  */
-import React, { ComponentType } from "react";
+import React, { ComponentType, ReactNode, Suspense, useEffect, useState } from "react";
 import DefaultError from "../default-error";
 import {
-  ErrorRendererProps,
-  NodeRendererRegistration, PathSegment,
+  ErrorRendererProps, NodeConfig,
+  PathSegment,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
 import { useTreeDataCallback } from "../providers/state";
-import { getConfigAt } from "../util/node";
-import { getValue } from "../util/path";
+import { getConfigAt, getConfigsTo } from "../util/node";
+import { pathUtils } from "../util/path";
+import { useTreeDataSnapshot } from "../hooks/data";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
@@ -32,14 +33,22 @@ export default function NodeEditRenderer(
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError
 
-  if(path?.length < 2) return <ErrorDisplayComponent err={new Error('An absolute path (containing at least two path segments) is required.')} />
+  const [ loadedTreeState, setLoadedTreeState ] = useState<
+    {
+      childPath: Array<PathSegment>,
+      childConfig: NodeConfig | null,
+      configs: Array<NodeConfig> | null
+    }
+  >({
+    childPath: path,
+    childConfig: null,
+    configs: null
+  })
 
-  if (!cancel) return <ErrorDisplayComponent err={new Error('A cancel function is required')} />
 
-
-  const topNodeConfigId = path[0]
-  const editingId = path[1]
-  const topNodePath = path.slice(0, 2)
+  const topNodeConfigId = loadedTreeState.childPath[0]
+  const editingId = loadedTreeState.childPath[1]
+  const topNodePath = loadedTreeState.childPath.slice(0, 2)
 
   const topNodeConfig = useConfig(topNodeConfigId)
 
@@ -50,14 +59,36 @@ export default function NodeEditRenderer(
     topNodeConfig,
     path)
 
-  if (!startingData) return null
+  const treeData = useTreeDataSnapshot(topNodeConfig, path)
 
-  const registration = nodeRendererStore.get(topNodeConfig.type)
-  if(!registration) throw new Error(`No renderer found for type '${topNodeConfig.type}'`)
-  const childConfig = getConfigAt(topNodeConfig, path.slice(2), (path => getValue(startingData, path)))
-  if(!childConfig) throw new Error(`Couldn't find config for ${path.join('/')}`)
-  const childRegistration = nodeRendererStore.get(childConfig.type)
-  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.type}'`)
+  const initialise = useTreeDataCallback(
+    (treeData: any) => {
+      (async () => {
+        const configs = await getConfigsTo(topNodeConfig, path, (path) => {
+          console.log(treeData)
+          return pathUtils.getValueByGlobalPath(treeData, path)
+        })
+        if(!configs?.length) throw new Error(`Couldn't find config at ${path.join('/')}`)
+        const childConfig = configs[configs.length - 1]
+
+        setLoadedTreeState({
+          childPath: path,
+          configs,
+          childConfig
+        })
+      })()
+    },
+    topNodeConfig,
+    path.slice(0, 2))
+
+  useEffect(() => {
+    initialise()
+  }, [ topNodeConfig, path, treeData ])
+
+  if(!startingData || !loadedTreeState.childConfig || !loadedTreeState.configs) return null
+
+  const childRegistration = nodeRendererStore.get(loadedTreeState.childConfig.type)
+  if(!childRegistration) throw new Error(`No child renderer found for type '${loadedTreeState.childConfig.type}'`)
   const TypeRenderer = childRegistration.Renderer
 
   return (
@@ -70,21 +101,25 @@ export default function NodeEditRenderer(
         })()
       }} data-testid='form'>
         <div className='mt-8 mb-10'>
-          <h1 className='text-2xl'>{childConfig.name}</h1>
-          {childConfig.description && <p className='text-sm text-gray-500'>{childConfig.description}</p>}
+          <h1 className='text-2xl'>{loadedTreeState.childConfig.name}</h1>
+          {loadedTreeState.childConfig.description && <p className='text-sm text-gray-500'>{loadedTreeState.childConfig.description}</p>}
         </div>
 
+        <Suspense fallback={<div>Loading validation...</div>}>
         <TypeRenderer
-          globalPath={path}
-          config={childConfig}
+          path={loadedTreeState.childPath}
+          config={loadedTreeState.childConfig}
+          configAncestry={loadedTreeState.configs}
           originalTreeData={startingData}
-          options={registration.options}
+          options={childRegistration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}
         />
-
+        </Suspense>
         <div className='border-t pt-10'>
 
-          <ValidationSummary config={topNodeConfig} path={topNodePath} />
+          <Suspense fallback={<div>Loading validation...</div>}>
+            <ValidationSummary config={topNodeConfig} path={topNodePath} />
+          </Suspense>
 
           <div className='flex justify-between'>
             <button type='submit' data-testid='save' className='flex-grow p-3 mr-2 bg-green-500 text-white rounded'>Save</button>

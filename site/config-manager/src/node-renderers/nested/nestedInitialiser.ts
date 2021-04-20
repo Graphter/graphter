@@ -2,7 +2,7 @@ import { NodeDataInitialiserFn } from "@graphter/core";
 import { isNestedConfig } from "./isNestedConfig";
 import { getConfig, nodeRendererStore } from "@graphter/renderer-react";
 
-export const nestedInitialiser: NodeDataInitialiserFn = (
+export const nestedInitialiser: NodeDataInitialiserFn = async (
   originalTreeData,
   config,
   path

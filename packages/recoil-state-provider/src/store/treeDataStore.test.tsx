@@ -25,7 +25,7 @@ describe('treeDataStore', () => {
   describe('getDescendentData()', () => {
     it('should return a selector that resolves the descendent tree structure', () => {
       function ConsumerComponent({config}: { config: NodeConfig }) {
-        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
+        const value = useRecoilValue(treeDataStore.getBranchData(config, [ 'page' ]))
         return <div>{JSON.stringify(value)}</div>
       }
       const config = {
@@ -50,7 +50,7 @@ describe('treeDataStore', () => {
     })
     it('should skip descendent data resolution if the starting node does not implement a getChildData() function', async () => {
       function ConsumerComponent({config}: { config: NodeConfig }) {
-        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
+        const value = useRecoilValue(treeDataStore.getBranchData(config, [ 'page' ]))
         return <div>{value}</div>
       }
 
@@ -73,7 +73,7 @@ describe('treeDataStore', () => {
       let states: Array<RecoilValueReadOnly<any>> = []
 
       function ConsumerComponent({config}: { config: NodeConfig }) {
-        const state = treeDataStore.getDescendentData(config, [ 'page' ])
+        const state = treeDataStore.getBranchData(config, [ 'page' ])
         states.push(state)
         return null
       }
@@ -102,7 +102,7 @@ describe('treeDataStore', () => {
     })
     it.each([ null, undefined ])('should error if %o config is passed to the starting node', (noConfig) => {
       function ConsumerComponent({config}: { config: NodeConfig }) {
-        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
+        const value = useRecoilValue(treeDataStore.getBranchData(config, [ 'page' ]))
         return <div>{JSON.stringify(value)}</div>
       }
 
@@ -116,7 +116,7 @@ describe('treeDataStore', () => {
     })
     it('should error if no renderer is found for the starting node', () => {
       function ConsumerComponent({config}: { config: NodeConfig }) {
-        const value = useRecoilValue(treeDataStore.getDescendentData(config, [ 'page' ]))
+        const value = useRecoilValue(treeDataStore.getBranchData(config, [ 'page' ]))
         return <div>{JSON.stringify(value)}</div>
       }
 
@@ -137,7 +137,7 @@ describe('treeDataStore', () => {
     })
 
     function ConsumerComponent({config}: { config: NodeConfig }) {
-      const value = useRecoilValue(treeDataStore.getDescendentPaths(config, [ 'page' ]))
+      const value = useRecoilValue(treeDataStore.getBranchPaths(config, [ 'page' ]))
       return (
         <div>
           {JSON.stringify(value)}
@@ -185,7 +185,7 @@ describe('treeDataStore', () => {
       const states: Array<any> = []
 
       function RecordingConsumerComponent({config}: { config: NodeConfig }) {
-        states.push(treeDataStore.getDescendentPaths(config, [ 'page' ]))
+        states.push(treeDataStore.getBranchPaths(config, [ 'page' ]))
         return null
       }
 
@@ -208,7 +208,7 @@ describe('treeDataStore', () => {
     it.each([ null, undefined ])
     ('should error if %o config is passed to the starting node', async (noConfig) => {
       function ErrorConsumerComponent({config}: { config: NodeConfig }) {
-        useRecoilValue(treeDataStore.getDescendentPaths(config, [ 'page' ]))
+        useRecoilValue(treeDataStore.getBranchPaths(config, [ 'page' ]))
         return null
       }
 
@@ -222,7 +222,7 @@ describe('treeDataStore', () => {
     })
     it('should error if no renderer is found for the starting node', async () => {
       function ErrorConsumerComponent({config}: { config: NodeConfig }) {
-        useRecoilValue(treeDataStore.getDescendentPaths(config, [ 'page' ]))
+        useRecoilValue(treeDataStore.getBranchPaths(config, [ 'page' ]))
         return null
       }
 

@@ -2,7 +2,7 @@ import { MergeChildDataFn } from "@graphter/core";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingNodeDetails } from "./getMatchingRendererRegistration";
 
-export const mergeConditionalChildData:MergeChildDataFn = (config, path, getNodeValue, childData) => {
+export const mergeConditionalChildData:MergeChildDataFn = async (config, path, getNodeValue, childData) => {
   const {
     matchingConfig,
     matchingRendererRegistration

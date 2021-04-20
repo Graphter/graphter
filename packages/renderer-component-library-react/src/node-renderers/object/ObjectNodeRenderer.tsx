@@ -10,14 +10,15 @@ import cs from "classnames";
 const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
+    configAncestry,
     originalTreeData,
-    globalPath,
+    path,
     ErrorDisplayComponent
   }: NodeRendererProps
 ) => {
   return (
-    <div className='flex flex-col' data-nodetype='object' data-nodepath={globalPath.join('/')}>
-      {config.children && config.children.map((childConfig, i) => {
+    <div className='flex flex-col' data-nodetype='object' data-nodepath={path.join('/')}>
+      {config.children && config.children.map((childConfig) => {
         const childRendererRegistration = nodeRendererStore.get(childConfig.type)
         if (!childRendererRegistration) return null
         const ChildTypeRenderer = childRendererRegistration.Renderer
@@ -25,7 +26,8 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           <DefaultPropertyWrapper config={childConfig} key={childConfig.id}>
             <ChildTypeRenderer
               config={childConfig}
-              globalPath={[ ...globalPath, childConfig.id ]}
+              configAncestry={[...configAncestry, config]}
+              path={[ ...path, childConfig.id ]}
               originalTreeData={originalTreeData}
               options={childRendererRegistration.options}
               ErrorDisplayComponent={ErrorDisplayComponent} />

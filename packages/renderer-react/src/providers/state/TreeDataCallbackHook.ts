@@ -5,5 +5,6 @@ export interface TreeDataCallbackHook {
     fn: (data: any) => void,
     config: NodeConfig,
     path: Array<PathSegment>,
+    depth?: number
   ): () => void
 }

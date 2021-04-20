@@ -1,4 +1,4 @@
-import React, { ComponentType, useMemo } from "react";
+import React, { ComponentType, useEffect, useMemo } from "react";
 import { NodeConfig, NodeRendererProps, NodeRendererRegistration } from "@graphter/core";
 import { useNodeData } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
@@ -11,27 +11,26 @@ import { useTreeDataInitialiser } from "@graphter/renderer-react";
 const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
+    configAncestry,
     originalTreeData,
-    globalPath,
+    path,
     ErrorDisplayComponent,
   }: NodeRendererProps
 ) => {
-  if(!Array.isArray((config.options?.branches))) throw new Error('Conditional renderers need branch options')
-  if(!config.children?.length) throw new Error('At least one child config is required')
+  if(!isConditionalConfig(config)) throw new Error('Invalid ConditionalNodeRenderer config')
   const pathValidation = pathUtils.validate(config.options.siblingPath)
   if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
 
-  const targetGlobalPath = [...globalPath.slice(0, -1), ...config.options.siblingPath]
+  const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ targetNodeData ] = useNodeData<any>(targetGlobalPath)
-  if(!isConditionalConfig(config)) throw new Error()
+  const [ targetNodeData ] = useNodeData<any>(targetPath)
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
     if(!matchingChildConfig) return null
     const rendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
     if(!rendererRegistration) return null
-    treeDataInitialiser(matchingChildConfig, globalPath, originalTreeData)
+    treeDataInitialiser(matchingChildConfig, path, originalTreeData)
     return [ matchingChildConfig, rendererRegistration ]
   }, [ targetNodeData ])
 
@@ -46,7 +45,8 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     <>
       <matchingChildRendererRegistration.Renderer
         config={matchingChildConfig}
-        globalPath={[ ...globalPath ]}
+        configAncestry={[...configAncestry, config]}
+        path={[ ...path ]}
         originalTreeData={originalTreeData}
         options={matchingChildRendererRegistration.options}
         ErrorDisplayComponent={ErrorDisplayComponent} />

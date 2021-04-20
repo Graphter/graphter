@@ -1,4 +1,4 @@
-import React, { ComponentType, useState } from 'react'
+import React, { ComponentType, Suspense, useEffect, useState } from 'react'
 import {
   ErrorRendererProps,
   NodeConfig,
@@ -27,98 +27,111 @@ export interface ItemMeta {
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
+    configAncestry,
     originalTreeData,
-    globalPath,
+    path,
     ErrorDisplayComponent,
     options
   }: NodeRendererProps
 ) => {
   if (!isListConfig(config)) throw new Error('Invalid config')
-  const originalNodeData = pathUtils.getValue(originalTreeData, globalPath.slice(2), createDefault(config, []))
+  const originalNodeData = pathUtils.getValueByGlobalPath(originalTreeData, path, createDefault(config, []))
   if (!Array.isArray(originalNodeData)) throw new Error(`'${config.type}' renderer only works with arrays but got '${typeof originalNodeData}'`)
 
-  const [ showNewItemUI, setShowNewItemUI ] = useState(false)
   const [ editingItems ] = useState<Set<string>>(new Set())
 
   const childConfig = config.children[0]
   const childRendererRegistration = nodeRendererStore.get(childConfig.type)
-  if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${globalPath.join('/')}/${childConfig.id}`)
+  if (!childRendererRegistration) throw new Error(`Couldn't find a renderer for child renderer type ${childConfig.type} at ${path.join('/')}/${childConfig.id}`)
 
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(globalPath)
+  const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(path)
 
-  if(!itemsMeta){
-    setItemsMeta([])
+  useEffect(() => {
+    if (!itemsMeta) {
+      setItemsMeta([])
+    }
+  }, [ ])
+
+  if (!itemsMeta) {
     return null
   }
 
   function removeItem(key: string) {
     setItemsMeta([ ...itemsMeta.map(itemMeta => {
-      if(itemMeta.key === key) return {
+      if (itemMeta.key === key) return {
         ...itemMeta,
         deleted: true
       }
       return itemMeta
-    })])
+    }) ])
   }
+
   function commitItem(key: string) {
     setItemsMeta([ ...itemsMeta.map(itemMeta => {
-      if(itemMeta.key === key) return {
+      if (itemMeta.key === key) return {
         ...itemMeta,
         committed: true
       }
       return itemMeta
-    })])
+    }) ])
   }
 
   return (
-    <div className='flex flex-col' data-nodetype='list' data-nodepath={globalPath.join('/')}>
+    <div className='flex flex-col' data-nodetype='list' data-nodepath={path.join('/')}>
       <div className='' data-testid='items'>
         {itemsMeta && itemsMeta.map((itemMeta: ItemMeta, i: number) => {
-          if(itemMeta.deleted) return null
-          const childPath = [ ...globalPath, i ]
+          if (itemMeta.deleted) return null
+          const childPath = [ ...path, i ]
 
           function setEditMode(key: string, editMode: boolean) {
             editMode ? editingItems.add(key) : editingItems.delete(key)
           }
 
           if (itemMeta.committed) {
-            return renderCommittedItem(
-              config,
-              options,
-              childConfig,
-              childPath,
-              childRendererRegistration,
-              editingItems.has(itemMeta.key),
-              setEditMode,
-              itemMeta,
-              removeItem,
-              originalTreeData,
-              ErrorDisplayComponent)
+            return <CommittedItem
+              key={itemMeta.key}
+              parentConfig={config}
+              parentOptions={options}
+              childConfig={childConfig}
+              configAncestry={configAncestry}
+              childPath={childPath}
+              childRendererRegistration={childRendererRegistration}
+              isEditing={editingItems.has(itemMeta.key)}
+              setEditMode={setEditMode}
+              itemMeta={itemMeta}
+              removeItem={removeItem}
+              originalTreeData={originalTreeData}
+              ErrorDisplayComponent={ErrorDisplayComponent}
+            />
           } else {
-            return renderUncommittedItem(
-              config,
-              childConfig,
-              childPath,
-              childRendererRegistration,
-              itemMeta,
-              commitItem,
-              removeItem,
-              originalTreeData,
-              ErrorDisplayComponent)
+            return <UncommittedItem
+              key={itemMeta.key}
+              parentConfig={config}
+              childConfig={childConfig}
+              configAncestry={configAncestry}
+              childPath={childPath}
+              childRendererRegistration={childRendererRegistration}
+              itemMeta={itemMeta}
+              commitItem={commitItem}
+              removeItem={removeItem}
+              originalTreeData={originalTreeData}
+              ErrorDisplayComponent={ErrorDisplayComponent}
+            />
           }
         })}
       </div>
-      {!showNewItemUI && (
-        (!config.options.maxItems || itemsMeta.length < config.options.maxItems) && (
-          <button
-            type='button'
-            className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
-            onClick={() => {
-              const childPath = [ ...globalPath, itemsMeta.length ]
+      {(!config.options.maxItems || itemsMeta.length < config.options.maxItems) && (
+        <button
+          type='button'
+          className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
+          onClick={() => {
+            (async () => {
+              await treeDataInitialiser(childConfig, [ ...path, itemsMeta.length ], originalTreeData)
+              const childPath = [ ...path, itemsMeta.length ]
               const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
-                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValue(originalTreeData, path)) :
+                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValueByGlobalPath(originalTreeData, path)) :
                 null
               setItemsMeta([
                 ...itemsMeta,
@@ -129,36 +142,48 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
                   deleted: false
                 }
               ])
-              treeDataInitialiser(childConfig, [ ...globalPath, itemsMeta.length ], originalTreeData)
-              setShowNewItemUI(true)
-            }}
-            data-testid='add-item-btn'
-          >[+]</button>
-        )
+            })()
+          }}
+          data-testid='add-item-btn'
+        >[+]</button>
       )}
 
     </div>
   )
 })
 
-function renderCommittedItem(
-  parentConfig: NodeConfig,
-  parentOptions: any,
-  childConfig: NodeConfig,
-  childPath: Array<PathSegment>,
-  childRendererRegistration: NodeRendererRegistration,
-  isEditing: boolean,
-  setEditMode: (key: string, editMode: boolean) => void,
-  itemMeta: ItemMeta,
-  removeItem: (key: string) => void,
-  originalTreeData: any,
-  ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
-) {
+function CommittedItem(
+  {
+    parentConfig,
+    parentOptions,
+    childConfig,
+    configAncestry,
+    childPath,
+    childRendererRegistration,
+    isEditing,
+    setEditMode,
+    itemMeta,
+    removeItem,
+    originalTreeData,
+    ErrorDisplayComponent,
+  }: {
+    parentConfig: NodeConfig,
+    parentOptions: any,
+    childConfig: NodeConfig,
+    configAncestry: Array<NodeConfig>,
+    childPath: Array<PathSegment>,
+    childRendererRegistration: NodeRendererRegistration,
+    isEditing: boolean,
+    setEditMode: (key: string, editMode: boolean) => void,
+    itemMeta: ItemMeta,
+    removeItem: (key: string) => void,
+    originalTreeData: any,
+    ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
+  }) {
   if (isEditing) {
     const ChildTypeRenderer = childRendererRegistration.Renderer
     return (
       <DefaultEditItemWrapper
-        key={itemMeta.key}
         onRemove={() => {
           removeItem(itemMeta.key)
         }}
@@ -168,7 +193,8 @@ function renderCommittedItem(
       >
         <ChildTypeRenderer
           config={childConfig}
-          globalPath={childPath}
+          configAncestry={[...configAncestry, parentConfig]}
+          path={childPath}
           originalTreeData={originalTreeData}
           ErrorDisplayComponent={ErrorDisplayComponent}
           options={childRendererRegistration.options}
@@ -178,35 +204,51 @@ function renderCommittedItem(
   }
 
   return (
-    <DefaultItemView
-      key={itemMeta.key}
-      childId={itemMeta.key}
-      config={childConfig}
-      globalPath={childPath}
-      onSelect={() => {
-        if (parentConfig.options?.itemSelectionBehaviour === 'INLINE' || !parentConfig.options?.itemSelectionBehaviour) {
-          setEditMode(itemMeta.key, true)
-        } else if (parentConfig.options?.itemSelectionBehaviour === 'CUSTOM' && typeof parentOptions?.customItemSelectionBehaviour === 'function') {
-          parentOptions.customItemSelectionBehaviour(parentConfig.options?.itemSelectionBehaviour, childConfig, childPath)
-        }
-      }}
-      onRemove={() => {
-        removeItem(itemMeta.key)
-      }}
-    />
+
+    <Suspense key={itemMeta.key} fallback={<div>Loading...</div>}>
+      <DefaultItemView
+        childId={itemMeta.key}
+        config={childConfig}
+        path={childPath}
+        onSelect={() => {
+          if (parentConfig.options?.itemSelectionBehaviour === 'INLINE' || !parentConfig.options?.itemSelectionBehaviour) {
+            setEditMode(itemMeta.key, true)
+          } else if (parentConfig.options?.itemSelectionBehaviour === 'CUSTOM' && typeof parentOptions?.customItemSelectionBehaviour === 'function') {
+            parentOptions.customItemSelectionBehaviour(parentConfig.options?.itemSelectionBehaviour, childConfig, childPath)
+          }
+        }}
+        onRemove={() => {
+          removeItem(itemMeta.key)
+        }}
+      />
+    </Suspense>
   )
 }
 
-function renderUncommittedItem(
-  parentConfig: NodeConfig,
-  childConfig: NodeConfig,
-  childPath: Array<PathSegment>,
-  childRendererRegistration: NodeRendererRegistration,
-  itemMeta: ItemMeta,
-  commitItem: (key: string) => void,
-  removeItem: (key: string) => void,
-  originalTreeData: any,
-  ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
+function UncommittedItem(
+  {
+    parentConfig,
+    childConfig,
+    configAncestry,
+    childPath,
+    childRendererRegistration,
+    itemMeta,
+    commitItem,
+    removeItem,
+    originalTreeData,
+    ErrorDisplayComponent,
+  }: {
+    parentConfig: NodeConfig,
+    childConfig: NodeConfig,
+    configAncestry: Array<NodeConfig>,
+    childPath: Array<PathSegment>,
+    childRendererRegistration: NodeRendererRegistration,
+    itemMeta: ItemMeta,
+    commitItem: (key: string) => void,
+    removeItem: (key: string) => void,
+    originalTreeData: any,
+    ErrorDisplayComponent?: ComponentType<ErrorRendererProps>,
+  }
 ) {
   const ChildTypeRenderer = childRendererRegistration.Renderer
   return (
@@ -221,7 +263,8 @@ function renderUncommittedItem(
     >
       <ChildTypeRenderer
         config={childConfig}
-        globalPath={childPath}
+        configAncestry={[...configAncestry, parentConfig]}
+        path={childPath}
         originalTreeData={originalTreeData}
         ErrorDisplayComponent={ErrorDisplayComponent}
         options={childRendererRegistration.options}

@@ -9,6 +9,7 @@ export interface NodeRendererRegistration {
   description?: string
   Renderer: ComponentType<NodeRendererProps>
   options?: any
+  optionsConfig?: NodeConfig
 
   newGetChildConfig?: NewGetChildConfigFn
   newGetChildPaths?: NewGetChildPathsFn
@@ -17,46 +18,15 @@ export interface NodeRendererRegistration {
   createFallbackDefaultValue?: CreateFallbackDefaultValueFn
 }
 
-export interface InitialiseNodeDataFn {
-  (
-    config: NodeConfig,
-    path: Array<PathSegment>,
-    initialise: (path: Array<PathSegment>, originalTreeData?: any) => void,
-    originalTreeData?: any,
-  ): any
-}
-
-export interface GetChildConfigFn {
-  (
-    config: NodeConfig,
-    path: Array<PathSegment>,
-    absolutePath: Array<PathSegment>,
-    treeData: any
-  ): Array<{ path: Array<PathSegment>, config: NodeConfig }>
-}
-
-export interface GetChildDataFn {
-  (
-    config: NodeConfig,
-    path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => T
-  ): any
-}
-
-export interface GetChildPathsFn {
-  (
-    config: NodeConfig,
-    path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => T
-  ): Array<Array<PathSegment>>
-}
-
+/**
+ * Definition of a function that returns all descendant paths in a tree (in no particular order)
+ */
 export interface NewGetChildPathsFn {
   (
     config: NodeConfig,
     path: Array<PathSegment>,
     getNodeValue: <T>(path: Array<PathSegment>) => T
-  ): Array<Array<PathSegment>>
+  ): Promise<Array<Array<PathSegment>>>
 }
 
 export interface NewGetChildConfigFn {
@@ -65,7 +35,7 @@ export interface NewGetChildConfigFn {
     path: Array<PathSegment>,
     childSegment: PathSegment,
     getNodeValue: <T>(path: Array<PathSegment>) => T
-  ): NodeConfig | null
+  ): Promise<NodeConfig | null>
 }
 
 export interface MergeChildDataFn {
@@ -74,7 +44,7 @@ export interface MergeChildDataFn {
     path: Array<PathSegment>,
     getNodeValue: <T>(path: Array<PathSegment>) => T,
     childData: Array<{ config?: NodeConfig, data: any }>
-  ): any
+  ): Promise<any>
 }
 
 export interface CreateFallbackDefaultValueFn {
@@ -82,7 +52,7 @@ export interface CreateFallbackDefaultValueFn {
     config: NodeConfig,
     path: Array<PathSegment>,
     getNodeValue: <T>(path: Array<PathSegment>) => T
-  ): any
+  ): Promise<any>
 }
 
 export interface NodeDataInitialiserFn {
@@ -90,5 +60,5 @@ export interface NodeDataInitialiserFn {
     originalTreeData: any,
     config: NodeConfig,
     path: Array<PathSegment>
-  ): any
+  ): Promise<any>
 }

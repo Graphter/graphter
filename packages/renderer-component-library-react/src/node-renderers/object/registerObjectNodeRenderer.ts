@@ -16,7 +16,7 @@ export function registerObjectNodeRenderer(options?: ObjectNodeRendererOptions):
     description: 'Manage complex nested structures',
     newGetChildConfig: newGetObjectChildConfig,
     newGetChildPaths: newGetObjectChildPaths,
-    createFallbackDefaultValue: () => ({}),
+    createFallbackDefaultValue: () => Promise.resolve({}),
     mergeChildData: mergeObjectChildData,
     Renderer: ObjectNodeRenderer,
     options

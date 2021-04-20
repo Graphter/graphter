@@ -22,7 +22,7 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     newGetChildConfig: newListGetChildConfig,
     newGetChildPaths: newGetListChildPaths,
     mergeChildData: mergeListChildData,
-    createFallbackDefaultValue: () => ([]),
+    createFallbackDefaultValue: () => Promise.resolve([]),
     initialiser: listInitialiser,
     Renderer: ListNodeRenderer,
     options

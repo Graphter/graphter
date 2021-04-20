@@ -1,13 +1,14 @@
 import { NodeConfig, PathSegment } from "@graphter/core";
-import React, { ComponentType, Fragment } from "react";
+import React, { ComponentType, Fragment, useEffect, useState } from "react";
 import { nodeRendererStore } from "@graphter/renderer-react";
-import { getValue } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 import { getConfigAt } from "@graphter/renderer-react";
 import DynamicCrumb from "./DynamicCrumb";
+import { useTreeDataCallback } from "@graphter/renderer-react";
 
 interface BreadcrumbsProps {
   config: NodeConfig
-  globalPath: Array<PathSegment>
+  path: Array<PathSegment>
   AncestorCrumb: ComponentType<AncestorCrumbProps>
   CurrentCrumb: ComponentType<CurrentCrumbProps>
   originalTreeData: any
@@ -40,29 +41,46 @@ const DividerSvg = () => <svg className='inline-block w-4 fill-current text-gray
         clipRule="evenodd"/>
 </svg>
 
-const Breadcrumbs = ({config, globalPath, AncestorCrumb, CurrentCrumb, originalTreeData}: BreadcrumbsProps) => {
-  const starting = globalPath.slice(0, 1)
-  const remaining = globalPath.slice(1)
-  const crumbsData = (remaining.reduce<{ current: Array<PathSegment>, crumbsData: Array<CrumbData> }>(
-    (a, c) => {
-      a.current.push(c)
-      const localCurrent = a.current.slice(2)
-      const pathConfig = getConfigAt(config, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
-      if (!pathConfig) throw new Error(`Couldn't find config at ${localCurrent.join('/')}`)
-      const display: { path?: Array<PathSegment>, label: string } = {
-        label: pathConfig?.name || pathConfig?.id || 'Unknown'
-      }
-      const renderer = nodeRendererStore.get(pathConfig.type)
-      if (renderer.newGetChildPaths) {
-        const childPaths = renderer.newGetChildPaths(pathConfig, localCurrent, (path: Array<PathSegment>) => getValue(originalTreeData, path))
-        const displayPathSegment = getDisplayPathSegment(childPaths)
-        if (displayPathSegment) {
-          display.path = [ ...a.current, displayPathSegment ]
-        }
-      }
-      a.crumbsData.push({config: pathConfig, display, path: [ ...a.current ]})
-      return a
-    }, {current: starting, crumbsData: []})).crumbsData
+const Breadcrumbs = ({config, path, AncestorCrumb, CurrentCrumb, originalTreeData}: BreadcrumbsProps) => {
+  const starting = path.slice(0, 1)
+  const remaining = path.slice(1)
+  const [ crumbsData, setCrumbsData ] = useState<Array<CrumbData>>([])
+  const initialise = useTreeDataCallback(
+    (treeData: any) => {
+      (async () => {
+        const crumbsData = (await remaining.reduce<Promise<{ current: Array<PathSegment>, crumbsData: Array<CrumbData> }>>(
+          async (accPromise, c) => {
+            const a = await accPromise
+            a.current.push(c)
+            const pathConfig = await getConfigAt(config, a.current, (path: Array<PathSegment>) => {
+              return pathUtils.getValueByGlobalPath(treeData, path)
+            })
+            if (!pathConfig) throw new Error(`Couldn't find config at ${a.current.join('/')}`)
+            const display: { path?: Array<PathSegment>, label: string } = {
+              label: pathConfig?.name || pathConfig?.id || 'Unknown'
+            }
+            const renderer = nodeRendererStore.get(pathConfig.type)
+            if (renderer.newGetChildPaths) {
+              const childPaths = await renderer.newGetChildPaths(pathConfig, a.current, (path: Array<PathSegment>) => {
+                return pathUtils.getValueByGlobalPath(treeData, path)
+              })
+              const displayPathSegment = getDisplayPathSegment(childPaths)
+              if (displayPathSegment) {
+                display.path = [ ...a.current, displayPathSegment ]
+              }
+            }
+            a.crumbsData.push({ config: pathConfig, display, path: [ ...a.current ] })
+            return Promise.resolve(a)
+          }, Promise.resolve({ current: starting, crumbsData: [] }))).crumbsData
+        setCrumbsData(crumbsData)
+      })()
+    },
+    config,
+    path.slice(0, 2))
+
+  useEffect(() => {
+    initialise()
+  }, [ path ])
 
   return (
     <div>
@@ -107,67 +125,4 @@ function getDisplayPathSegment(paths: Array<Array<PathSegment>>) {
   return null
 }
 
-// const Breadcrumbs_old = ({ config, globalPath, ItemRenderer, originalTreeData }: BreadcrumbProps) => {
-//   const localPath = globalPath.slice(2)
-//   const registration = nodeRendererStore.get(config.type)
-//   if(!registration) throw new Error(`No renderer found for type '${config.type}'`)
-//   const configs = registration.getChildConfig ?
-//     registration.getChildConfig([ config ], localPath, localPath, originalTreeData) :
-//     [ config ]
-//   const starting = globalPath.slice(0, 1)
-//   const remaining = globalPath.slice(1)
-//
-//   const nodePaths = (remaining.reduce<{ current: Array<PathSegment>, nodePaths: Array<Array<PathSegment>> }>(
-//     (a, c) => {
-//       a.current.push(c)
-//       a.nodePaths.push([ ...a.current ])
-//       return a
-//     }, { current: starting, nodePaths: [] })).nodePaths
-//
-//   const displayPaths = nodePaths.map<Array<PathSegment>>((nodePath: Array<PathSegment>) => {
-//     const localPath = nodePath.slice(2)
-//     const nodeData = pathUtils.getValue(originalTreeData, localPath, NoMatch)
-//     if(nodeData === NoMatch) return nodePath
-//     const nodeDataType = typeof nodeData
-//     if(nodeDataType === 'string' || nodeDataType === 'number') return nodePath
-//     if(Array.isArray(nodeData)) return nodePath
-//     const keyMap = new Map<string, string>(Object.entries(nodeData).map(([ key, value]) => [key.toLowerCase(), key]))
-//     for(const guessingName of guessingNames){
-//       if(keyMap.has(guessingName)){
-//         const key = keyMap.get(guessingName)
-//         if(!key) return nodePath
-//         return [ ...nodePath, key ]
-//       }
-//     }
-//     return nodePath
-//   })
-//
-//   const displayPathsDataResult = useMultipleNodeData(displayPaths)
-//   if(nodePaths.length !== displayPaths.length || displayPaths.length !== displayPathsDataResult.length) throw new Error('Something has gone wrong')
-//   const displayPathsData = displayPathsDataResult
-//     .map((nodeData, i) => {
-//       if(Array.isArray(nodeData.data)){
-//         const arrayConfig = configs[i]
-//         return arrayConfig.name || arrayConfig.id
-//       }
-//       if(typeof nodeData.data === 'object') return 'Empty'
-//       return nodeData.data
-//     })
-//
-//   return (
-//     <div className='flex flex-row'>
-//       <ItemRenderer path={[ config.id ]}>{config.name}</ItemRenderer>
-//       <DividerSvg />
-//       {displayPaths.map((displayPath, i) => {
-//         const key = displayPath.join('/')
-//         return <>
-//           <ItemRenderer key={key} path={nodePaths[i]}>{displayPathsData[i]}</ItemRenderer>
-//           {i !== displayPaths.length - 1 && (
-//             <DividerSvg key={`arrow-${key}`} />
-//           )}
-//         </>
-//       })}
-//     </div>
-//   )
-// }
 export default Breadcrumbs

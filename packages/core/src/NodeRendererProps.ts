@@ -6,6 +6,7 @@ import { ComponentType } from "react";
 
 export interface NodeRendererProps {
   config: NodeConfig
+  configAncestry: Array<NodeConfig>
   originalTreeData: Array<any>
   /**
    * Used by a node renderer to indicate a completion action.
@@ -16,7 +17,7 @@ export interface NodeRendererProps {
   /**
    * To track current location in graph
    */
-  globalPath: Array<PathSegment>
+  path: Array<PathSegment>
 
   ErrorDisplayComponent?: ComponentType<ErrorRendererProps>
 }

@@ -12,12 +12,12 @@ const filterRegExpGlobal = /[^a-z0-9-]/g
 const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    globalPath
+    path
   }: NodeRendererProps
 ) => {
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData<string>(globalPath)
-  const validationResults = useNodeValidation(config, globalPath)
+  const [ nodeData, setNodeData ] = useNodeData<string>(path)
+  const validationResults = useNodeValidation(config, path)
   const showFixButton = filterRegExp.test(nodeData)
   return (
     <>
@@ -26,7 +26,7 @@ const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         type='text'
         value={nodeData}
         data-nodetype='id'
-        data-nodepath={globalPath.join('/')}
+        data-nodepath={path.join('/')}
         className='flex-grow p-3 rounded'
         onChange={(e) => {
           if(!touched) setTouched(true)
