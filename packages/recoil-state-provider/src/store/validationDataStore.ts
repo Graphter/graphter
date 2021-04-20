@@ -27,13 +27,7 @@ export const getAll = (paths: Array<Array<PathSegment>>): RecoilValueReadOnly<Ar
   const aggregateValidations = selector<Array<NodeValidationData>>({
     key,
     get: ({ get: selectorGet }) => {
-      return paths.flatMap(path => {
-        if(!has(path)) {
-          if(!propDataStore.has(path)) return []
-          const propState = propDataStore.get(path)
-          const propData = selectorGet(propState)
-          set(path, propData, [])
-        }
+      const result = paths.flatMap(path => {
         const validationDataState = get(path)
         const validationData = selectorGet(validationDataState)
         return [{
@@ -41,6 +35,7 @@ export const getAll = (paths: Array<Array<PathSegment>>): RecoilValueReadOnly<Ar
           results: validationData.results
         }]
       })
+      return result
     }
   })
   aggregateValidationsStateMap.set(key, aggregateValidations)

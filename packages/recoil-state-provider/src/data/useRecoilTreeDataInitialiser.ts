@@ -4,6 +4,7 @@ import { getTreeMeta } from "@graphter/renderer-react";
 import { PathSegment } from "@graphter/core";
 import { pathUtils } from "@graphter/renderer-react"
 import { createDefault, nodeRendererStore } from "@graphter/renderer-react";
+import validationDataStore from "../store/validationDataStore";
 
 const NO_MATCH = 'no-match-ac437190-4001-4fe3-bf1f-8ad03366d1dd'
 
@@ -25,6 +26,8 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       if(rendererReg.initialiser){
         const initialData = await rendererReg.initialiser(originalTreeData, nodeMeta.config, nodeMeta.path)
         propDataStore.set(nodeMeta.path, initialData)
+        // TODO: Should do initial validation here
+        validationDataStore.set(nodeMeta.path, initialData, [])
       } else {
         let initialData = pathUtils.getValueByGlobalPath(originalTreeData, nodeMeta.path, NO_MATCH)
         if (initialData === NO_MATCH) {
@@ -36,6 +39,8 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
           )
         }
         propDataStore.set(nodeMeta.path, initialData)
+        // TODO: Should do initial validation here
+        validationDataStore.set(nodeMeta.path, initialData, [])
       }
     }
   }

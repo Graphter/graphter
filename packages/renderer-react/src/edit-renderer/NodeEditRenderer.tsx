@@ -117,9 +117,9 @@ export default function NodeEditRenderer(
         </Suspense>
         <div className='border-t pt-10'>
 
-          {/*<Suspense fallback={<div>Loading validation...</div>}>
+          <Suspense fallback={<div>Loading validation...</div>}>
             <ValidationSummary config={topNodeConfig} path={topNodePath} />
-          </Suspense>*/}
+          </Suspense>
 
           <div className='flex justify-between'>
             <button type='submit' data-testid='save' className='flex-grow p-3 mr-2 bg-green-500 text-white rounded'>Save</button>
