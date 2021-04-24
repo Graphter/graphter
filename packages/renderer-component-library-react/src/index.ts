@@ -1,6 +1,6 @@
 import ListItemRenderer from './list-item-renderer';
 import StringNodeRenderer from "./node-renderers/string";
-import ObjectNodeRenderer from "./node-renderers/string";
+import ObjectNodeRenderer from "./node-renderers/object";
 import ListNodeRenderer from './node-renderers/list';
 import InlineValidation from "./inline-validation";
 import Breadcrumbs from "./breadcrumbs";
@@ -21,5 +21,7 @@ export {
 };
 
 export * from './node-renderers/string'
+export * from './node-renderers/number'
+export * from './node-renderers/select'
 export * from './node-renderers/object'
 export * from './node-renderers/list'

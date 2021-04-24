@@ -8,6 +8,7 @@ import { newListGetChildConfig } from "./newListGetChildConfig";
 import { mergeListChildData } from "./mergeListChildData";
 import { newGetListChildPaths } from "./newGetListChildPaths";
 import { listInitialiser } from "./listInitialiser";
+import { listOptionsConfig } from "./listOptionsConfig";
 
 export interface ListNodeRendererOptions {
   type?: string,
@@ -25,6 +26,7 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     createFallbackDefaultValue: () => Promise.resolve([]),
     initialiser: listInitialiser,
     Renderer: ListNodeRenderer,
-    options
+    options,
+    optionsConfig: listOptionsConfig
   }
 }
