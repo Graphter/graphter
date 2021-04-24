@@ -18,6 +18,8 @@ import React from "react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { registerDynamicNodeRenderer } from "../../node-renderers/dynamic/registerDynamicNodeRenderer";
 import { registerDynamicDataPathSelectNodeRenderer } from "../../node-renderers/dynamic-data-path-select";
+import { registerSelectNodeRenderer } from "@graphter/renderer-component-library-react";
+import { registerNumberNodeRenderer } from "@graphter/renderer-component-library-react";
 
 export default function Edit(){
   const backUri = `/`
@@ -43,7 +45,9 @@ export default function Edit(){
     registerDynamicNodeRenderer({
       configServiceId: 'node-renderer-options-config'
     }),
-    registerDynamicDataPathSelectNodeRenderer()
+    registerDynamicDataPathSelectNodeRenderer(),
+    registerSelectNodeRenderer(),
+    registerNumberNodeRenderer()
   ])
 
   const { loading, error, data } = useData(config, editingId)

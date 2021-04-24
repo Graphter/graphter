@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`registerStringNodeRenderer() should return the correct registration 1`] = `
+Object {
+  "Renderer": [Function],
+  "description": "Manage small amounts of plain text",
+  "initialiseData": [Function],
+  "name": "Text",
+  "options": undefined,
+  "type": "string",
+}
+`;
