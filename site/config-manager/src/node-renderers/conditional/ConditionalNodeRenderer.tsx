@@ -1,12 +1,12 @@
-import React, { ComponentType, useEffect, useMemo } from "react";
+import React, { ComponentType, useMemo } from "react";
 import { NodeConfig, NodeRendererProps, NodeRendererRegistration } from "@graphter/core";
-import { useNodeData } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { isConditionalConfig } from "./isConditionalConfig";
 import { useTreeDataInitialiser } from "@graphter/renderer-react";
+import { useExternalNodeData } from "@graphter/renderer-react";
 
 const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -24,7 +24,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ targetNodeData ] = useNodeData<any>(targetPath)
+  const [ targetNodeData ] = useExternalNodeData<any>(targetPath)
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
     if(!matchingChildConfig) return null

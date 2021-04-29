@@ -1,47 +1,62 @@
 import { propDataStore } from "../store/propDataStore";
 import { TreeDataInitialiserHook } from "@graphter/renderer-react";
-import { getTreeMeta } from "@graphter/renderer-react";
-import { PathSegment } from "@graphter/core";
-import { pathUtils } from "@graphter/renderer-react"
-import { createDefault, nodeRendererStore } from "@graphter/renderer-react";
-import validationDataStore from "../store/validationDataStore";
 
-const NO_MATCH = 'no-match-ac437190-4001-4fe3-bf1f-8ad03366d1dd'
+import { nodeRendererStore } from "@graphter/renderer-react";
+import { PathMeta } from "@graphter/renderer-react";
+import { pathToKey } from "@graphter/renderer-react";
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   return async (config, path, originalTreeData) => {
 
-    const getNodeValue = (path: Array<PathSegment>) => {
-      const result = pathUtils.getValueByGlobalPath(originalTreeData, path, NO_MATCH)
-      if (result === NO_MATCH) return
-      return result
-    }
+    const rendererRegistration = nodeRendererStore.get(config.type)
+    if(!rendererRegistration?.initialiser) return
+    const nodeMetas = await rendererRegistration.initialiser(originalTreeData, config, path)
 
-    const treeMeta = await getTreeMeta(config, path, getNodeValue)
-
-    for (const nodeMeta of treeMeta) {
-      if (!nodeMeta.path.length) continue
-      if (propDataStore.has(nodeMeta.path)) continue
-      const rendererReg = nodeRendererStore.get(nodeMeta.config.type)
-      if(rendererReg.initialiser){
-        const initialData = await rendererReg.initialiser(originalTreeData, nodeMeta.config, nodeMeta.path)
-        propDataStore.set(nodeMeta.path, initialData)
-        // TODO: Should do initial validation here
-        validationDataStore.set(nodeMeta.path, initialData, [])
-      } else {
-        let initialData = pathUtils.getValueByGlobalPath(originalTreeData, nodeMeta.path, NO_MATCH)
-        if (initialData === NO_MATCH) {
-          initialData = createDefault(
-            nodeMeta.config,
-            rendererReg.createFallbackDefaultValue ?
-              await rendererReg.createFallbackDefaultValue(nodeMeta.config, nodeMeta.path, getNodeValue) :
-              null
-          )
-        }
-        propDataStore.set(nodeMeta.path, initialData)
-        // TODO: Should do initial validation here
-        validationDataStore.set(nodeMeta.path, initialData, [])
+    // Get meta for all paths in the tree
+    const treeMetaMap = nodeMetas.reduce((a, c) => {
+      const pathKey = pathToKey(c.path)
+      const pathMeta = a.get(pathKey)
+      const node = {
+        config: c.config,
+        rendererRegistration: nodeRendererStore.get(c.config.type),
+        internalData: c.internalData
       }
-    }
+      if(!pathMeta) a.set(pathKey, {
+        path: c.path,
+        nodes: [ node ],
+        childPaths: []
+      })
+      else pathMeta.nodes.push(node)
+      return a
+    }, new Map<string, PathMeta>())
+
+    const treeMetaMapValues = Array.from(treeMetaMap.values())
+
+    // Hook up child paths
+    treeMetaMapValues.forEach((pathMeta) => {
+      if(pathMeta.path.length <= 2) return
+      const parentKey = pathToKey(pathMeta.path.slice(0, -1))
+      const parentMeta = treeMetaMap.get(parentKey)
+      if(!parentMeta){
+        throw new Error(`Couldn't find parent to path '${pathMeta.path.join('/')}'. Shouldn't happen.`)
+      }
+      console.log(`'${parentMeta.path.join('/')}' is parent of '${pathMeta.path.join('/')}'`)
+      parentMeta.childPaths.push(pathMeta.path)
+    })
+
+    // Check for duplicates (TODO: Remove)
+    treeMetaMapValues.reduce((a, c) => {
+      const key = pathToKey(c.path)
+      if(a.has(key)) throw new Error(`Found duplicate path '${c.path.join('/')}'`)
+      else a.set(key, true)
+      return a
+    }, new Map<string, boolean>())
+
+    // Store
+    console.log(JSON.stringify(treeMetaMapValues))
+    treeMetaMapValues.forEach((pathMeta) => {
+      if(!propDataStore.has(pathMeta.path)) propDataStore.set(pathMeta)
+    })
+
   }
 }

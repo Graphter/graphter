@@ -1,18 +1,18 @@
 import React, { ComponentType, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
-import { useNodeData, useNodeValidation } from "@graphter/renderer-react";
+import { useNodeData } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import InlineValidation from "../../inline-validation";
 
 const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    path
+    path,
+    originalTreeData
   }: NodeRendererProps
 ) => {
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData<string>(path)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData<string>(path, config, originalTreeData)
   return (
     <>
       <input
@@ -27,7 +27,6 @@ const StringNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
         }} />
       <InlineValidation
         touched={touched}
-        validationData={validationResults}
         nodeData={nodeData} />
     </>
   )

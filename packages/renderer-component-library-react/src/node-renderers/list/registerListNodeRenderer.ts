@@ -4,9 +4,7 @@ import {
   NodeRendererRegistration,
   PathSegment
 } from "@graphter/core";
-import { newListGetChildConfig } from "./newListGetChildConfig";
 import { mergeListChildData } from "./mergeListChildData";
-import { newGetListChildPaths } from "./newGetListChildPaths";
 import { listInitialiser } from "./listInitialiser";
 import { listOptionsConfig } from "./listOptionsConfig";
 
@@ -20,8 +18,6 @@ export function registerListNodeRenderer(options?: ListNodeRendererOptions): Nod
     type: options?.type || 'list',
     name: 'List',
     description: 'Manage lists of data',
-    newGetChildConfig: newListGetChildConfig,
-    newGetChildPaths: newGetListChildPaths,
     mergeChildData: mergeListChildData,
     createFallbackDefaultValue: () => Promise.resolve([]),
     initialiser: listInitialiser,

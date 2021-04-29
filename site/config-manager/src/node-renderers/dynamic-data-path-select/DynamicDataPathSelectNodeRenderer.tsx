@@ -13,6 +13,7 @@ import { setupNodeRenderer } from "@graphter/renderer-react";
 import { serviceStore } from "@graphter/renderer-react";
 import { isDynamicDataPathSelectNodeConfig } from "./isDynamicDataPathSelectNodeConfig";
 import Path from "./Path";
+import { useExternalNodeData } from "@graphter/renderer-react";
 
 const pathKeySalt = '46662294-54c3-4b4b-85e9-383d6a07274b'
 
@@ -26,17 +27,18 @@ interface PathMeta {
 const DynamicDataPathSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    path
+    path,
+    originalTreeData
   }: NodeRendererProps
 ) => {
   if (!isDynamicDataPathSelectNodeConfig(config)) throw new Error('Invalid DynamicDataPathSelectNodeRenderer config')
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData<Array<PathSegment>>(path)
+  const [ nodeData, setNodeData ] = useNodeData<Array<PathSegment>>(path, config, originalTreeData)
   const serviceIdPaths = pathUtils.resolvePaths(path, config.options.serviceIdPathQuery, nodeData)
   if (serviceIdPaths.length === 0) throw new Error(`Service ID path query ${pathUtils.queryPathToString(config.options.serviceIdPathQuery)}' did not resolve to a node in the tree`)
   if (serviceIdPaths.length > 1) throw new Error(`Service ID path query ${pathUtils.queryPathToString(config.options.serviceIdPathQuery)}' resolved to more than one node in the tree`)
 
-  const [ serviceId ] = useNodeData<string>(serviceIdPaths[0])
+  const [ serviceId ] = useExternalNodeData<string>(serviceIdPaths[0])
   const [ pathMetas, setPathMetas ] = useState<Array<PathMeta> | null>(null)
   const [ dataService, setDataService ] = useState<Service | null>(null)
   const [ loading, setLoading ] = useState(true)
@@ -50,7 +52,7 @@ const DynamicDataPathSelectNodeRenderer: ComponentType<NodeRendererProps> = setu
       const serviceDataSample = (await dataService.list())
       if (!serviceDataSample.items.length) return
       const pathsMetaMap = serviceDataSample.items.reduce<Map<string, PathMeta>>((a, c) => {
-        const paths = pathUtils.valueToPaths(c)
+        const paths = pathUtils.valueToLocalPaths(c)
         paths.forEach(path => {
           const pathKey = path.join(pathKeySalt)
           const meta = a.get(pathKey)

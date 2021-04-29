@@ -12,10 +12,10 @@ import DefaultItemView from "./DefaultItemView";
 import DefaultNewItemWrapper from "./DefaultNewItemWrapper";
 import DefaultEditItemWrapper from "./DefaultEditItemWrapper";
 import { pathUtils } from "@graphter/renderer-react";
-import { useTreeDataInitialiser } from "@graphter/renderer-react";
 import { isListConfig } from "./isListConfig";
 import { nanoid } from 'nanoid'
 import { useNodeData } from "@graphter/renderer-react";
+import { useTreeDataInitialiser } from "@graphter/renderer-react";
 
 export interface ItemMeta {
   item: any
@@ -46,7 +46,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
 
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(path)
+  const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(path, config, originalTreeData)
 
   useEffect(() => {
     if (!itemsMeta) {

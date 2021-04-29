@@ -2,7 +2,6 @@ import { NodeConfig, PathSegment } from "@graphter/core";
 import React, { ComponentType, Fragment, useEffect, useState } from "react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
-import { getConfigAt } from "@graphter/renderer-react";
 import DynamicCrumb from "./DynamicCrumb";
 import { useTreeDataCallback } from "@graphter/renderer-react";
 
@@ -42,77 +41,79 @@ const DividerSvg = () => <svg className='inline-block w-4 fill-current text-gray
 </svg>
 
 const Breadcrumbs = ({config, path, AncestorCrumb, CurrentCrumb, originalTreeData}: BreadcrumbsProps) => {
-  const starting = path.slice(0, 1)
-  const remaining = path.slice(1)
-  const [ crumbsData, setCrumbsData ] = useState<Array<CrumbData>>([])
-  const initialise = useTreeDataCallback(
-    (treeData: any) => {
-      (async () => {
-        const crumbsData = (await remaining.reduce<Promise<{ current: Array<PathSegment>, crumbsData: Array<CrumbData> }>>(
-          async (accPromise, c) => {
-            const a = await accPromise
-            a.current.push(c)
-            const pathConfig = await getConfigAt(config, a.current, (path: Array<PathSegment>) => {
-              return pathUtils.getValueByGlobalPath(treeData, path)
-            })
-            if (!pathConfig) throw new Error(`Couldn't find config at ${a.current.join('/')}`)
-            const display: { path?: Array<PathSegment>, label: string } = {
-              label: pathConfig?.name || pathConfig?.id || 'Unknown'
-            }
-            const renderer = nodeRendererStore.get(pathConfig.type)
-            if (renderer.newGetChildPaths) {
-              const childPaths = await renderer.newGetChildPaths(pathConfig, a.current, (path: Array<PathSegment>) => {
-                return pathUtils.getValueByGlobalPath(treeData, path)
-              })
-              const displayPathSegment = getDisplayPathSegment(childPaths)
-              if (displayPathSegment) {
-                display.path = [ ...a.current, displayPathSegment ]
-              }
-            }
-            a.crumbsData.push({ config: pathConfig, display, path: [ ...a.current ] })
-            return Promise.resolve(a)
-          }, Promise.resolve({ current: starting, crumbsData: [] }))).crumbsData
-        setCrumbsData(crumbsData)
-      })()
-    },
-    config,
-    path.slice(0, 2))
-
-  useEffect(() => {
-    initialise()
-  }, [ path ])
-
-  return (
-    <div>
-      {crumbsData.map((crumbData, i) => {
-        const key = crumbData.path.join('/')
-        const contents = crumbData.display.path ? (
-          <DynamicCrumb
-            displayPath={crumbData.display.path}
-            displayLabel={crumbData.display.label}
-          />
-        ) : (
-          crumbData.display.label
-        )
-        return (
-          <Fragment key={key}>
-            {i < crumbsData.length - 1 ? (
-              <>
-                <AncestorCrumb path={crumbData.path}>
-                  {contents}
-                </AncestorCrumb>
-                <DividerSvg/>
-              </>
-            ) : (
-              <CurrentCrumb key={key}>
-                {contents}
-              </CurrentCrumb>
-            )}
-          </Fragment>
-        )
-      })}
-    </div>
-  )
+  // TODO: redo
+  return <div>Breadcrumbs (TODO)</div>
+  // const starting = path.slice(0, 1)
+  // const remaining = path.slice(1)
+  // const [ crumbsData, setCrumbsData ] = useState<Array<CrumbData>>([])
+  // const initialise = useTreeDataCallback(
+  //   (treeData: any) => {
+  //     (async () => {
+  //       const crumbsData = (await remaining.reduce<Promise<{ current: Array<PathSegment>, crumbsData: Array<CrumbData> }>>(
+  //         async (accPromise, c) => {
+  //           const a = await accPromise
+  //           a.current.push(c)
+  //           const pathConfig = await getConfigAt(config, a.current, (path: Array<PathSegment>) => {
+  //             return pathUtils.getValueByGlobalPath(treeData, path)
+  //           })
+  //           if (!pathConfig) throw new Error(`Couldn't find config at ${a.current.join('/')}`)
+  //           const display: { path?: Array<PathSegment>, label: string } = {
+  //             label: pathConfig?.name || pathConfig?.id || 'Unknown'
+  //           }
+  //           const renderer = nodeRendererStore.get(pathConfig.type)
+  //           if (renderer.newGetChildPaths) {
+  //             const childPaths = await renderer.newGetChildPaths(pathConfig, a.current, (path: Array<PathSegment>) => {
+  //               return pathUtils.getValueByGlobalPath(treeData, path)
+  //             })
+  //             const displayPathSegment = getDisplayPathSegment(childPaths)
+  //             if (displayPathSegment) {
+  //               display.path = [ ...a.current, displayPathSegment ]
+  //             }
+  //           }
+  //           a.crumbsData.push({ config: pathConfig, display, path: [ ...a.current ] })
+  //           return Promise.resolve(a)
+  //         }, Promise.resolve({ current: starting, crumbsData: [] }))).crumbsData
+  //       setCrumbsData(crumbsData)
+  //     })()
+  //   },
+  //   config,
+  //   path.slice(0, 2))
+  //
+  // useEffect(() => {
+  //   initialise()
+  // }, [ path ])
+  //
+  // return (
+  //   <div>
+  //     {crumbsData.map((crumbData, i) => {
+  //       const key = crumbData.path.join('/')
+  //       const contents = crumbData.display.path ? (
+  //         <DynamicCrumb
+  //           displayPath={crumbData.display.path}
+  //           displayLabel={crumbData.display.label}
+  //         />
+  //       ) : (
+  //         crumbData.display.label
+  //       )
+  //       return (
+  //         <Fragment key={key}>
+  //           {i < crumbsData.length - 1 ? (
+  //             <>
+  //               <AncestorCrumb path={crumbData.path}>
+  //                 {contents}
+  //               </AncestorCrumb>
+  //               <DividerSvg/>
+  //             </>
+  //           ) : (
+  //             <CurrentCrumb key={key}>
+  //               {contents}
+  //             </CurrentCrumb>
+  //           )}
+  //         </Fragment>
+  //       )
+  //     })}
+  //   </div>
+  // )
 }
 
 function getDisplayPathSegment(paths: Array<Array<PathSegment>>) {

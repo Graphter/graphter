@@ -1,6 +1,6 @@
 import React, { ComponentType, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
-import { createDefault, useNodeData, useNodeValidation } from "@graphter/renderer-react";
+import { createDefault, useNodeData } from "@graphter/renderer-react";
 import s from './IdNodeRenderer.module.css'
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
@@ -12,12 +12,12 @@ const filterRegExpGlobal = /[^a-z0-9-]/g
 const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    path
+    path,
+    originalTreeData
   }: NodeRendererProps
 ) => {
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData<string>(path)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData<string>(path, config, originalTreeData)
   const showFixButton = filterRegExp.test(nodeData)
   return (
     <>
@@ -46,7 +46,6 @@ const IdNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
       </div>
       <InlineValidation
         touched={touched}
-        validationData={validationResults}
         nodeData={nodeData} />
     </>
   )

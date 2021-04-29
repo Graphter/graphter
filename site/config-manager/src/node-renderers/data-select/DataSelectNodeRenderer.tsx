@@ -7,8 +7,7 @@
  */
 import React, { ComponentType, useEffect, useMemo, useState } from "react";
 import { NodeRendererProps } from "@graphter/core";
-import { useNodeData, useNodeValidation } from "@graphter/renderer-react";
-import s from './DataSelectNodeRenderer.module.css'
+import { useNodeData } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { serviceStore } from "@graphter/renderer-react";
@@ -17,7 +16,8 @@ import { isDataSelectNodeConfig } from "./isDataSelectNodeConfig";
 const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    path
+    path,
+    originalTreeData
   }: NodeRendererProps
 ) => {
   if(!isDataSelectNodeConfig(config)) throw new Error('Invalid DataSelectNodeRenderer config')
@@ -26,8 +26,7 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
   const valuePathValidation = pathUtils.validate(config.options?.valuePath)
   if(!valuePathValidation.valid) throw new Error(`Invalid value path: ${valuePathValidation.reason}`)
   const [ touched, setTouched ] = useState(false)
-  const [ nodeData, setNodeData ] = useNodeData<string>(path)
-  const validationResults = useNodeValidation(config, path)
+  const [ nodeData, setNodeData ] = useNodeData<string>(path, config, originalTreeData)
   const [ options, setOptions ] = useState<Array<{ [key: string]: string}> | null>(null)
   const [ loading, setLoading ] = useState(true)
   useEffect(() => {
@@ -68,16 +67,6 @@ const DataSelectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRender
           )
         })}
       </select>
-      {touched &&
-      validationResults &&
-      validationResults.value === nodeData &&
-      validationResults.results.map((result, i) => (
-        result.valid ? null : (
-          <div className={s.error} key={i} data-testid='validation-error'>
-            {result.errorMessage}
-          </div>
-        )
-      ))}
     </>
   )
 })

@@ -1,7 +1,9 @@
-import { NodeConfig, NodeRendererRegistration, PathSegment } from "@graphter/core";
+import { NodeConfig, PathSegment } from "@graphter/core";
 
 export interface NodeDataHook {
   (
-    path: Array<PathSegment>
+    path: Array<PathSegment>,
+    config: NodeConfig,
+    originalTreeData: any
   ): [ any, (value: any) => void ]
 }

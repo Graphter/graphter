@@ -1,11 +1,11 @@
 import React, { ComponentType, useEffect, useState } from "react";
 import { NodeConfig, NodeRendererProps, NodeRendererRegistration } from "@graphter/core";
-import { useNodeData } from "@graphter/renderer-react";
 import { pathUtils } from "@graphter/renderer-react";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { isDynamicConfig } from "./isDynamicConfig";
 import { nodeRendererStore, useTreeDataInitialiser } from "@graphter/renderer-react";
 import { serviceStore } from "@graphter/renderer-react";
+import { useExternalNodeData } from "@graphter/renderer-react";
 
 const createDynamicNodeRenderer = (configServiceId: string) => {
   const configService = serviceStore.get(configServiceId)
@@ -26,7 +26,7 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
     const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
     const treeDataInitialiser = useTreeDataInitialiser()
 
-    const [ targetNodeData ] = useNodeData<any>(targetPath)
+    const [ targetNodeData ] = useExternalNodeData<any>(targetPath)
     const targetNodeDataType = typeof targetNodeData
     if(!['undefined', 'string', 'number'].includes(targetNodeDataType) && targetNodeData !== null){
       throw new Error(`RendererOptionsNodeRenderer target data type '${targetNodeDataType}' is unsupported`)

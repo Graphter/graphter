@@ -1,15 +1,14 @@
 import { RecoilRoot } from "recoil";
 import React, { ReactNode } from "react";
 import { NodeValidatorRegistration } from "@graphter/core";
-import { useRecoilNodeValidation } from "./validation/useRecoilNodeValidation";
-import { useRecoilAggregateNodeValidation } from "./validation/useRecoilAggregateNodeValidation";
 import { useRecoilNodeData } from "./data/useRecoilNodeData";
 import { useRecoilMultipleNodeData } from "./data/useRecoilMultipleNodeData";
 import { useRecoilTreeDataCallback } from "./data/useRecoilTreeDataCallback";
-import { useRecoilTreePaths } from "./data/useRecoilTreePaths";
 import { StateProvider, NodeValidationProvider } from "@graphter/renderer-react";
-import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 import { useRecoilTreeData } from "./data/useRecoilTreeData";
+import { useRecoilTreeMeta } from "./data/useRecoilTreeMeta";
+import { useRecoilExternalNodeData } from "./data/useRecoilExternalNodeData";
+import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 
 export interface RecoilStateProvider {
   validatorRegistry: Array<NodeValidatorRegistration>
@@ -25,17 +24,16 @@ export function RecoilStateProvider(
   return (
     <RecoilRoot>
       <NodeValidationProvider
-        nodeValidationHook={useRecoilNodeValidation}
-        aggregateNodeValidationHook={useRecoilAggregateNodeValidation}
         validatorRegistry={validatorRegistry}
       >
         <StateProvider
-          treeDataHook={useRecoilTreeData}
           treeDataInitialiserHook={useRecoilTreeDataInitialiser}
+          treeDataHook={useRecoilTreeData}
           nodeDataHook={useRecoilNodeData}
+          externalNodeDataHook={useRecoilExternalNodeData}
           multipleNodeDataHook={useRecoilMultipleNodeData}
           treeDataCallbackHook={useRecoilTreeDataCallback}
-          treePathsHook={useRecoilTreePaths}
+          treeMetaHook={useRecoilTreeMeta}
         >
           {children}
         </StateProvider>

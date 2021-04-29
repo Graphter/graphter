@@ -12,7 +12,7 @@ const registerAll = (registrations: Array<NodeRendererRegistration>) => {
 const get = (nodeType: string): NodeRendererRegistration => {
   let registration = nodeRendererMap[nodeType]
   if(!registration) {
-    console.warn(`No '${nodeType}' node renderer has been registered. Moving on...`)
+    throw new Error(`No '${nodeType}' node renderer has been registered.`)
   }
   return registration
 }

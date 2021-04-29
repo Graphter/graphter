@@ -7,22 +7,31 @@ import { getDynamicNodeDetails } from "./getDynamicNodeDetails";
 
 export const createDynamicInitialiser = (configServiceId: string) => {
   const configService = serviceStore.get(configServiceId)
+
   const createDynamicInitialiser: NodeDataInitialiserFn = async (
     originalTreeData,
     config,
     path
   ) => {
     if(!isDynamicConfig(config)) throw new Error('Invalid DynamicNodeRenderer config')
+    const nodeMeta = {
+      path,
+      config
+    }
+
     const [
       dynamicConfig,
       dynamicRendererReg
       ] = await getDynamicNodeDetails(path, config, configService, (path) => {
         return pathUtils.getValueByGlobalPath(originalTreeData, path, createDefault(config, null))
     })
-    if(!dynamicConfig) return null
-    return dynamicRendererReg?.initialiser ?
-      dynamicRendererReg.initialiser(originalTreeData, dynamicConfig, path) :
-      null
+    if(!dynamicConfig || !dynamicRendererReg?.initialiser) return [ nodeMeta ]
+
+    const childNodeMetas = await dynamicRendererReg.initialiser(originalTreeData, dynamicConfig, path)
+    return [
+      nodeMeta,
+      ...childNodeMetas
+    ]
   }
   return createDynamicInitialiser
 }

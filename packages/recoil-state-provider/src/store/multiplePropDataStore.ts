@@ -12,9 +12,11 @@ const get = (paths: Array<Array<PathSegment>>): RecoilValueReadOnly<Array<{ path
       get: ({ get }) => {
         return paths.map(path => {
           const state = propDataStore.get(path)
+          if(!state) throw new Error(`Missing state for ${path.join('/')}'`)
+          const pathMeta = get(state)
           return {
             path,
-            data: get(state)
+            data: pathMeta
           }
         })
       }

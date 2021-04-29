@@ -10,41 +10,20 @@ export interface NodeRendererRegistration {
   Renderer: ComponentType<NodeRendererProps>
   options?: any
   optionsConfig?: NodeConfig
-
-  newGetChildConfig?: NewGetChildConfigFn
-  newGetChildPaths?: NewGetChildPathsFn
   mergeChildData?: MergeChildDataFn
   initialiser?: NodeDataInitialiserFn
+  transformOut?: NodeTransformOut
   createFallbackDefaultValue?: CreateFallbackDefaultValueFn
-}
-
-/**
- * Definition of a function that returns all descendant paths in a tree (in no particular order)
- */
-export interface NewGetChildPathsFn {
-  (
-    config: NodeConfig,
-    path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => T
-  ): Promise<Array<Array<PathSegment>>>
-}
-
-export interface NewGetChildConfigFn {
-  (
-    config: NodeConfig,
-    path: Array<PathSegment>,
-    childSegment: PathSegment,
-    getNodeValue: <T>(path: Array<PathSegment>) => T
-  ): Promise<NodeConfig | null>
 }
 
 export interface MergeChildDataFn {
   (
     config: NodeConfig,
     path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => T,
+    internalNodeData: any,
+    getExternalPathData: (path: Array<PathSegment>) => any,
     childData: Array<{ config?: NodeConfig, data: any }>
-  ): Promise<any>
+  ): Promise<Array<any>>
 }
 
 export interface CreateFallbackDefaultValueFn {
@@ -60,5 +39,17 @@ export interface NodeDataInitialiserFn {
     originalTreeData: any,
     config: NodeConfig,
     path: Array<PathSegment>
+  ): Promise<Array<NodeInitialisationData>>
+}
+
+export interface NodeInitialisationData {
+  path: Array<PathSegment>
+  config: NodeConfig
+  internalData?: any
+}
+
+export interface NodeTransformOut {
+  (
+    internalData: any
   ): Promise<any>
 }

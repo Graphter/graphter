@@ -1,7 +1,7 @@
 /***
  * This module needs to be broken up and much of it moved out of the package
  */
-import React, { ComponentType, ReactNode, Suspense, useEffect, useState } from "react";
+import React, { ComponentType, Suspense, useEffect, useState } from "react";
 import DefaultError from "../default-error";
 import {
   ErrorRendererProps, NodeConfig,
@@ -10,10 +10,9 @@ import {
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
-import { useTreeDataCallback } from "../providers/state";
-import { getConfigAt, getConfigsTo } from "../util/node";
-import { pathUtils } from "../util/path";
+import { useTreeDataCallback, useTreeMeta } from "../providers/state";
 import { useTreeDataSnapshot } from "../hooks/data";
+import { pathToKey } from "../util/path";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
@@ -61,26 +60,25 @@ export default function NodeEditRenderer(
 
   const treeData = useTreeDataSnapshot(topNodeConfig, path)
 
-  const initialise = useTreeDataCallback(
-    (treeData: any) => {
-      (async () => {
-        const configs = await getConfigsTo(topNodeConfig, path, (path) => {
-          console.log(treeData)
-          return pathUtils.getValueByGlobalPath(treeData, path)
-        })
-        if(!configs?.length) throw new Error(`Couldn't find config at ${path.join('/')}`)
-        const childConfig = configs[configs.length - 1]
+  const treeMeta = useTreeMeta(topNodeConfig, path)
 
+  const initialise = useTreeDataCallback(
+    (treeMeta: any) => {
+      (async () => {
+        const pathKey = pathToKey(path)
+        const pathConfigs = treeMeta
+          ?.find(nodeMeta => pathToKey(nodeMeta.path) === pathKey)
+          ?.nodes.map(node => node.config)
+        if(!pathConfigs) return
         setLoadedTreeState({
           childPath: path,
-          configs,
-          childConfig
+          configs: pathConfigs,
+          childConfig: pathConfigs[0]
         })
       })()
     },
     topNodeConfig,
     path.slice(0, 2))
-
   useEffect(() => {
     initialise()
   }, [ topNodeConfig, path, treeData ])

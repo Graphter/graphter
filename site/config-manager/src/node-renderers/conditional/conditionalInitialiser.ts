@@ -7,14 +7,24 @@ export const conditionalInitialiser: NodeDataInitialiserFn = async (
   config,
   path
 ) => {
+  const nodeMeta = {
+    path,
+    config
+  }
+
   const {
     matchingConfig,
     matchingRendererRegistration
-  } = getMatchingNodeDetails(config, path, (path) => {
+  } = await getMatchingNodeDetails(config, path, (path) => {
     return pathUtils.getValueByGlobalPath(originalTreeData, path, null)
   })
-  if(!matchingRendererRegistration || !matchingConfig) return
-  return matchingRendererRegistration.initialiser ?
-    matchingRendererRegistration.initialiser(originalTreeData, config, path) :
-    pathUtils.getValueByGlobalPath(originalTreeData, path)
+
+  if(!matchingRendererRegistration?.initialiser || !matchingConfig) return [ nodeMeta ]
+
+  const childNodeMetas = await matchingRendererRegistration.initialiser(originalTreeData, matchingConfig, path)
+
+  return [
+    nodeMeta,
+    ...childNodeMetas
+  ]
 }

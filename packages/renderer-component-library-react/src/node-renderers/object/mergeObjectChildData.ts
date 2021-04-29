@@ -1,9 +1,9 @@
-import { MergeChildDataFn, NodeConfig } from "@graphter/core";
+import { MergeChildDataFn } from "@graphter/core";
 
-export const mergeObjectChildData:MergeChildDataFn = async (config, path, getNodeValue, childData) => {
-  return childData.reduce<{ [key: string]: any }>((a, c) => {
+export const mergeObjectChildData:MergeChildDataFn = async (config, path, internalNodeData, getExternalPathData, childData) => {
+  return [ childData.reduce<{ [key: string]: any }>((a, c) => {
     if(!c.config) return a
     a[c.config.id] = c.data
     return a
-  }, {})
+  }, {}) ]
 }

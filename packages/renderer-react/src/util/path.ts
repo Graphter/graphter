@@ -69,7 +69,7 @@ export const fromUrl = (url: string): Array<PathSegment> => {
     })
 }
 
-export const valueToPaths = (value: any): Array<Array<PathSegment>> => {
+export const valueToLocalPaths = (value: any): Array<Array<PathSegment>> => {
 
   function getChildPaths(value: any, parentPath: Array<PathSegment>): Array<Array<PathSegment>> {
     if(value === null) return []
@@ -88,7 +88,7 @@ export const valueToPaths = (value: any): Array<Array<PathSegment>> => {
     else return []
   }
 
-  return getChildPaths(value, [])
+  return [ [], ...getChildPaths(value, []) ]
 }
 
 export const resolvePaths = (startPath: Array<PathSegment>, queryPath: Array<PathQuerySegment>, data: any) => {
@@ -119,13 +119,16 @@ export const queryPathToString = (queryPath: Array<PathQuerySegment>) => {
     .join('/')
 }
 
+export const pathToKey = (path: Array<PathSegment>) => path.join('[88484d0d-33e8-47b4-a351-7bb581268da3]')
+
 export const pathUtils = {
   toUrl,
   fromUrl,
   validate,
   getValueByGlobalPath,
   getValueByLocalPath,
-  valueToPaths,
+  valueToLocalPaths,
   resolvePaths,
-  queryPathToString
+  queryPathToString,
+  pathToKey
 }
