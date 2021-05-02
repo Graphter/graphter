@@ -7,6 +7,7 @@ import { StateProvider, NodeValidationProvider } from "@graphter/renderer-react"
 import { useRecoilTreeData } from "./data/useRecoilTreeData";
 import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 import { useRecoilNodeConfigs } from "./data/useRecoilNodeConfigs";
+import { useRecoilChildPaths } from "./data/useRecoilChildPaths";
 
 export interface RecoilStateProvider {
   validatorRegistry: Array<NodeValidatorRegistration>
@@ -30,6 +31,7 @@ export function RecoilStateProvider(
           nodeDataHook={useRecoilNodeData}
           treeDataCallbackHook={useRecoilTreeDataCallback}
           nodeConfigsHook={useRecoilNodeConfigs}
+          childPathsHook={useRecoilChildPaths}
         >
           {children}
         </StateProvider>

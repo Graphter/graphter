@@ -62,9 +62,7 @@ export default function Edit(){
   return (
     <>
       <Breadcrumbs
-        config={config}
         path={path}
-        originalTreeData={data}
         AncestorCrumb={({ path, children }) => {
           return (
             <Link

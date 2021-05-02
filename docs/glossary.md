@@ -22,3 +22,6 @@ The primary business of this system is breaking data structures apart into units
 ### Path Segment
 
 ### Path Query Segment
+
+## Parent, Child, Sibling, Ancestor/Ancestry, Descendant/Descendants
+Standard definition. There is a lot of tree traversal in this system so proper naming is important.

@@ -1,16 +1,11 @@
 import { NodeConfig, PathSegment } from "@graphter/core";
-import React, { ComponentType, Fragment, useEffect, useState } from "react";
-import { nodeRendererStore } from "@graphter/renderer-react";
-import { pathUtils } from "@graphter/renderer-react";
-import DynamicCrumb from "./DynamicCrumb";
-import { useTreeDataCallback } from "@graphter/renderer-react";
+import React, { ComponentType } from "react";
+import Crumb from "./Crumb";
 
 interface BreadcrumbsProps {
-  config: NodeConfig
   path: Array<PathSegment>
   AncestorCrumb: ComponentType<AncestorCrumbProps>
   CurrentCrumb: ComponentType<CurrentCrumbProps>
-  originalTreeData: any
 }
 
 interface AncestorCrumbProps {
@@ -32,6 +27,7 @@ interface CrumbData {
 }
 
 const guessingNames = [ 'name', 'title', 'headline', 'label', 'id' ]
+
 const DividerSvg = () => <svg className='inline-block w-4 fill-current text-gray-200 mr-2'
                               xmlns="http://www.w3.org/2000/svg"
                               viewBox="0 0 20 20" fill="currentColor">
@@ -40,9 +36,29 @@ const DividerSvg = () => <svg className='inline-block w-4 fill-current text-gray
         clipRule="evenodd"/>
 </svg>
 
-const Breadcrumbs = ({config, path, AncestorCrumb, CurrentCrumb, originalTreeData}: BreadcrumbsProps) => {
-  // TODO: redo
-  return <div>Breadcrumbs (TODO)</div>
+const Breadcrumbs = ({ path, AncestorCrumb, CurrentCrumb }: BreadcrumbsProps) => {
+  const rootPath = path.slice(0, 2)
+  const breadcrumbPaths = path.slice(2).reduce<{
+      current: Array<PathSegment>,
+      paths: Array<Array<PathSegment>>
+    }>((a, c) =>
+  {
+    a.current = [...a.current, c]
+    a.paths.push(a.current)
+    return a
+  }, { current: rootPath, paths: [ rootPath ] }).paths
+
+  return (
+    <div>
+      {breadcrumbPaths.map((path, i) => {
+        return i === breadcrumbPaths.length - 1 ? (
+          <CurrentCrumb><Crumb path={path}/></CurrentCrumb>
+        ) : (
+          <AncestorCrumb path={path}><Crumb path={path}/></AncestorCrumb>
+        )
+      })}
+    </div>
+  )
   // const starting = path.slice(0, 1)
   // const remaining = path.slice(1)
   // const [ crumbsData, setCrumbsData ] = useState<Array<CrumbData>>([])
@@ -116,14 +132,6 @@ const Breadcrumbs = ({config, path, AncestorCrumb, CurrentCrumb, originalTreeDat
   // )
 }
 
-function getDisplayPathSegment(paths: Array<Array<PathSegment>>) {
-  for (const guessingName of guessingNames) {
-    const matchingPath = paths.find(path =>
-      path.length &&
-      path[path.length - 1].toString().toLowerCase() === guessingName)
-    if (matchingPath) return matchingPath[matchingPath.length - 1]
-  }
-  return null
-}
+
 
 export default Breadcrumbs
