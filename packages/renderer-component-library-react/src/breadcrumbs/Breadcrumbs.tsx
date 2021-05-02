@@ -51,10 +51,11 @@ const Breadcrumbs = ({ path, AncestorCrumb, CurrentCrumb }: BreadcrumbsProps) =>
   return (
     <div>
       {breadcrumbPaths.map((path, i) => {
+        const key = path.join('[bbfb560b-a9b3-49d6-8f28-0d69e9cfc690]')
         return i === breadcrumbPaths.length - 1 ? (
-          <CurrentCrumb><Crumb path={path}/></CurrentCrumb>
+          <CurrentCrumb key={key}><Crumb path={path}/></CurrentCrumb>
         ) : (
-          <AncestorCrumb path={path}><Crumb path={path}/></AncestorCrumb>
+          <AncestorCrumb path={path} key={key}><Crumb path={path}/></AncestorCrumb>
         )
       })}
     </div>

@@ -1,6 +1,6 @@
 import { MergeChildDataFn } from "@graphter/core";
 
-export const mergeListChildData: MergeChildDataFn = async (config, path, internalNodeData, getExternalPathData, childData) => {
+export const mergeListChildData: MergeChildDataFn = (config, path, internalNodeData, getExternalPathData, childData) => {
   return childData
     .filter((child, i) => {
       const itemMetadata = internalNodeData[i]

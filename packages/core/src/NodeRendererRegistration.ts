@@ -22,7 +22,7 @@ export interface MergeChildDataFn {
     internalNodeData: any,
     getExternalPathData: (path: Array<PathSegment>) => any,
     childData: Array<{ config?: NodeConfig, data: any }>
-  ): Promise<Array<any>>
+  ): Array<any>
 }
 
 export interface CreateFallbackDefaultValueFn {

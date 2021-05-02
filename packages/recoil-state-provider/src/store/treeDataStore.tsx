@@ -24,36 +24,35 @@ const treeDataStore: TreeDataStore = {
 
     treeDataMap[key] = treeDataSelector = selector<any>({
       key: key,
-      get: async ({get}) => {
-        async function getNodeData(path: Array<PathSegment>): Promise<any> {
+      get: ({get}) => {
+        function getNodeData(path: Array<PathSegment>): any {
           const pathConfigsState = nodeConfigsStore.get(path)
           const childPathsState = pathChildrenStore.get(path)
-          if(!pathConfigsState) throw new Error(`Missing path config state at path ${path.join('/')}`)
-          if(!childPathsState) throw new Error(`Missing child paths state at path ${path.join('/')}`)
+          if (!pathConfigsState) throw new Error(`Missing path config state at path ${path.join('/')}`)
+          if (!childPathsState) throw new Error(`Missing child paths state at path ${path.join('/')}`)
           const pathConfigs = get<Array<NodeConfig>>(pathConfigsState)
           const childPaths = get<Array<Array<PathSegment>>>(childPathsState)
 
 
-
           const childData = childPaths.length ?
-            await Promise.all(childPaths.map(childPath => getNodeData(childPath))):
+            childPaths.map(childPath => getNodeData(childPath)) :
             null
 
           // transform from the bottom most path node -> up
-          const externalNodeData = [...pathConfigs].reverse().reduce<any>((a, c) => {
+          const externalNodeData = [ ...pathConfigs ].reverse().reduce<any>((a, c) => {
             const internalDataState = rendererInternalDataStore.get(path, c)
-            if(!internalDataState) throw new Error(`Missing internal data for path '${path.join('/')}' node ${c.id}`)
+            if (!internalDataState) throw new Error(`Missing internal data for path '${path.join('/')}' node ${c.id}`)
             const internalData = get(internalDataState)
             const rendererReg = nodeRendererStore.get(c.type)
             const rendererInternalData = typeof internalData !== 'undefined' ? internalData : a
-            if(!childData?.length || !rendererReg.mergeChildData) return rendererInternalData
+            if (!childData?.length || !rendererReg.mergeChildData) return rendererInternalData
             else return rendererReg.mergeChildData(c, path, rendererInternalData, getNodeData, childData)
           }, undefined)
 
           return externalNodeData
         }
 
-        return await getNodeData(startingPath)
+        return getNodeData(startingPath)
       }
     });
 
@@ -63,7 +62,7 @@ const treeDataStore: TreeDataStore = {
 
 export default treeDataStore
 
-function getFirstEligibleNodeData(nodes: Array<PathMetaNode>): { config: NodeConfig, data: any; } | undefined{
+function getFirstEligibleNodeData(nodes: Array<PathMetaNode>): { config: NodeConfig, data: any; } | undefined {
   const eligibleNode = nodes.find(node => typeof node.internalData !== undefined)
   return eligibleNode ? {
     config: eligibleNode.config,
