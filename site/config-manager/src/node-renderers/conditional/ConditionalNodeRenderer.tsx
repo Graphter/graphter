@@ -6,12 +6,11 @@ import { getMatchingConfig } from "./getMatchingConfig";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { isConditionalConfig } from "./isConditionalConfig";
 import { useTreeDataInitialiser } from "@graphter/renderer-react";
-import { useExternalNodeData } from "@graphter/renderer-react";
+import { useTreeData } from "@graphter/renderer-react";
 
 const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    configAncestry,
     originalTreeData,
     path,
     ErrorDisplayComponent,
@@ -24,7 +23,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ targetNodeData ] = useExternalNodeData<any>(targetPath)
+  const [ targetNodeData ] = useTreeData<any>(targetPath)
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
     if(!matchingChildConfig) return null
@@ -45,7 +44,6 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     <>
       <matchingChildRendererRegistration.Renderer
         config={matchingChildConfig}
-        configAncestry={[...configAncestry, config]}
         path={[ ...path ]}
         originalTreeData={originalTreeData}
         options={matchingChildRendererRegistration.options}

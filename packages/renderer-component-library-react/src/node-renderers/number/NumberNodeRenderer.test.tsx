@@ -21,7 +21,6 @@ describe(`<StringNodeRenderer />`, () => {
         type: 'string',
         default: 'Unnamed'
       }}
-      configAncestry={[]}
       originalNodeData={'Foo Bar'}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -41,7 +40,6 @@ describe(`<StringNodeRenderer />`, () => {
     }
     render(<NumberNodeRenderer
       config={config}
-      configAncestry={[]}
       originalNodeData={undefined}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -61,7 +59,6 @@ describe(`<StringNodeRenderer />`, () => {
         type: 'string',
         default: 'The default value'
       }}
-      configAncestry={[]}
       originalNodeData={'The original value'}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -102,7 +99,6 @@ describe(`<StringNodeRenderer />`, () => {
     })
     const { getByDisplayValue, queryByText } = render(<NumberNodeRenderer
       config={config}
-      configAncestry={[]}
       originalNodeData={'The original value'}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -128,7 +124,6 @@ describe(`<StringNodeRenderer />`, () => {
         type: 'string',
         default: 'The default value'
       }}
-      configAncestry={[]}
       originalNodeData={'The original value'}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -160,7 +155,6 @@ describe(`<StringNodeRenderer />`, () => {
     useNodeValidationMock.mockReturnValueOnce(originalResult)
     let { getByDisplayValue, queryByText, rerender } = render(<NumberNodeRenderer
       config={config}
-      configAncestry={[]}
       originalNodeData={'The original value'}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -183,7 +177,6 @@ describe(`<StringNodeRenderer />`, () => {
     })
     rerender(<NumberNodeRenderer
       config={config}
-      configAncestry={[]}
       originalNodeData={'The original value'}
       originalNodeDataAncestry={[]}
       committed={true}

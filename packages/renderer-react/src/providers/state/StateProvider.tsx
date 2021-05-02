@@ -4,32 +4,23 @@ import { NodeDataHook } from "./NodeDataHook";
 import { TreeDataHook } from "./TreeDataHook";
 import { TreeDataInitialiserHook } from "./TreeDataInitialiserHook";
 import { TreeDataCallbackHook } from "./TreeDataCallbackHook";
-import { MultipleNodeDataHook } from "./MultipleNodeDataHook";
-import { TreeMetaHook } from "./TreeMetaHook";
-import { ExternalNodeDataHook } from "./ExternalNodeDataHook";
-import { TreeMetaCallbackHook } from "./TreeMetaCallbackHook";
+import { NodeConfigsHook } from "./NodeConfigsHook";
 
 interface DataProviderProps {
   treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
-  externalNodeDataHook: ExternalNodeDataHook
-  multipleNodeDataHook: MultipleNodeDataHook
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
-  treeMetaHook: TreeMetaHook
-  treeMetaCallbackHook: TreeMetaCallbackHook
+  nodeConfigsHook: NodeConfigsHook
   children: any
 }
 
 const Context = createContext<{
   treeDataInitialiserHook: TreeDataInitialiserHook
   nodeDataHook: NodeDataHook
-  externalNodeDataHook: ExternalNodeDataHook
-  multipleNodeDataHook: MultipleNodeDataHook
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
-  treeMetaHook: TreeMetaHook
-  treeMetaCallbackHook: TreeMetaCallbackHook
+  nodeConfigsHook: NodeConfigsHook
 } | null>(null)
 
 export const useTreeDataInitialiser: TreeDataInitialiserHook = () => {
@@ -45,73 +36,41 @@ export function useNodeData<D>(
 ): [D, (nodeData: D) => void] {
   const ctx = useContext(Context)
   if (!ctx || !ctx.nodeDataHook) throw new Error(`Couldn't find a NodeDataHook or context to use.`)
-  return ctx.nodeDataHook(path, config, originalTreeData)
-}
-
-export function useExternalNodeData<D>(
-  path: Array<PathSegment>
-): [D, (nodeData: D) => void] {
-  const ctx = useContext(Context)
-  if (!ctx || !ctx.externalNodeDataHook) throw new Error(`Couldn't find a ExternalNodeDataHook or context to use.`)
-  return ctx.externalNodeDataHook(path)
-}
-
-export function useMultipleNodeData(
-  paths: Array<Array<PathSegment>>
-): Array<{ path: Array<PathSegment>, data: any }> {
-  const ctx = useContext(Context);
-  if (!ctx || !ctx.multipleNodeDataHook) throw new Error(`Couldn't find a MultipleNodeDataHook or context to use.`);
-  return ctx.multipleNodeDataHook(paths);
+  return ctx.nodeDataHook<D>(path, config, originalTreeData)
 }
 
 export const useTreeData:TreeDataHook = (
-  config,
   path: Array<PathSegment>,
   depth?: number
 ) => {
   const ctx = useContext(Context)
   if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataHook or context to use.`)
-  return ctx.treeDataHook(config, path, depth)
+  return ctx.treeDataHook(path, depth)
 }
 
 export const useTreeDataCallback:TreeDataCallbackHook = (
   fn: (data: any) => void,
-  config,
   path: Array<PathSegment>,
   depth?: number) =>
 {
   const ctx = useContext(Context)
   if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataCallbackHook or context to use.`)
-  return ctx.treeDataCallbackHook(fn, config, path, depth)
+  return ctx.treeDataCallbackHook(fn, path, depth)
 }
 
-export const useTreeMeta:TreeMetaHook = (config, path) => {
+export const useNodeConfigs:NodeConfigsHook = (path) => {
   const ctx = useContext(Context)
-  if (!ctx || !ctx.treeMetaHook) throw new Error(`Couldn't find a TreeMetaHook or context to use.`)
-  return ctx.treeMetaHook(config, path)
-}
-
-export const useTreeMetaCallback:TreeMetaCallbackHook = (
-  fn: (data: any) => void,
-  config,
-  path: Array<PathSegment>,
-  depth?: number) =>
-{
-  const ctx = useContext(Context)
-  if (!ctx || !ctx.treeMetaCallbackHook) throw new Error(`Couldn't find a TreeMetaCallbackHook or context to use.`)
-  return ctx.treeMetaCallbackHook(fn, config, path, depth)
+  if (!ctx || !ctx.nodeConfigsHook) throw new Error(`Couldn't find a NodeConfigsHook or context to use.`)
+  return ctx.nodeConfigsHook(path)
 }
 
 export default function StateProvider(
   {
     treeDataInitialiserHook,
     nodeDataHook,
-    externalNodeDataHook,
-    multipleNodeDataHook,
     treeDataHook,
     treeDataCallbackHook,
-    treeMetaHook,
-    treeMetaCallbackHook,
+    nodeConfigsHook,
     children
   }: DataProviderProps
 ) {
@@ -119,12 +78,9 @@ export default function StateProvider(
     <Context.Provider value={{
       treeDataInitialiserHook,
       nodeDataHook,
-      externalNodeDataHook,
-      multipleNodeDataHook,
       treeDataCallbackHook,
       treeDataHook,
-      treeMetaHook,
-      treeMetaCallbackHook,
+      nodeConfigsHook,
     }}>
       {children}
     </Context.Provider>

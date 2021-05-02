@@ -27,7 +27,6 @@ export interface ItemMeta {
 const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    configAncestry,
     originalTreeData,
     path,
     ErrorDisplayComponent,
@@ -95,7 +94,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
               parentConfig={config}
               parentOptions={options}
               childConfig={childConfig}
-              configAncestry={configAncestry}
               childPath={childPath}
               childRendererRegistration={childRendererRegistration}
               isEditing={editingItems.has(itemMeta.key)}
@@ -110,7 +108,6 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
               key={itemMeta.key}
               parentConfig={config}
               childConfig={childConfig}
-              configAncestry={configAncestry}
               childPath={childPath}
               childRendererRegistration={childRendererRegistration}
               itemMeta={itemMeta}
@@ -157,7 +154,6 @@ function CommittedItem(
     parentConfig,
     parentOptions,
     childConfig,
-    configAncestry,
     childPath,
     childRendererRegistration,
     isEditing,
@@ -170,7 +166,6 @@ function CommittedItem(
     parentConfig: NodeConfig,
     parentOptions: any,
     childConfig: NodeConfig,
-    configAncestry: Array<NodeConfig>,
     childPath: Array<PathSegment>,
     childRendererRegistration: NodeRendererRegistration,
     isEditing: boolean,
@@ -193,7 +188,6 @@ function CommittedItem(
       >
         <ChildTypeRenderer
           config={childConfig}
-          configAncestry={[...configAncestry, parentConfig]}
           path={childPath}
           originalTreeData={originalTreeData}
           ErrorDisplayComponent={ErrorDisplayComponent}
@@ -229,7 +223,6 @@ function UncommittedItem(
   {
     parentConfig,
     childConfig,
-    configAncestry,
     childPath,
     childRendererRegistration,
     itemMeta,
@@ -240,7 +233,6 @@ function UncommittedItem(
   }: {
     parentConfig: NodeConfig,
     childConfig: NodeConfig,
-    configAncestry: Array<NodeConfig>,
     childPath: Array<PathSegment>,
     childRendererRegistration: NodeRendererRegistration,
     itemMeta: ItemMeta,
@@ -263,7 +255,6 @@ function UncommittedItem(
     >
       <ChildTypeRenderer
         config={childConfig}
-        configAncestry={[...configAncestry, parentConfig]}
         path={childPath}
         originalTreeData={originalTreeData}
         ErrorDisplayComponent={ErrorDisplayComponent}

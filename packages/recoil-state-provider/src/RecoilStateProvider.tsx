@@ -2,13 +2,11 @@ import { RecoilRoot } from "recoil";
 import React, { ReactNode } from "react";
 import { NodeValidatorRegistration } from "@graphter/core";
 import { useRecoilNodeData } from "./data/useRecoilNodeData";
-import { useRecoilMultipleNodeData } from "./data/useRecoilMultipleNodeData";
 import { useRecoilTreeDataCallback } from "./data/useRecoilTreeDataCallback";
 import { StateProvider, NodeValidationProvider } from "@graphter/renderer-react";
 import { useRecoilTreeData } from "./data/useRecoilTreeData";
-import { useRecoilTreeMeta } from "./data/useRecoilTreeMeta";
-import { useRecoilExternalNodeData } from "./data/useRecoilExternalNodeData";
 import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
+import { useRecoilNodeConfigs } from "./data/useRecoilNodeConfigs";
 
 export interface RecoilStateProvider {
   validatorRegistry: Array<NodeValidatorRegistration>
@@ -30,10 +28,8 @@ export function RecoilStateProvider(
           treeDataInitialiserHook={useRecoilTreeDataInitialiser}
           treeDataHook={useRecoilTreeData}
           nodeDataHook={useRecoilNodeData}
-          externalNodeDataHook={useRecoilExternalNodeData}
-          multipleNodeDataHook={useRecoilMultipleNodeData}
           treeDataCallbackHook={useRecoilTreeDataCallback}
-          treeMetaHook={useRecoilTreeMeta}
+          nodeConfigsHook={useRecoilNodeConfigs}
         >
           {children}
         </StateProvider>

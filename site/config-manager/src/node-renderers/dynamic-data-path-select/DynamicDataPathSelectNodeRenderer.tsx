@@ -13,7 +13,7 @@ import { setupNodeRenderer } from "@graphter/renderer-react";
 import { serviceStore } from "@graphter/renderer-react";
 import { isDynamicDataPathSelectNodeConfig } from "./isDynamicDataPathSelectNodeConfig";
 import Path from "./Path";
-import { useExternalNodeData } from "@graphter/renderer-react";
+import { useTreeData } from "@graphter/renderer-react";
 
 const pathKeySalt = '46662294-54c3-4b4b-85e9-383d6a07274b'
 
@@ -38,7 +38,7 @@ const DynamicDataPathSelectNodeRenderer: ComponentType<NodeRendererProps> = setu
   if (serviceIdPaths.length === 0) throw new Error(`Service ID path query ${pathUtils.queryPathToString(config.options.serviceIdPathQuery)}' did not resolve to a node in the tree`)
   if (serviceIdPaths.length > 1) throw new Error(`Service ID path query ${pathUtils.queryPathToString(config.options.serviceIdPathQuery)}' resolved to more than one node in the tree`)
 
-  const [ serviceId ] = useExternalNodeData<string>(serviceIdPaths[0])
+  const serviceId = useTreeData<string>(serviceIdPaths[0])
   const [ pathMetas, setPathMetas ] = useState<Array<PathMeta> | null>(null)
   const [ dataService, setDataService ] = useState<Service | null>(null)
   const [ loading, setLoading ] = useState(true)

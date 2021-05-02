@@ -1,6 +1,5 @@
 import React  from 'react';
 import { NodeConfig, PathSegment } from "@graphter/core";
-import { useTreeMeta } from "../providers/state";
 
 export interface ValidationSummaryProps {
   config: NodeConfig,

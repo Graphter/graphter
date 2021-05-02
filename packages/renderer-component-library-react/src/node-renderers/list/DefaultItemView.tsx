@@ -25,7 +25,7 @@ interface KeyValueDefinition {
 }
 
 const DefaultItemView = ({childId, config, path, options, onSelect, onRemove}: DefaultItemViewProps) => {
-  const data = useTreeData(config, path)
+  const data = useTreeData(path)
   let significantData = dataDisplayUtils.extractSignificantData(data)
   return (
     <div className='flex flex-row'>

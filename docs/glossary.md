@@ -12,3 +12,13 @@ The primary business of this system is breaking data structures apart into units
 ### Node State
 
 ### Node Data
+
+#### Internal Node Data
+
+#### External Node Data
+
+## Path
+
+### Path Segment
+
+### Path Query Segment

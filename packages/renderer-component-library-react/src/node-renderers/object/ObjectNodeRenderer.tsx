@@ -10,7 +10,6 @@ import cs from "classnames";
 const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
     config,
-    configAncestry,
     originalTreeData,
     path,
     ErrorDisplayComponent
@@ -26,7 +25,6 @@ const ObjectNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           <DefaultPropertyWrapper config={childConfig} key={childConfig.id}>
             <ChildTypeRenderer
               config={childConfig}
-              configAncestry={[...configAncestry, config]}
               path={[ ...path, childConfig.id ]}
               originalTreeData={originalTreeData}
               options={childRendererRegistration.options}

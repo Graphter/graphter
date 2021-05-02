@@ -1,19 +1,21 @@
-import { propDataStore } from "../store/propDataStore";
 import { TreeDataInitialiserHook } from "@graphter/renderer-react";
 
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { PathMeta } from "@graphter/renderer-react";
 import { pathToKey } from "@graphter/renderer-react";
+import { nodeConfigsStore } from "../store/nodeConfigsStore";
+import { rendererInternalDataStore } from "../store/rendererInternalDataStore";
+import { pathChildrenStore } from "../store/pathChildrenStore";
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   return async (config, path, originalTreeData) => {
 
     const rendererRegistration = nodeRendererStore.get(config.type)
     if(!rendererRegistration?.initialiser) return
-    const nodeMetas = await rendererRegistration.initialiser(originalTreeData, config, path)
+    const initData = await rendererRegistration.initialiser(originalTreeData, config, path)
 
     // Get meta for all paths in the tree
-    const treeMetaMap = nodeMetas.reduce((a, c) => {
+    const treeMetaMap = initData.reduce((a, c) => {
       const pathKey = pathToKey(c.path)
       const pathMeta = a.get(pathKey)
       const node = {
@@ -55,7 +57,13 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
     // Store
     console.log(JSON.stringify(treeMetaMapValues))
     treeMetaMapValues.forEach((pathMeta) => {
-      if(!propDataStore.has(pathMeta.path)) propDataStore.set(pathMeta)
+      if(!nodeConfigsStore.has(pathMeta.path)) nodeConfigsStore.set(pathMeta.path, pathMeta.nodes.map(node => node.config))
+      if(!pathChildrenStore.has(pathMeta.path)) pathChildrenStore.set(pathMeta.path, pathMeta.childPaths)
+      pathMeta.nodes.forEach((nodeMeta) => {
+        if(!rendererInternalDataStore.has(pathMeta.path, nodeMeta.config)){
+          rendererInternalDataStore.set(pathMeta.path, nodeMeta.config, nodeMeta.internalData)
+        }
+      })
     })
 
   }

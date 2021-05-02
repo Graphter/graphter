@@ -1,9 +1,9 @@
 import { NodeConfig, PathSegment } from "@graphter/core";
 
 export interface NodeDataHook {
-  (
+  <T = any>(
     path: Array<PathSegment>,
     config: NodeConfig,
     originalTreeData: any
-  ): [ any, (value: any) => void ]
+  ): [ T, (value: T) => void ]
 }

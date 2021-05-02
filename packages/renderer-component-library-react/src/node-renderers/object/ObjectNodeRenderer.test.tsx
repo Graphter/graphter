@@ -42,7 +42,6 @@ describe('<ObjectNodeRenderer />', () => {
           },
         ]
       }}
-      configAncestry={[]}
       path={['/']} /> )
     expect(queryAllByText('A child item').length).toBe(2)
   })
@@ -64,7 +63,6 @@ describe('<ObjectNodeRenderer />', () => {
     }
     render(<ObjectNodeRenderer
       config={clone()(config)}
-      configAncestry={[]}
       originalNodeData={undefined}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -90,7 +88,6 @@ describe('<ObjectNodeRenderer />', () => {
     }
     render(<ObjectNodeRenderer
       config={clone()(config)}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -118,7 +115,6 @@ describe('<ObjectNodeRenderer />', () => {
     }
     render(<ObjectNodeRenderer
       config={clone()(config)}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -152,7 +148,6 @@ describe('<ObjectNodeRenderer />', () => {
       })
     const { queryByText } = render(<ObjectNodeRenderer
       config={clone()(config)}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'

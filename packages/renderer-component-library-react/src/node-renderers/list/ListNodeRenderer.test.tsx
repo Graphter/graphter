@@ -59,8 +59,6 @@ describe('<ListNodeRenderer />', () => {
         type: 'list',
         children: [ childConfig ]
       }}
-      configAncestry={[]}
-      originalNodeData={[ item0, item1 ]}
       originalNodeDataAncestry={[]}
       committed={true}
       path={[ 'pages' ]}
@@ -93,7 +91,6 @@ describe('<ListNodeRenderer />', () => {
         type: 'list',
         children: [ childConfig ]
       }}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -132,7 +129,6 @@ describe('<ListNodeRenderer />', () => {
         type: 'list',
         children: [ childConfig ]
       }}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -178,7 +174,6 @@ describe('<ListNodeRenderer />', () => {
         type: 'list',
         children: [ childConfig ]
       }}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -213,7 +208,6 @@ describe('<ListNodeRenderer />', () => {
     }
     render(<ListNodeRenderer
       config={clone()(config)}
-      configAncestry={[]}
       originalNodeData={undefined}
       originalNodeDataAncestry={[]}
       committed={true}
@@ -237,7 +231,6 @@ describe('<ListNodeRenderer />', () => {
     }
     render(<ListNodeRenderer
       config={clone()(config)}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -262,7 +255,6 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -287,7 +279,6 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -325,7 +316,6 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -362,7 +352,6 @@ describe('<ListNodeRenderer />', () => {
           type: 'string'
         } ]
       }}
-      configAncestry={[]}
       originalNodeData={[
         'item 1 value',
         'item 2 value'
@@ -397,7 +386,6 @@ describe('<ListNodeRenderer />', () => {
             type: 'string'
           } ]
         }}
-        configAncestry={[]}
         originalNodeData={{
           some: 'non-array-data'
         }}
@@ -414,7 +402,6 @@ describe('<ListNodeRenderer />', () => {
     try {
       // @ts-ignore
       render(<ListNodeRenderer config={undefined}
-                               configAncestry={[]}
                                originalNodeData={[
                                  'item 1 value',
                                  'item 2 value'
@@ -449,7 +436,6 @@ describe('<ListNodeRenderer />', () => {
             },
           ]
         }}
-        configAncestry={[]}
         originalNodeData={[
           'item 1 value',
           'item 2 value'

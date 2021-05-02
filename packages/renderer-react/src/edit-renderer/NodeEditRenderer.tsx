@@ -1,18 +1,16 @@
 /***
  * This module needs to be broken up and much of it moved out of the package
  */
-import React, { ComponentType, Suspense, useEffect, useState } from "react";
-import DefaultError from "../default-error";
+import React, { ComponentType, Suspense } from "react";
+import DefaultError from "../default-error"
 import {
-  ErrorRendererProps, NodeConfig,
+  ErrorRendererProps,
   PathSegment,
 } from "@graphter/core"
 import nodeRendererStore from "../store/nodeRendererStore"
 import ValidationSummary from "./ValidationSummary";
 import { useConfig } from "../providers/config";
-import { useTreeDataCallback, useTreeMeta } from "../providers/state";
-import { useTreeDataSnapshot } from "../hooks/data";
-import { pathToKey } from "../util/path";
+import { useNodeConfigs, useTreeDataCallback } from "../providers/state";
 
 export interface NodeEditRendererProps {
   path: Array<PathSegment>
@@ -32,22 +30,9 @@ export default function NodeEditRenderer(
 
   const ErrorDisplayComponent: ComponentType<ErrorRendererProps> = errorRenderer || DefaultError
 
-  const [ loadedTreeState, setLoadedTreeState ] = useState<
-    {
-      childPath: Array<PathSegment>,
-      childConfig: NodeConfig | null,
-      configs: Array<NodeConfig> | null
-    }
-  >({
-    childPath: path,
-    childConfig: null,
-    configs: null
-  })
-
-
-  const topNodeConfigId = loadedTreeState.childPath[0]
-  const editingId = loadedTreeState.childPath[1]
-  const topNodePath = loadedTreeState.childPath.slice(0, 2)
+  const topNodeConfigId = path[0]
+  const editingId = path[1]
+  const topNodePath = path.slice(0, 2)
 
   const topNodeConfig = useConfig(topNodeConfigId)
 
@@ -55,38 +40,15 @@ export default function NodeEditRenderer(
     (treeData) => {
       console.log('saving model ', treeData)
     },
-    topNodeConfig,
     path)
 
-  const treeData = useTreeDataSnapshot(topNodeConfig, path)
+  const nodeConfigs = useNodeConfigs(path)
 
-  const treeMeta = useTreeMeta(topNodeConfig, path)
+  if(!nodeConfigs?.length) throw new Error(`Missing config at '${path.join('/')}'`)
 
-  const initialise = useTreeDataCallback(
-    (treeMeta: any) => {
-      (async () => {
-        const pathKey = pathToKey(path)
-        const pathConfigs = treeMeta
-          ?.find(nodeMeta => pathToKey(nodeMeta.path) === pathKey)
-          ?.nodes.map(node => node.config)
-        if(!pathConfigs) return
-        setLoadedTreeState({
-          childPath: path,
-          configs: pathConfigs,
-          childConfig: pathConfigs[0]
-        })
-      })()
-    },
-    topNodeConfig,
-    path.slice(0, 2))
-  useEffect(() => {
-    initialise()
-  }, [ topNodeConfig, path, treeData ])
-
-  if(!startingData || !loadedTreeState.childConfig || !loadedTreeState.configs) return null
-
-  const childRegistration = nodeRendererStore.get(loadedTreeState.childConfig.type)
-  if(!childRegistration) throw new Error(`No child renderer found for type '${loadedTreeState.childConfig.type}'`)
+  const childConfig = nodeConfigs[0]
+  const childRegistration = nodeRendererStore.get(childConfig.type)
+  if(!childRegistration) throw new Error(`No child renderer found for type '${childConfig.type}'`)
   const TypeRenderer = childRegistration.Renderer
 
   return (
@@ -99,15 +61,14 @@ export default function NodeEditRenderer(
         })()
       }} data-testid='form'>
         <div className='mt-8 mb-10'>
-          <h1 className='text-2xl'>{loadedTreeState.childConfig.name}</h1>
-          {loadedTreeState.childConfig.description && <p className='text-sm text-gray-500'>{loadedTreeState.childConfig.description}</p>}
+          <h1 className='text-2xl'>{childConfig.name}</h1>
+          {childConfig.description && <p className='text-sm text-gray-500'>{childConfig.description}</p>}
         </div>
 
         <Suspense fallback={<div>Loading validation...</div>}>
         <TypeRenderer
-          path={loadedTreeState.childPath}
-          config={loadedTreeState.childConfig}
-          configAncestry={loadedTreeState.configs}
+          path={path}
+          config={childConfig}
           originalTreeData={startingData}
           options={childRegistration.options}
           ErrorDisplayComponent={ErrorDisplayComponent}

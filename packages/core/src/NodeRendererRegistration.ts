@@ -12,7 +12,6 @@ export interface NodeRendererRegistration {
   optionsConfig?: NodeConfig
   mergeChildData?: MergeChildDataFn
   initialiser?: NodeDataInitialiserFn
-  transformOut?: NodeTransformOut
   createFallbackDefaultValue?: CreateFallbackDefaultValueFn
 }
 
@@ -46,10 +45,4 @@ export interface NodeInitialisationData {
   path: Array<PathSegment>
   config: NodeConfig
   internalData?: any
-}
-
-export interface NodeTransformOut {
-  (
-    internalData: any
-  ): Promise<any>
 }
