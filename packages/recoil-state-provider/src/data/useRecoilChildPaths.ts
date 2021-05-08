@@ -1,4 +1,4 @@
-import { useRecoilValue } from "recoil";
+import { useRecoilState } from "recoil";
 import { ChildPathsHook } from "@graphter/renderer-react";
 import { pathChildrenStore } from "../store/pathChildrenStore";
 import { NodeConfig, PathSegment } from "@graphter/core";
@@ -14,7 +14,7 @@ export const useRecoilChildPaths: ChildPathsHook = (
 ) => {
   const childPathsState = pathChildrenStore.get(path)
   if(!childPathsState) throw new Error(`Missing child paths state at '${path.join('/')}'`)
-  const [ childPaths, setChildPaths ] = useRecoilValue(childPathsState)
+  const [ childPaths, setChildPaths ] = useRecoilState(childPathsState)
   const [ pathConfigs ] = useRecoilNodeConfigs(path)
   if(!pathConfigs.length) throw new Error(`No configs found at '${path.join('/')}'`)
 
