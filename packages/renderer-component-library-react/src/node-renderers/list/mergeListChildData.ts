@@ -7,5 +7,5 @@ export const mergeListChildData: MergeChildDataFn = (config, path, internalNodeD
       if(!itemMetadata) return false
       return itemMetadata.committed && !itemMetadata.deleted
     })
-    .map(child => child.data)
+    .map(child => child)
 }

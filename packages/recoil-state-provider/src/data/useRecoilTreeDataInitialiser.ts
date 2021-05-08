@@ -3,13 +3,13 @@ import { TreeDataInitialiserHook } from "@graphter/renderer-react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { PathMeta } from "@graphter/renderer-react";
 import { pathToKey } from "@graphter/renderer-react";
-import { nodeConfigsStore } from "../store/nodeConfigsStore";
+import { NodeConfigSets, nodeConfigSetsStore } from "../store/nodeConfigSetsStore";
 import { rendererInternalDataStore } from "../store/rendererInternalDataStore";
 import { pathChildrenStore } from "../store/pathChildrenStore";
+import { getConfigSetKey } from "../utils/getConfigSetKey";
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   return async (config, path, originalTreeData) => {
-
     const rendererRegistration = nodeRendererStore.get(config.type)
     if(!rendererRegistration?.initialiser) return
     const initData = await rendererRegistration.initialiser(originalTreeData, config, path)
@@ -40,7 +40,9 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       const parentKey = pathToKey(pathMeta.path.slice(0, -1))
       const parentMeta = treeMetaMap.get(parentKey)
       if(!parentMeta){
-        throw new Error(`Couldn't find parent to path '${pathMeta.path.join('/')}'. Shouldn't happen.`)
+        // This will happen when we're only initialising part of the tree.
+        // Not a problem because the rest of the hierarchy is assumed to already be correctly initialised
+        return
       }
       console.log(`'${parentMeta.path.join('/')}' is parent of '${pathMeta.path.join('/')}'`)
       parentMeta.childPaths.push(pathMeta.path)
@@ -57,7 +59,15 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
     // Store
     console.log(JSON.stringify(treeMetaMapValues))
     treeMetaMapValues.forEach((pathMeta) => {
-      if(!nodeConfigsStore.has(pathMeta.path)) nodeConfigsStore.set(pathMeta.path, pathMeta.nodes.map(node => node.config))
+      if(!nodeConfigSetsStore.has(pathMeta.path)){
+        const configs = pathMeta.nodes.map(node => node.config)
+        const configSetKey = getConfigSetKey(configs)
+        const configSets:NodeConfigSets = {
+          activeConfigsKey: configSetKey,
+          configSets: new Map([ [ configSetKey, configs ] ])
+        }
+        nodeConfigSetsStore.set(pathMeta.path, configSets)
+      }
       if(!pathChildrenStore.has(pathMeta.path)) pathChildrenStore.set(pathMeta.path, pathMeta.childPaths)
       pathMeta.nodes.forEach((nodeMeta) => {
         if(!rendererInternalDataStore.has(pathMeta.path, nodeMeta.config)){

@@ -8,9 +8,9 @@ const getKey = (path: Array<PathSegment>) => `path-children-store-a4d28666-5de8-
 
 export const get = (
   path: Array<PathSegment>
-): RecoilState<Array<any>> | null => {
+): RecoilState<Array<any>> => {
   const key = getKey(path)
-  if(!childPathsMap.has(key)) return null
+  if(!childPathsMap.has(key)) throw new Error(`Couldn't find path children state at '${path.join('/')}'`)
   const state = childPathsMap.get(key)
   if(typeof state === 'undefined') throw new Error('Should not happen')
   return state

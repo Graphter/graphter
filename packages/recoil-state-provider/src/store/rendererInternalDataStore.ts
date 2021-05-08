@@ -5,7 +5,7 @@ import { pathToKey } from "@graphter/renderer-react";
 const pathInternalDataMap = new Map<string, RecoilState<any>>()
 
 const getKey = (path: Array<PathSegment>, config: NodeConfig) => {
-  return `renderer-internal-data-store-${pathToKey}-01bdfbbf-40e7-4c72-a454-f61d9d51ea98-${config.id}`
+  return `renderer-internal-data-store-${pathToKey(path)}-01bdfbbf-40e7-4c72-a454-f61d9d51ea98-${config.id}`
 }
 
 export const get = <T>(
@@ -25,7 +25,7 @@ export const set = <T>(
   config: NodeConfig,
   internalData: T
 ) => {
-  console.log(`Setting internal state for path '${path.join('/')}' to ${JSON.stringify(internalData)}`)
+  console.log(`Setting internal state for path '${path.join('/')}'[${config.id}:${config.type}] to ${JSON.stringify(internalData)}`)
   checkPathArg(path)
 
   const key = getKey(path, config)

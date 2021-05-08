@@ -4,7 +4,7 @@ import {
   RecoilValueReadOnly,
   useRecoilValue,
 } from "recoil";
-import { TreeDataStore } from "./treeDataStore";
+import { BranchDataStore } from "./treeDataStore";
 import { propDataStore } from "./propDataStore";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { when } from "jest-when";
@@ -14,7 +14,7 @@ import { NodeConfig } from "@graphter/core";
 const nodeRendererStoreMock = nodeRendererStore as jest.Mocked<any>
 
 describe('treeDataStore', () => {
-  let treeDataStore: TreeDataStore
+  let treeDataStore: BranchDataStore
   beforeEach(async () => {
     jest.isolateModules(async () => {
       treeDataStore = require('./treeDataStore').default

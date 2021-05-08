@@ -52,12 +52,12 @@ export const useTreeData:TreeDataHook = (
 }
 
 export const useTreeDataCallback:TreeDataCallbackHook = (
-  fn: (data: any) => void,
-  path: Array<PathSegment>,
-  depth?: number) =>
+  fn,
+  path,
+  depth) =>
 {
   const ctx = useContext(Context)
-  if (!ctx || !ctx.treeDataHook) throw new Error(`Couldn't find a TreeDataCallbackHook or context to use.`)
+  if (!ctx || !ctx.treeDataCallbackHook) throw new Error(`Couldn't find a TreeDataCallbackHook or context to use.`)
   return ctx.treeDataCallbackHook(fn, path, depth)
 }
 

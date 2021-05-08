@@ -10,7 +10,7 @@ export interface CrumbProps {
 const guessingNames = [ 'name', 'title', 'headline', 'label', 'id' ]
 
 const Crumb = ({ path }: CrumbProps) => {
-  const childPaths = useChildPaths(path)
+  const [ childPaths ] = useChildPaths(path)
   const displayPath = guessDisplayPath(childPaths)
   return displayPath ? (
     <Suspense fallback={'...'}><DynamicCrumb path={path} displayPath={displayPath} /></Suspense>
@@ -37,7 +37,7 @@ interface StaticCrumbProps {
 }
 
 export const StaticCrumb = ({ path }: StaticCrumbProps) => {
-  const configs = useNodeConfigs(path)
+  const [ configs ] = useNodeConfigs(path)
   return <>{configs[0].name}</>
 }
 

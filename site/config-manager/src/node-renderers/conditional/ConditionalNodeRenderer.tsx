@@ -23,7 +23,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
   const treeDataInitialiser = useTreeDataInitialiser()
 
-  const [ targetNodeData ] = useTreeData<any>(targetPath)
+  const targetNodeData = useTreeData<any>(targetPath)
   const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
     if(!matchingChildConfig) return null
