@@ -31,3 +31,4 @@ Very short term plan for upcoming work and priorities
 1. getConfigAt and getConfigsTo should return an array of configs for each path (???)
 1. validation could be state provider independent
 1. Narrow down NodeConfig interface by making children specific to applicable node configs - options should be brought up a level?
+1. Default values should be factory
