@@ -6,6 +6,7 @@ import { TreeDataInitialiserHook } from "./TreeDataInitialiserHook";
 import { TreeDataCallbackHook } from "./TreeDataCallbackHook";
 import { NodeConfigsHook } from "./NodeConfigsHook";
 import { ChildPathsHook } from "./ChildPathsHook";
+import { DownstreamNodeConfigsHook } from "./DownstreamNodeConfigsHook";
 
 interface DataProviderProps {
   treeDataInitialiserHook: TreeDataInitialiserHook
@@ -13,6 +14,7 @@ interface DataProviderProps {
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
   nodeConfigsHook: NodeConfigsHook
+  downstreamNodeConfigsHook: DownstreamNodeConfigsHook
   childPathsHook: ChildPathsHook
   children: any
 }
@@ -23,6 +25,7 @@ const Context = createContext<{
   treeDataHook: TreeDataHook
   treeDataCallbackHook: TreeDataCallbackHook
   nodeConfigsHook: NodeConfigsHook
+  downstreamNodeConfigsHook: DownstreamNodeConfigsHook
   childPathsHook: ChildPathsHook
 } | null>(null)
 
@@ -67,6 +70,12 @@ export const useNodeConfigs:NodeConfigsHook = (path) => {
   return ctx.nodeConfigsHook(path)
 }
 
+export const useDownstreamNodeConfigs:DownstreamNodeConfigsHook = (path, config) => {
+  const ctx = useContext(Context)
+  if (!ctx || !ctx.downstreamNodeConfigsHook) throw new Error(`Couldn't find a DownstreamNodeConfigsHook or context to use.`)
+  return ctx.downstreamNodeConfigsHook(path, config)
+}
+
 export const useChildPaths:ChildPathsHook = (path) => {
   const ctx = useContext(Context)
   if (!ctx || !ctx.nodeConfigsHook) throw new Error(`Couldn't find a ChildPathsHook or context to use.`)
@@ -80,6 +89,7 @@ export default function StateProvider(
     treeDataHook,
     treeDataCallbackHook,
     nodeConfigsHook,
+    downstreamNodeConfigsHook,
     childPathsHook,
     children
   }: DataProviderProps
@@ -91,6 +101,7 @@ export default function StateProvider(
       treeDataCallbackHook,
       treeDataHook,
       nodeConfigsHook,
+      downstreamNodeConfigsHook,
       childPathsHook
     }}>
       {children}

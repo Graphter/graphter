@@ -42,7 +42,7 @@ export default function NodeEditRenderer(
     },
     path)
 
-  const [ nodeConfigs ] = useNodeConfigs(path)
+  const nodeConfigs = useNodeConfigs(path)
 
   if(!nodeConfigs?.length) throw new Error(`Missing config at '${path.join('/')}'`)
 

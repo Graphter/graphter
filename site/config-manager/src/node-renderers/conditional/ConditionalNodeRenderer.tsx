@@ -1,12 +1,13 @@
-import React, { ComponentType, useMemo } from "react";
-import { NodeConfig, NodeRendererProps, NodeRendererRegistration } from "@graphter/core";
+import React, { ComponentType, useEffect } from "react";
+import { NodeRendererProps } from "@graphter/core";
 import { pathUtils } from "@graphter/renderer-react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { getMatchingConfig } from "./getMatchingConfig";
 import { setupNodeRenderer } from "@graphter/renderer-react";
 import { isConditionalConfig } from "./isConditionalConfig";
-import { useTreeDataInitialiser } from "@graphter/renderer-react";
 import { useTreeData } from "@graphter/renderer-react";
+import { useDownstreamNodeConfigs } from "@graphter/renderer-react";
+import { useChildPaths } from "@graphter/renderer-react";
 
 const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   {
@@ -21,24 +22,30 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
 
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
-  const treeDataInitialiser = useTreeDataInitialiser()
-
   const targetNodeData = useTreeData<any>(targetPath)
-  const match = useMemo<[NodeConfig, NodeRendererRegistration] | null>(() => {
+  const {
+    downstreamConfigs,
+    setDownstreamConfig,
+    removeDownstreamConfig
+  } = useDownstreamNodeConfigs(path, config)
+  const [ childPaths, setChildPaths ] = useChildPaths(path)
+
+  useEffect(() => {
     const matchingChildConfig = getMatchingConfig(config, targetNodeData)
-    if(!matchingChildConfig) return null
-    const rendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
-    if(!rendererRegistration) return null
-    treeDataInitialiser(matchingChildConfig, path, originalTreeData)
-    return [ matchingChildConfig, rendererRegistration ]
+    if(matchingChildConfig){
+      setDownstreamConfig(matchingChildConfig)
+    } else {
+      setChildPaths([])
+      removeDownstreamConfig()
+    }
   }, [ targetNodeData ])
 
-
-  if(!match) return (
+  if(!downstreamConfigs?.length) return (
     <div className='text-center p-10 text-gray-300'>N/A</div>
   )
 
-  const [ matchingChildConfig, matchingChildRendererRegistration ] = match
+  const matchingChildConfig = downstreamConfigs[0]
+  const matchingChildRendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
 
   return (
     <>

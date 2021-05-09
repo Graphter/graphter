@@ -4,6 +4,7 @@ import StateProvider, {
   useTreeDataCallback,
   useTreeData,
   useNodeConfigs,
+  useDownstreamNodeConfigs,
   useChildPaths
 } from "./StateProvider";
 
@@ -15,13 +16,15 @@ export {
   useTreeDataCallback,
   useTreeData,
   useNodeConfigs,
-  useChildPaths
+  useDownstreamNodeConfigs,
+  useChildPaths,
 }
 
 export * from './TreeDataInitialiserHook'
 export * from './NodeDataHook'
 export * from './TreeDataHook'
 export * from './NodeConfigsHook'
+export * from './DownstreamNodeConfigsHook'
 export * from './TreeDataCallbackHook'
 export * from './PathMeta'
 export * from './ChildPathsHook'

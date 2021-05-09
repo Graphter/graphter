@@ -8,6 +8,7 @@ import { useRecoilTreeData } from "./data/useRecoilTreeData";
 import { useRecoilTreeDataInitialiser } from "./data/useRecoilTreeDataInitialiser";
 import { useRecoilNodeConfigs } from "./data/useRecoilNodeConfigs";
 import { useRecoilChildPaths } from "./data/useRecoilChildPaths";
+import { useRecoilDownstreamNodeConfigs } from "./data/useRecoilDownstreamNodeConfigs";
 
 export interface RecoilStateProvider {
   validatorRegistry: Array<NodeValidatorRegistration>
@@ -31,6 +32,7 @@ export function RecoilStateProvider(
           nodeDataHook={useRecoilNodeData}
           treeDataCallbackHook={useRecoilTreeDataCallback}
           nodeConfigsHook={useRecoilNodeConfigs}
+          downstreamNodeConfigsHook={useRecoilDownstreamNodeConfigs}
           childPathsHook={useRecoilChildPaths}
         >
           {children}

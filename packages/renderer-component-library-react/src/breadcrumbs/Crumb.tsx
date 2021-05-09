@@ -37,7 +37,7 @@ interface StaticCrumbProps {
 }
 
 export const StaticCrumb = ({ path }: StaticCrumbProps) => {
-  const [ configs ] = useNodeConfigs(path)
+  const configs = useNodeConfigs(path)
   return <>{configs[0].name}</>
 }
 
