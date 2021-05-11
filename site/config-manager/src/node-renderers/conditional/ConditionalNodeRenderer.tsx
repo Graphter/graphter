@@ -47,6 +47,10 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
   const matchingChildConfig = downstreamConfigs[0]
   const matchingChildRendererRegistration = nodeRendererStore.get(matchingChildConfig.type)
 
+  if(matchingChildConfig.id === config.id && matchingChildConfig.type === config.type){
+    throw new Error(`Conditional appears to be rendering itself as a child at '${path.join('/')}'`)
+  }
+
   return (
     <>
       <matchingChildRendererRegistration.Renderer

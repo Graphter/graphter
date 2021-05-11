@@ -1,7 +1,6 @@
 import { NodeRendererRegistration, Service } from "@graphter/core";
 import createDynamicConfigNodeRenderer from "./createDynamicNodeRenderer";
 import { createDynamicInitialiser } from "./createDynamicInitialiser";
-import { createMergeDynamicChildData } from "./createMergeDynamicChildData";
 
 export interface DataSelectNodeRendererOptions {
   type?: string,

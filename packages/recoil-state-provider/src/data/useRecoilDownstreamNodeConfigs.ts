@@ -23,17 +23,10 @@ export const useRecoilDownstreamNodeConfigs: DownstreamNodeConfigsHook = (
   if(!configs) throw new Error(`No active configs found at '${path.join('/')}'`)
 
   const treeDataInitialiser = useRecoilTreeDataInitialiser()
-  const initialiseBranch = useRecoilTreeDataCallback<Array<Array<NodeConfig>>>((treeData, newConfigs) => {
-    if(!newConfigs.length) throw new Error(`Trying to set zero configs at '${path.join('.')}'`)
-    const configSetKey = getConfigSetKey(newConfigs)
-    if(!nodeConfigSets.configSets.has(configSetKey)){
-      nodeConfigSets.configSets.set(configSetKey, newConfigs)
-      setNodeConfigs({
-        activeConfigsKey: configSetKey,
-        configSets: nodeConfigSets.configSets
-      })
-      treeDataInitialiser(newConfigs[0], path, treeData)
-    }
+  const initialiseBranch = useRecoilTreeDataCallback<Array<NodeConfig>>(async (treeData, newConfig) => {
+    const topNodeConfig = configs[0]
+    const replacingTopConfig = topNodeConfig.id === newConfig.id && topNodeConfig.type === topNodeConfig.type
+    treeDataInitialiser(replacingTopConfig ? newConfig : topNodeConfig, path, treeData)
   }, path.slice(0, 2))
 
   const currentConfigIndex = configs.findIndex(eachConfig => eachConfig.id === config.id && eachConfig)
@@ -44,7 +37,7 @@ export const useRecoilDownstreamNodeConfigs: DownstreamNodeConfigsHook = (
     configs,
     downstreamConfigs,
     setDownstreamConfig: (newConfig: NodeConfig) => {
-      initialiseBranch([ ...configs.slice(0, currentConfigIndex + 1), newConfig ])
+      initialiseBranch(newConfig)
       console.log('hello world')
     },
     removeDownstreamConfig: () => {

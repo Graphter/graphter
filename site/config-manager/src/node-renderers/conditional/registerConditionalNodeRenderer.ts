@@ -1,6 +1,5 @@
 import ConditionalNodeRenderer from "./ConditionalNodeRenderer";
 import { NodeRendererRegistration } from "@graphter/core";
-import { mergeConditionalChildData } from "./mergeConditionalChildData";
 import { conditionalInitialiser } from "./conditionalInitialiser";
 
 export interface ConditionalNodeRendererOptions {
