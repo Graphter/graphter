@@ -31,8 +31,8 @@ export const useRecoilDownstreamNodeConfigs: DownstreamNodeConfigsHook = (
 
   const currentConfigIndex = configs.findIndex(eachConfig => eachConfig.id === config.id && eachConfig)
   if(currentConfigIndex === -1) throw new Error(`Config ${configToString(config)} doesn't exist in set of configs ${configs.map(configToString).join(', ')}`)
-  const downstreamConfigIndex = currentConfigIndex < configs.length - 1 ? currentConfigIndex + 1 : currentConfigIndex
-  const downstreamConfigs = configs.slice(downstreamConfigIndex)
+  const downstreamConfigs = configs.slice(currentConfigIndex + 1)
+
   return {
     configs,
     downstreamConfigs,
