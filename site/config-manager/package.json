@@ -2,7 +2,7 @@
   "name": "config-manager",
   "version": "0.1.0",
   "private": true,
-  "license": "MIT",
+  "license": "AGPL",
   "dependencies": {
     "@tailwindcss/postcss7-compat": "^2.0.3",
     "@testing-library/jest-dom": "^5.11.4",
