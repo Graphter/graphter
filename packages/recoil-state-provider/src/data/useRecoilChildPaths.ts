@@ -19,12 +19,12 @@ export const useRecoilChildPaths: ChildPathsHook = (
   if(!configs.length) throw new Error(`No configs found at '${path.join('/')}'`)
 
   const treeDataInitialiser = useRecoilTreeDataInitialiser()
-  const initialiseBranch = useRecoilTreeDataCallback((treeData) => {
-    treeDataInitialiser(configs[0], path, treeData)
+  const initialiseBranch = useRecoilTreeDataCallback<Array<Array<Array<PathSegment>>>>(async (treeData, childPaths) => {
+    await treeDataInitialiser(configs[0], path, treeData)
+    setChildPaths(childPaths)
   }, path.slice(0, 2))
 
   return [ childPaths, (childPaths: Array<Array<PathSegment>>) => {
-    setChildPaths(childPaths)
-    initialiseBranch()
+    initialiseBranch(childPaths)
   }]
 }
