@@ -55,7 +55,10 @@ const Breadcrumbs = ({ path, AncestorCrumb, CurrentCrumb }: BreadcrumbsProps) =>
         return i === breadcrumbPaths.length - 1 ? (
           <CurrentCrumb key={key}><Crumb path={path}/></CurrentCrumb>
         ) : (
-          <AncestorCrumb path={path} key={key}><Crumb path={path}/></AncestorCrumb>
+          <>
+            <AncestorCrumb path={path} key={key}><Crumb path={path}/></AncestorCrumb>
+            <DividerSvg />
+          </>
         )
       })}
     </div>

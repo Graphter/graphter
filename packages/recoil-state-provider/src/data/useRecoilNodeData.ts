@@ -8,8 +8,8 @@ import { NodeConfig, PathSegment } from "@graphter/core";
  */
 export const useRecoilNodeData: NodeDataHook = <D>(path: Array<PathSegment>, config: NodeConfig) => {
 
-  const nodeInternalData = rendererInternalDataStore.get<D>(path, config)
-  if(!nodeInternalData) throw new Error(`Should have internal data state at '${path.join('/')}' ${config.id}[type=${config.type}] by now`)
+  const nodeInternalState = rendererInternalDataStore.get<D>(path, config)
+  if(!nodeInternalState) throw new Error(`Should have internal data state at '${path.join('/')}' ${config.id}[type=${config.type}] by now`)
 
-  return useRecoilState<D>(nodeInternalData)
+  return useRecoilState<D>(nodeInternalState)
 }
