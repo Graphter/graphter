@@ -21,7 +21,6 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       const rendererRegistration = nodeRendererStore.get(config.type)
       if (!rendererRegistration?.initialiser) return
       const initData = await rendererRegistration.initialiser(treeData, config, path)
-
       // Get meta for all paths in the tree
       const pathsMeta = getPathsMeta(initData)
 
@@ -55,7 +54,12 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
           }
         })
         // Child paths
-        if (!pathChildrenStore.has(pathMeta.path)) pathChildrenStore.set(pathMeta.path, pathMeta.childPaths)
+        if (!pathChildrenStore.has(pathMeta.path)){
+          pathChildrenStore.set(pathMeta.path, pathMeta.childPaths)
+        } else {
+          const childPathsState = pathChildrenStore.get(pathMeta.path)
+          set(childPathsState, pathMeta.childPaths)
+        }
       }))
       console.log(`Initialised branch at '${path.join('/')}'`)
     }, [])
