@@ -27,6 +27,11 @@ const configs: NodeConfig[] = [
         id: 'type',
         name: 'Type',
         type: 'data-select',
+        options: {
+          serviceId: 'node-renderer',
+          keyPath: [ 'type' ],
+          valuePath: [ 'name' ]
+        }
       },
     ]
   },
