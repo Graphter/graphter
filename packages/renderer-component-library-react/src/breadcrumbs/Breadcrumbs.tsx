@@ -1,5 +1,5 @@
 import { NodeConfig, PathSegment } from "@graphter/core";
-import React, { ComponentType } from "react";
+import React, { ComponentType, Fragment } from "react";
 import Crumb from "./Crumb";
 
 interface BreadcrumbsProps {
@@ -55,10 +55,10 @@ const Breadcrumbs = ({ path, AncestorCrumb, CurrentCrumb }: BreadcrumbsProps) =>
         return i === breadcrumbPaths.length - 1 ? (
           <CurrentCrumb key={key}><Crumb path={path}/></CurrentCrumb>
         ) : (
-          <>
-            <AncestorCrumb path={path} key={key}><Crumb path={path}/></AncestorCrumb>
+          <Fragment key={key}>
+            <AncestorCrumb path={path}><Crumb path={path}/></AncestorCrumb>
             <DividerSvg />
-          </>
+          </Fragment>
         )
       })}
     </div>
