@@ -36,7 +36,6 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
 
     useEffect(() => {
       (async () => {
-        console.log({ targetNodeData })
         if(targetNodeDataType === 'undefined' || targetNodeData === null) return
         const getConfigResult = await configService.get(targetNodeData)
         if(!getConfigResult.item) {
