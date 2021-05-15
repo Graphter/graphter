@@ -1,10 +1,3 @@
-/**
- * This is a good candidate for promotion to a core package. Still some questions to answer:
- * - ~~Should the data accessed by this renderer also be defined by a configuration?~~
- * - Can we do better with options typing? Does it have to be type 'any' or can we get some compile-time safety?
- *
- * Summary: wait until more battle tested before promotion
- */
 import React, { ComponentType, useEffect, useState } from "react";
 import { NodeRendererProps, PathSegment, Service } from "@graphter/core";
 import { useNodeData } from "@graphter/renderer-react";
