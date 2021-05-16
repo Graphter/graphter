@@ -7,61 +7,65 @@ import { NodeConfigSets, nodeConfigSetsStore } from "../store/nodeConfigSetsStor
 import { rendererInternalDataStore } from "../store/rendererInternalDataStore";
 import { pathChildrenStore } from "../store/pathChildrenStore";
 import { getConfigSetKey } from "../utils/getConfigSetKey";
-import { RecoilState, selector, useRecoilCallback } from "recoil";
+import { RecoilState, selector, useGotoRecoilSnapshot, useRecoilCallback } from "recoil";
 import branchDataStore from "../store/branchDataStore";
 import { NodeConfig, NodeInitialisationData, PathSegment } from "@graphter/core";
 
-let initialiserSelector: RecoilState<boolean> | null = null
-
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
-
-  const initialiseTreeData = useRecoilCallback(({ snapshot, set }) =>
+  const gotoSnapshot = useGotoRecoilSnapshot();
+  const initialiseTreeData = useRecoilCallback(({ snapshot }) =>
     async (config: NodeConfig, path: Array<PathSegment>, treeData: any) => {
-      console.log(`Initialising branch at '${path.join('/')}'`)
-      const rendererRegistration = nodeRendererStore.get(config.type)
-      if (!rendererRegistration?.initialiser) return
-      const initData = await rendererRegistration.initialiser(treeData, config, path)
-      // Get meta for all paths in the tree
-      const pathsMeta = getPathsMeta(initData)
 
-      await Promise.all(pathsMeta.map(async (pathMeta) => {
-        // Config state
-        const configs = pathMeta.nodes.map(node => node.config)
-        const activeConfigsKey = getConfigSetKey(configs)
-        if(!nodeConfigSetsStore.has(pathMeta.path)){
-          // This node hasn't been added to the state store yet
-          nodeConfigSetsStore.set(pathMeta.path, {
-            activeConfigsKey,
-            configSets: new Map([ [ activeConfigsKey, configs ] ])
-          })
-        } else {
-          // There's some existing state in the store so check if it's the same as the incoming state
-          const nodeConfigSetsState = nodeConfigSetsStore.get(pathMeta.path)
-          const nodeConfigSets = await snapshot.getPromise(nodeConfigSetsState)
-          if(nodeConfigSets.activeConfigsKey !== activeConfigsKey){
-            // Incoming state is different so add it and set it as active
-            nodeConfigSets.configSets.set(activeConfigsKey, configs)
-            set(nodeConfigSetsState, {
+      const newSnapshot = await snapshot.asyncMap(async ({ set }) => {
+        console.log(`Initialising branch at '${path.join('/')}' starting with config: ${config.id}`)
+        const rendererRegistration = nodeRendererStore.get(config.type)
+        if (!rendererRegistration?.initialiser) return
+        const initData = await rendererRegistration.initialiser(treeData, config, path)
+        // Get meta for all paths in the tree
+        const pathsMeta = getPathsMeta(initData)
+
+        await Promise.all(pathsMeta.map(async (pathMeta) => {
+          // Config state
+          const configs = pathMeta.nodes.map(node => node.config)
+          const activeConfigsKey = getConfigSetKey(configs)
+          if(!nodeConfigSetsStore.has(pathMeta.path)){
+            // This node hasn't been added to the state store yet
+            nodeConfigSetsStore.set(pathMeta.path, {
               activeConfigsKey,
-              configSets: nodeConfigSets.configSets
+              configSets: new Map([ [ activeConfigsKey, configs ] ])
             })
+          } else {
+            // There's some existing state in the store so check if it's the same as the incoming state
+            const nodeConfigSetsState = nodeConfigSetsStore.get(pathMeta.path)
+            const nodeConfigSets = await snapshot.getPromise(nodeConfigSetsState)
+            if(nodeConfigSets.activeConfigsKey !== activeConfigsKey){
+              // Incoming state is different so add it and set it as active
+              nodeConfigSets.configSets.set(activeConfigsKey, configs)
+              set(nodeConfigSetsState, {
+                activeConfigsKey,
+                configSets: nodeConfigSets.configSets
+              })
+            }
           }
-        }
-        // Internal data state
-        pathMeta.nodes.map(node => {
-          if (!rendererInternalDataStore.has(pathMeta.path, node.config)) {
-            rendererInternalDataStore.set(pathMeta.path, node.config, node.internalData)
+          // Internal data state
+          pathMeta.nodes.map(node => {
+            if (!rendererInternalDataStore.has(pathMeta.path, node.config)) {
+              rendererInternalDataStore.set(pathMeta.path, node.config, node.internalData)
+            }
+          })
+          // Child paths
+          if (!pathChildrenStore.has(pathMeta.path)){
+            pathChildrenStore.set(pathMeta.path, pathMeta.childPaths)
+          } else {
+            const childPathsState = pathChildrenStore.get(pathMeta.path)
+            set(childPathsState, pathMeta.childPaths)
           }
-        })
-        // Child paths
-        if (!pathChildrenStore.has(pathMeta.path)){
-          pathChildrenStore.set(pathMeta.path, pathMeta.childPaths)
-        } else {
-          const childPathsState = pathChildrenStore.get(pathMeta.path)
-          set(childPathsState, pathMeta.childPaths)
-        }
-      }))
-      console.log(`Initialised branch at '${path.join('/')}'`)
+        }))
+        console.log(`Initiated branch at '${path.join('/')}' starting with config: ${config.id}`)
+      })
+
+      gotoSnapshot(newSnapshot)
+
     }, [])
 
   return async (config, path, treeData) => {
