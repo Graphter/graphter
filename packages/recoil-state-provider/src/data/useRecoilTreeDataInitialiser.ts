@@ -3,19 +3,17 @@ import { TreeDataInitialiserHook } from "@graphter/renderer-react";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { PathMeta } from "@graphter/renderer-react";
 import { pathToKey } from "@graphter/renderer-react";
-import { NodeConfigSets, nodeConfigSetsStore } from "../store/nodeConfigSetsStore";
+import { nodeConfigSetsStore } from "../store/nodeConfigSetsStore";
 import { rendererInternalDataStore } from "../store/rendererInternalDataStore";
 import { pathChildrenStore } from "../store/pathChildrenStore";
 import { getConfigSetKey } from "../utils/getConfigSetKey";
-import { RecoilState, selector, useGotoRecoilSnapshot, useRecoilCallback } from "recoil";
-import branchDataStore from "../store/branchDataStore";
+import { useGotoRecoilSnapshot, useRecoilCallback } from "recoil";
 import { NodeConfig, NodeInitialisationData, PathSegment } from "@graphter/core";
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   const gotoSnapshot = useGotoRecoilSnapshot();
   const initialiseTreeData = useRecoilCallback(({ snapshot }) =>
     async (config: NodeConfig, path: Array<PathSegment>, treeData: any) => {
-
       const newSnapshot = await snapshot.asyncMap(async ({ set }) => {
         console.log(`Initialising branch at '${path.join('/')}' starting with config: ${config.id}`)
         const rendererRegistration = nodeRendererStore.get(config.type)
@@ -61,7 +59,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
             set(childPathsState, pathMeta.childPaths)
           }
         }))
-        console.log(`Initiated branch at '${path.join('/')}' starting with config: ${config.id}`)
+        console.log(`Initialised branch at '${path.join('/')}' starting with config: ${config.id}`)
       })
 
       gotoSnapshot(newSnapshot)

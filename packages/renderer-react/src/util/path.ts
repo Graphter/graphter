@@ -1,5 +1,6 @@
 import { PathSegment } from "@graphter/core";
 import { PathQuerySegment } from "@graphter/core";
+import clone from 'rfdc'
 
 export function validate(path?: Array<PathSegment> | null) {
   if (typeof path === null || path === undefined) return {
@@ -119,6 +120,15 @@ export const queryPathToString = (queryPath: Array<PathQuerySegment>) => {
     .join('/')
 }
 
+export const deleteAtGlobalPath = (data: any, path: Array<PathSegment>) => {
+  const cloned = clone()(data)
+  const parentPath = path.slice(0, -1)
+  const deletionSegment = path[path.length - 1]
+  const parent = getValueByGlobalPath(cloned, parentPath)
+  delete parent[deletionSegment]
+  return cloned
+}
+
 export const pathToKey = (path: Array<PathSegment>) => path.join('[88484d0d-33e8-47b4-a351-7bb581268da3]')
 
 export const pathUtils = {
@@ -130,5 +140,6 @@ export const pathUtils = {
   valueToLocalPaths,
   resolvePaths,
   queryPathToString,
-  pathToKey
+  pathToKey,
+  deleteAtGlobalPath
 }

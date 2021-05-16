@@ -1,16 +1,13 @@
 import { useRecoilState } from "recoil";
 import { nodeConfigSetsStore } from "../store/nodeConfigSetsStore";
 import { NodeConfig } from "@graphter/core";
-import { getConfigSetKey } from "../utils/getConfigSetKey";
 import { useRecoilTreeDataInitialiser } from "./useRecoilTreeDataInitialiser";
 import { useRecoilTreeDataCallback } from "./useRecoilTreeDataCallback";
 import { DownstreamNodeConfigsHook } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 
 const configToString = (config: NodeConfig) => `${config.id}[type=${config.type}]`
 
-/**
- * @param path
- */
 export const useRecoilDownstreamNodeConfigs: DownstreamNodeConfigsHook = (
   path,
   config
@@ -26,7 +23,9 @@ export const useRecoilDownstreamNodeConfigs: DownstreamNodeConfigsHook = (
   const initialiseBranch = useRecoilTreeDataCallback<Array<NodeConfig>>(async (treeData, newConfig) => {
     const topNodeConfig = configs[0]
     const replacingTopConfig = topNodeConfig.id === newConfig.id && topNodeConfig.type === topNodeConfig.type
-    treeDataInitialiser(replacingTopConfig ? newConfig : topNodeConfig, path, treeData)
+    // Delete the section of the tree we're about to (re)initialise so that any new branches have default data
+    const obscuredTreeData = pathUtils.deleteAtGlobalPath(treeData, path)
+    treeDataInitialiser(replacingTopConfig ? newConfig : topNodeConfig, path, obscuredTreeData)
   }, path.slice(0, 2))
 
   const currentConfigIndex = configs.findIndex(eachConfig => eachConfig.id === config.id && eachConfig)
