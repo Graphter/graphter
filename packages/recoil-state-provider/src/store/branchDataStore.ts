@@ -40,6 +40,7 @@ const get = <T>(startingPath: Array<PathSegment>, depth?: number) => {
         const childData = getChildData()
         const pathConfigsState = pathConfigsStore.get(path)
         const pathConfigs = get(pathConfigsState)
+        if(!pathConfigs.length) throw new Error(`Couldn't find path configs at '${path.join('/')}'`)
         // transform from the bottom most path node -> up
         const externalNodeData = [ ...nodeConfigs ].reverse().reduce<any>((a, c) => {
           const exactPathConfigs = getExactPathConfigs(pathConfigs, c)

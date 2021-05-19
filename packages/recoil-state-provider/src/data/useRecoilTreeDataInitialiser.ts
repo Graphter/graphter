@@ -8,8 +8,7 @@ import { pathChildrenStore } from "../store/pathChildrenStore";
 import { getConfigSetKey } from "../utils/getConfigSetKey";
 import { RecoilValue, SetRecoilState, useGotoRecoilSnapshot, useRecoilCallback } from "recoil";
 import { NodeConfig, NodeInitialisationData, PathSegment } from "@graphter/core";
-import { getPathPaths } from "../utils/getPathPaths";
-import { pathConfigsStore } from "../store/pathConfigsStore";
+import { getExactPathConfigs } from "../utils/getExactPathConfigs";
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   const gotoSnapshot = useGotoRecoilSnapshot();
@@ -87,15 +86,36 @@ async function initialiseRendererInternalData(
   get: <T>(recoilValue: RecoilValue<T>) => Promise<T>,
   set: SetRecoilState
 ) {
+  const pathConfigsMap = await initData.reduce<Promise<Map<string, Array<Array<NodeConfig>>>>>(
+    async (aPromise, c) => {
+      const a = await aPromise
+      const localSegments = c.path.slice(2)
+      const pathPaths = localSegments.reduce<Array<Array<PathSegment>>>((a, c) => {
+        a.push([ ...a[a.length - 1], c ])
+        return a
+      }, [ c.path.slice(0, 2) ])
+      const pathConfigs = await pathPaths.reduce<Promise<Array<Array<NodeConfig>>>>(async (aPromise, c) => {
+        const a = await aPromise
+        const nodeConfigSetsState = nodeConfigSetsStore.get(c)
+        const nodeConfigSets = await get(nodeConfigSetsState)
+        const configs = nodeConfigSets.configSets.get(nodeConfigSets.activeConfigsKey)
+        if (configs) a.push(configs)
+        return a
+      }, Promise.resolve([]))
+      a.set(pathToKey(c.path), pathConfigs)
+
+      return a
+    }, Promise.resolve(new Map()))
   await Promise.all(initData.map(async (nodeInitData) => {
-    const pathConfigs = await get(pathConfigsStore.get(nodeInitData.path))
-    if (!pathConfigs) throw new Error(`Couldn't find configs for path '${nodeInitData.path.join('/')}'`)
-    if (rendererInternalDataStore.has(nodeInitData.path, pathConfigs)) {
-      const internalDataState = rendererInternalDataStore.get(nodeInitData.path, pathConfigs)
+    const allPathConfigs = pathConfigsMap.get(pathToKey(nodeInitData.path))
+    if (!allPathConfigs?.length) throw new Error(`Couldn't find configs for path '${nodeInitData.path.join('/')}'`)
+    const exactPathConfigs = getExactPathConfigs(allPathConfigs, nodeInitData.config)
+    if (rendererInternalDataStore.has(nodeInitData.path, exactPathConfigs)) {
+      const internalDataState = rendererInternalDataStore.get(nodeInitData.path, exactPathConfigs)
       if (!internalDataState) return
       set(internalDataState, nodeInitData.internalData)
     } else {
-      rendererInternalDataStore.set(nodeInitData.path, pathConfigs, nodeInitData.internalData)
+      rendererInternalDataStore.set(nodeInitData.path, exactPathConfigs, nodeInitData.internalData)
     }
   }))
 }
