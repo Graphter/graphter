@@ -17,6 +17,12 @@ The primary business of this system is breaking data structures apart into units
 
 #### External Node Data
 
+## Config
+
+### Node Configs
+
+### Path Configs
+
 ## Path
 
 ### Path Segment

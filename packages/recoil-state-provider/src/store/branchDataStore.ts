@@ -5,6 +5,9 @@ import { pathChildrenStore } from "./pathChildrenStore";
 import { nodeRendererStore } from "@graphter/renderer-react";
 import { rendererInternalDataStore } from "./rendererInternalDataStore";
 import { pathToKey } from "@graphter/renderer-react";
+import { pathConfigsStore } from "./pathConfigsStore";
+import { getExactPathConfigs } from "../utils/getExactPathConfigs";
+import { pathConfigsToString } from "../utils/pathConfigsToString";
 
 const treeDataMap: Map<string, RecoilValueReadOnly<any>> = new Map()
 
@@ -18,24 +21,34 @@ const get = <T>(startingPath: Array<PathSegment>, depth?: number) => {
     key: key,
     get: ({get}) => {
       function getNodeData(path: Array<PathSegment>): any {
-        const pathConfigSetsState = nodeConfigSetsStore.get(path)
-        const childPathsState = pathChildrenStore.get(path)
-        if (!pathConfigSetsState) throw new Error(`Missing path config state at path ${path.join('/')}`)
-        if (!childPathsState) throw new Error(`Missing child paths state at path ${path.join('/')}`)
-        const pathConfigSets = get(pathConfigSetsState)
-        const pathConfigs = pathConfigSets.configSets.get(pathConfigSets.activeConfigsKey)
-        if(!pathConfigs) throw new Error(`Can't find active configs at '${path.join('/')}'`)
-        const childPaths = get<Array<Array<PathSegment>>>(childPathsState)
+        const nodeConfigSetsState = nodeConfigSetsStore.get(path)
+        if (!nodeConfigSetsState) throw new Error(`Missing path config state at path ${path.join('/')}`)
+        const nodeConfigSets = get(nodeConfigSetsState)
+        const nodeConfigs = nodeConfigSets.configSets.get(nodeConfigSets.activeConfigsKey)
+        if(!nodeConfigs) throw new Error(`Can't find active configs at '${path.join('/')}'`)
 
+        function getChildData(){
+          if(!pathChildrenStore.has(path)) return null
+          const childPathsState = pathChildrenStore.get(path)
+          if (!childPathsState) return null
+          const childPaths = get<Array<Array<PathSegment>>>(childPathsState)
+          return childPaths.length ?
+            childPaths.map(childPath => getNodeData(childPath)) :
+            null
+        }
 
-        const childData = childPaths.length ?
-          childPaths.map(childPath => getNodeData(childPath)) :
-          null
-
+        const childData = getChildData()
+        const pathConfigsState = pathConfigsStore.get(path)
+        const pathConfigs = get(pathConfigsState)
         // transform from the bottom most path node -> up
-        const externalNodeData = [ ...pathConfigs ].reverse().reduce<any>((a, c) => {
-          const internalDataState = rendererInternalDataStore.get(path, c)
-          if (!internalDataState) throw new Error(`Missing internal data for path '${path.join('/')}' node ${c.id}`)
+        const externalNodeData = [ ...nodeConfigs ].reverse().reduce<any>((a, c) => {
+          const exactPathConfigs = getExactPathConfigs(pathConfigs, c)
+          const internalDataState = rendererInternalDataStore.get(path, exactPathConfigs)
+          if (!internalDataState){
+            throw new Error(`Missing internal data for ${
+              pathConfigsToString(exactPathConfigs)
+            } at path '${path.join('/')}' node ${c.id}`)
+          }
           const internalData = get(internalDataState)
           const rendererReg = nodeRendererStore.get(c.type)
           const rendererInternalData = typeof internalData !== 'undefined' ? internalData : a

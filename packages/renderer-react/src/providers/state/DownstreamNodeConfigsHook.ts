@@ -1,5 +1,4 @@
 import { NodeConfig, PathSegment } from "@graphter/core";
-import { PathMeta } from "./PathMeta";
 
 export interface DownstreamNodeConfigsHook {
   (path: Array<PathSegment>, config: NodeConfig): {
