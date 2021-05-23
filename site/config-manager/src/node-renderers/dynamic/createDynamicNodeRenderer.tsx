@@ -6,6 +6,7 @@ import { isDynamicConfig } from "./isDynamicConfig";
 import { nodeRendererStore, useTreeDataInitialiser } from "@graphter/renderer-react";
 import { serviceStore } from "@graphter/renderer-react";
 import { useTreeData } from "@graphter/renderer-react";
+import { useDownstreamNodeConfigs } from "@graphter/renderer-react";
 
 const createDynamicNodeRenderer = (configServiceId: string) => {
   const configService = serviceStore.get(configServiceId)
@@ -23,7 +24,6 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
     if(!pathValidation.valid) throw new Error(`Invalid local target path: ${pathValidation.reason}`)
 
     const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]
-    const treeDataInitialiser = useTreeDataInitialiser()
 
     const targetNodeData = useTreeData<any>(targetPath)
     const targetNodeDataType = typeof targetNodeData
@@ -31,31 +31,30 @@ const createDynamicNodeRenderer = (configServiceId: string) => {
       throw new Error(`RendererOptionsNodeRenderer target data type '${targetNodeDataType}' is unsupported`)
     }
 
-    const [ childConfig, setChildConfig ] = useState<NodeConfig | null>(null)
-    const [ rendererRegistration, setRendererRegistration ] = useState<NodeRendererRegistration | null>(null)
+    const {
+      downstreamConfigs,
+      setDownstreamConfig,
+      removeDownstreamConfig
+    } = useDownstreamNodeConfigs(path, config)
 
     useEffect(() => {
       (async () => {
         if(targetNodeDataType === 'undefined' || targetNodeData === null) return
         const getConfigResult = await configService.get(targetNodeData)
         if(!getConfigResult.item) {
-          setRendererRegistration(null)
+          removeDownstreamConfig()
           return
         }
-        setChildConfig(getConfigResult.item)
-        const rendererRegistration = nodeRendererStore.get(getConfigResult.item.type)
-        if(!rendererRegistration) {
-          setRendererRegistration(null)
-          return
-        }
-        await treeDataInitialiser(getConfigResult.item, path, originalTreeData)
-        setRendererRegistration(rendererRegistration)
+        setDownstreamConfig(getConfigResult.item)
       })()
     }, [ targetNodeData ])
 
-    if(!childConfig || ! rendererRegistration) return (
+    if(!downstreamConfigs?.length) return (
       <div className='text-center p-10 text-gray-300'>N/A</div>
     )
+
+    const childConfig = downstreamConfigs[0]
+    const rendererRegistration = nodeRendererStore.get(childConfig.type)
 
     return (
       <>
