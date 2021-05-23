@@ -16,19 +16,27 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   const initialiseTreeData = useRecoilCallback(({snapshot}) =>
     async (config: NodeConfig, path: Array<PathSegment>, treeData: any) => {
 
-      const newSnapshot = await snapshot.asyncMap(async ({set}) => {
-        console.log(`Initialising branch at '${path.join('/')}' starting with config: ${config.id}`)
-        const rendererRegistration = nodeRendererStore.get(config.type)
-        if (!rendererRegistration?.initialiser) return
-        const initData = await rendererRegistration.initialiser(treeData, config, path)
-        // Must occur in this order because they each depend on the previous init being completed
+      console.log(`Initialising branch at '${path.join('/')}' starting with config: ${config.id}`)
+      const rendererRegistration = nodeRendererStore.get(config.type)
+      if (!rendererRegistration?.initialiser) return
+      const initData = await rendererRegistration.initialiser(treeData, config, path)
+
+      // Must occur in this order because they each depend on the previous init being completed
+
+      let newSnapshot = await snapshot.asyncMap(async ({set}) => {
         await initialiseNodeConfigSets(initData, snapshot.getPromise, set)
-        await initialiseRendererInternalData(initData, snapshot.getPromise, set)
-        await initialisePathChildren(initData, snapshot.getPromise, set)
-        console.log(`Initialised branch at '${path.join('/')}' starting with config: ${config.id}`)
+      })
+
+      newSnapshot = await newSnapshot.asyncMap(async ({set}) => {
+        await initialiseRendererInternalData(initData, newSnapshot.getPromise, set)
+      })
+
+      newSnapshot = await newSnapshot.asyncMap(async ({set}) => {
+        await initialisePathChildren(initData, newSnapshot.getPromise, set)
       })
 
       gotoSnapshot(newSnapshot)
+      console.log(`Initialised branch at '${path.join('/')}' starting with config: ${config.id}`)
 
     }, [])
 
