@@ -10,7 +10,10 @@ export const get = (
   path: Array<PathSegment>
 ): RecoilState<Array<any>> => {
   const key = getKey(path)
-  if(!childPathsMap.has(key)) throw new Error(`Couldn't find path children state at '${path.join('/')}'`)
+  if(!childPathsMap.has(key)){
+    console.log(`Initialising path '${path.join('/')}' with no children`)
+    set(path, [])
+  }
   const state = childPathsMap.get(key)
   if(typeof state === 'undefined') throw new Error('Should not happen')
   return state
