@@ -41,8 +41,17 @@ export const useRecoilDownstreamNodeConfigs: DownstreamNodeConfigsHook = (
     configs,
     downstreamConfigs,
     setDownstreamConfig: (newConfig: NodeConfig) => {
-      initialiseBranch(newConfig)
-      console.log('hello world')
+      const downstreamConfig = downstreamConfigs[0]
+      if(
+        !downstreamConfig || (
+          downstreamConfig.id !== newConfig.id &&
+          downstreamConfig.type !== newConfig.type
+        )
+      ){
+        initialiseBranch(newConfig)
+      } else {
+        console.log('No change to downstream config so skipping init')
+      }
     },
     removeDownstreamConfig: () => {
 
