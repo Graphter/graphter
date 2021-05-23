@@ -20,7 +20,8 @@ export const listOptionsConfig: NodeConfig = {
           'CUSTOM': 'Custom',
           'INLINE': 'Inline'
         }
-      }
+      },
+      default: 'INLINE'
     },
     {
       id: 'maxItems',

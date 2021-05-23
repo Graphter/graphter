@@ -10,6 +10,8 @@ import { RecoilValue, SetRecoilState, useGotoRecoilSnapshot, useRecoilCallback }
 import { NodeConfig, NodeInitialisationData, PathSegment } from "@graphter/core";
 import { getExactPathConfigs } from "../utils/getExactPathConfigs";
 import { pathConfigsToString } from "../utils/pathConfigsToString";
+import { createDefault } from "@graphter/renderer-react";
+import { pathUtils } from "@graphter/renderer-react";
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   const gotoSnapshot = useGotoRecoilSnapshot();
@@ -28,7 +30,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       })
 
       newSnapshot = await newSnapshot.asyncMap(async ({set}) => {
-        await initialiseRendererInternalData(initData, newSnapshot.getPromise, set)
+        await initialiseRendererInternalData(initData, treeData, newSnapshot.getPromise, set)
       })
 
       newSnapshot = await newSnapshot.asyncMap(async ({set}) => {
@@ -93,6 +95,7 @@ async function initialiseNodeConfigSets(
 
 async function initialiseRendererInternalData(
   initData: Array<NodeInitialisationData>,
+  treeData: any,
   get: <T>(recoilValue: RecoilValue<T>) => Promise<T>,
   set: SetRecoilState
 ) {
@@ -120,6 +123,15 @@ async function initialiseRendererInternalData(
     const allPathConfigs = pathConfigsMap.get(pathToKey(nodeInitData.path))
     if (!allPathConfigs?.length) throw new Error(`Couldn't find configs for path '${nodeInitData.path.join('/')}'`)
     const exactPathConfigs = getExactPathConfigs(allPathConfigs, nodeInitData.config)
+    if (typeof nodeInitData.internalData === 'undefined') {
+      const rendererReg = nodeRendererStore.get(nodeInitData.config.type)
+      if (rendererReg.createFallbackDefaultValue) {
+        nodeInitData.internalData = createDefault(nodeInitData.config, await rendererReg.createFallbackDefaultValue(
+          nodeInitData.config,
+          nodeInitData.path,
+          (path: Array<PathSegment>) => pathUtils.getValueByGlobalPath(path, treeData)))
+      }
+    }
     if (rendererInternalDataStore.has(nodeInitData.path, exactPathConfigs)) {
       const internalDataState = rendererInternalDataStore.get(nodeInitData.path, exactPathConfigs)
       if (!internalDataState) return
@@ -139,15 +151,15 @@ async function initialisePathChildren(
 ) {
   const pathChildren = initData.reduce<Map<string, { path: Array<PathSegment>, children: Array<Array<PathSegment>> }>>(
     (a, c) => {
-      if(c.path.length <= 2) return a
+      if (c.path.length <= 2) return a
       const parentPath = c.path.slice(0, -1)
       console.log(`Path ${parentPath.join('/')} has child path ${c.path.join('/')}`)
       const parentPathKey = pathToKey(parentPath)
-      if(!a.has(parentPathKey)) a.set(parentPathKey, { path: parentPath, children: [ c.path ] })
+      if (!a.has(parentPathKey)) a.set(parentPathKey, {path: parentPath, children: [ c.path ]})
       else a.get(parentPathKey)?.children.push(c.path)
       return a
     }, new Map())
-  Array.from(pathChildren.values()).forEach(({ path, children }) => {
+  Array.from(pathChildren.values()).forEach(({path, children}) => {
     if (!pathChildrenStore.has(path)) {
       pathChildrenStore.set(path, children)
     } else {

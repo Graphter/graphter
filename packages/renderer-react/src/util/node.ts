@@ -1,5 +1,6 @@
 import { NodeConfig } from "@graphter/core";
 import clone from "rfdc";
+import nodeRendererStore from "../store/nodeRendererStore";
 
 export function createDefault(config: NodeConfig, fallbackValue: any = undefined): any {
   const defaultType = typeof config.default;
