@@ -17,5 +17,5 @@ export const getExactPathConfigs = (pathConfigs: Array<Array<NodeConfig>>, confi
           .join('/'))
         .join('//')
     }'`)
-  return [ ...pathConfigs.slice(0, -1), [ ...lastPathSegmentConfigs.slice(0, lastPathSegmentConfigIndex + 1) ] ]
+  return [ ...pathConfigs.slice(0, -1), [ ...lastPathSegmentConfigs.slice(0, lastPathSegmentConfigIndex + 2) ] ]
 }
