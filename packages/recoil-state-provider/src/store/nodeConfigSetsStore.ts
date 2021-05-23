@@ -1,7 +1,6 @@
 import { atom, RecoilState } from "recoil";
 import { NodeConfig, PathSegment } from "@graphter/core";
 import { pathToKey } from "@graphter/renderer-react";
-import { pathConfigsToString } from "../utils/pathConfigsToString";
 
 export interface NodeConfigSets {
   activeConfigsKey: string,
@@ -27,13 +26,9 @@ export const set = (
   path: Array<PathSegment>,
   configSets: NodeConfigSets
 ) => {
-  console.log(`Setting ${path.join('/')} configs to ${JSON.stringify(configSets)}`)
   checkPathArg(path)
-
   const pathKey = getPathKey(path)
-
   if(pathNodeConfigMap.has(pathKey)) throw new Error(`A value is already set for '${path.join('/')}'`)
-
   pathNodeConfigMap.set(pathKey, atom({
     key: pathKey,
     default: configSets

@@ -9,6 +9,7 @@ import { getConfigSetKey } from "../utils/getConfigSetKey";
 import { RecoilValue, SetRecoilState, useGotoRecoilSnapshot, useRecoilCallback } from "recoil";
 import { NodeConfig, NodeInitialisationData, PathSegment } from "@graphter/core";
 import { getExactPathConfigs } from "../utils/getExactPathConfigs";
+import { pathConfigsToString } from "../utils/pathConfigsToString";
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   const gotoSnapshot = useGotoRecoilSnapshot();
@@ -66,10 +67,11 @@ async function initialiseNodeConfigSets(
       const nodeConfigSets = await get(nodeConfigSetsState)
       if (nodeConfigSets.activeConfigsKey !== activeConfigsKey) {
         // Incoming state is different so add new config set and mark as active
-        nodeConfigSets.configSets.set(activeConfigsKey, configs)
+        const newConfigSets = new Map(nodeConfigSets.configSets)
+        newConfigSets.set(activeConfigsKey, configs)
         set(nodeConfigSetsState, {
           activeConfigsKey,
-          configSets: nodeConfigSets.configSets
+          configSets: newConfigSets
         })
       }
     } else {
@@ -113,8 +115,10 @@ async function initialiseRendererInternalData(
     if (rendererInternalDataStore.has(nodeInitData.path, exactPathConfigs)) {
       const internalDataState = rendererInternalDataStore.get(nodeInitData.path, exactPathConfigs)
       if (!internalDataState) return
+      console.log(`Changing internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
       set(internalDataState, nodeInitData.internalData)
     } else {
+      console.log(`Setting internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
       rendererInternalDataStore.set(nodeInitData.path, exactPathConfigs, nodeInitData.internalData)
     }
   }))
@@ -125,25 +129,24 @@ async function initialisePathChildren(
   get: <T>(recoilValue: RecoilValue<T>) => Promise<T>,
   set: SetRecoilState
 ) {
-  const pathChildren = await initData.reduce<Promise<Map<string, { path: Array<PathSegment>, children: Array<Array<PathSegment>> }>>>(
-    async (aPromise, c) => {
-      if(c.path.length <= 2) return aPromise
-      const a = await aPromise
+  const pathChildren = initData.reduce<Map<string, { path: Array<PathSegment>, children: Array<Array<PathSegment>> }>>(
+    (a, c) => {
+      if(c.path.length <= 2) return a
       const parentPath = c.path.slice(0, -1)
       console.log(`Path ${parentPath.join('/')} has child path ${c.path.join('/')}`)
       const parentPathKey = pathToKey(parentPath)
       if(!a.has(parentPathKey)) a.set(parentPathKey, { path: parentPath, children: [ c.path ] })
       else a.get(parentPathKey)?.children.push(c.path)
       return a
-    }, Promise.resolve(new Map()))
-  await Promise.all(Array.from(pathChildren.values()).map(async ({ path, children }) => {
+    }, new Map())
+  Array.from(pathChildren.values()).forEach(({ path, children }) => {
     if (!pathChildrenStore.has(path)) {
       pathChildrenStore.set(path, children)
     } else {
       const childPathsState = pathChildrenStore.get(path)
       set(childPathsState, children)
     }
-  }))
+  })
 }
 
 export interface PathMeta {

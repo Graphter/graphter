@@ -22,5 +22,7 @@ export const useRecoilNodeData: NodeDataHook = <D>(path: Array<PathSegment>, con
   const nodeInternalState = rendererInternalDataStore.get<D>(path, exactPathConfigs)
   if (!nodeInternalState) throw new Error(`Should have internal data state at '${pathConfigsToString(exactPathConfigs)}' ${config.id}[type=${config.type}] by now`)
 
-  return useRecoilState<D>(nodeInternalState)
+  const [ internalData, setInternalData ] = useRecoilState<D>(nodeInternalState)
+  console.log(`Reading internal state at '${pathConfigsToString(exactPathConfigs)}'`, internalData)
+  return [internalData, setInternalData ]
 }

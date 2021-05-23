@@ -35,7 +35,6 @@ export const set = <T>(
   pathConfigs: Array<Array<NodeConfig>>,
   internalData: T
 ) => {
-  console.log(`Setting ${pathConfigsToString(pathConfigs)} state to ${JSON.stringify(internalData)}`)
   checkPathArg(path)
 
   const key = getKey(path, pathConfigs)
