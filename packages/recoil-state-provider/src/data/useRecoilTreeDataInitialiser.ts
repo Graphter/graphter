@@ -22,7 +22,7 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       const rendererRegistration = nodeRendererStore.get(config.type)
       if (!rendererRegistration?.initialiser) return
       const initData = await rendererRegistration.initialiser(treeData, config, path)
-
+      initData.forEach((d, i) => console.log( { i, path: d.path.join('/'), configId: d.config.id, data: d.internalData }))
       // Must occur in this order because they each depend on the previous init being completed
 
       let newSnapshot = await snapshot.asyncMap(async ({set}) => {
@@ -119,7 +119,7 @@ async function initialiseRendererInternalData(
 
       return a
     }, Promise.resolve(new Map()))
-  await Promise.all(initData.map(async (nodeInitData) => {
+  await Promise.all(initData.map(async (nodeInitData, i) => {
     const allPathConfigs = pathConfigsMap.get(pathToKey(nodeInitData.path))
     if (!allPathConfigs?.length) throw new Error(`Couldn't find configs for path '${nodeInitData.path.join('/')}'`)
     const exactPathConfigs = getExactPathConfigs(allPathConfigs, nodeInitData.config)
@@ -134,11 +134,11 @@ async function initialiseRendererInternalData(
     }
     if (rendererInternalDataStore.has(nodeInitData.path, exactPathConfigs)) {
       const internalDataState = rendererInternalDataStore.get(nodeInitData.path, exactPathConfigs)
-      if (!internalDataState) return
-      console.log(`Changing internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
+      if (!internalDataState) throw new Error('Should not happen')
+      console.log(`#${i} Changing internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
       set(internalDataState, nodeInitData.internalData)
     } else {
-      console.log(`Setting internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
+      console.log(`#${i} Setting internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
       rendererInternalDataStore.set(nodeInitData.path, exactPathConfigs, nodeInitData.internalData)
     }
   }))

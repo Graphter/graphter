@@ -8,7 +8,7 @@ import { NodeConfig } from "@graphter/core";
 export const getExactPathConfigs = (pathConfigs: Array<Array<NodeConfig>>, config: NodeConfig): Array<Array<NodeConfig>> => {
   const lastPathSegmentConfigs = pathConfigs[pathConfigs.length - 1]
   const lastPathSegmentConfigIndex = lastPathSegmentConfigs
-    .findIndex(config => config.id === config.id && config.type === config.type)
+    .findIndex(eachConfig => eachConfig.id === config.id && eachConfig.type === config.type)
   if (lastPathSegmentConfigIndex === -1)
     throw new Error(`Couldn't find config '${config.id}' in the path configs '${
       pathConfigs
@@ -17,5 +17,5 @@ export const getExactPathConfigs = (pathConfigs: Array<Array<NodeConfig>>, confi
           .join('/'))
         .join('//')
     }'`)
-  return [ ...pathConfigs.slice(0, -1), [ ...lastPathSegmentConfigs.slice(0, lastPathSegmentConfigIndex + 2) ] ]
+  return [ ...pathConfigs.slice(0, -1), [ ...lastPathSegmentConfigs.slice(0, lastPathSegmentConfigIndex + 1) ] ]
 }

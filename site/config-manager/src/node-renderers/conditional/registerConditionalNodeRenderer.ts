@@ -11,7 +11,6 @@ export function registerConditionalNodeRenderer(options?: ConditionalNodeRendere
     type: options?.type || 'conditional',
     name: 'Conditional',
     description: 'Conditional data structure depending on the value of another part of the tree',
-    createFallbackDefaultValue: () => Promise.resolve([]),
     initialiser: conditionalInitialiser,
     Renderer: ConditionalNodeRenderer,
     options
