@@ -30,12 +30,13 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       })
 
       newSnapshot = await newSnapshot.asyncMap(async ({set}) => {
-        await initialiseRendererInternalData(initData, treeData, newSnapshot.getPromise, set)
+        await initialisePathChildren(initData, newSnapshot.getPromise, set)
       })
 
       newSnapshot = await newSnapshot.asyncMap(async ({set}) => {
-        await initialisePathChildren(initData, newSnapshot.getPromise, set)
+        await initialiseRendererInternalData(initData, treeData, newSnapshot.getPromise, set)
       })
+
 
       gotoSnapshot(newSnapshot)
       console.log(`Initialised branch at '${path.join('/')}' starting with config: ${config.id}`)
@@ -149,17 +150,21 @@ async function initialisePathChildren(
   get: <T>(recoilValue: RecoilValue<T>) => Promise<T>,
   set: SetRecoilState
 ) {
-  const pathChildren = initData.reduce<Map<string, { path: Array<PathSegment>, children: Array<Array<PathSegment>> }>>(
+  const pathChildren = initData.reduce<Map<string, { path: Array<PathSegment>, childMap: Map<string, Array<PathSegment>> }>>(
     (a, c) => {
-      if (c.path.length <= 2) return a
+      const pathKey = pathToKey(c.path)
+      a.set(pathKey, { path: c.path, childMap: new Map() })
       const parentPath = c.path.slice(0, -1)
       console.log(`Path ${parentPath.join('/')} has child path ${c.path.join('/')}`)
       const parentPathKey = pathToKey(parentPath)
-      if (!a.has(parentPathKey)) a.set(parentPathKey, {path: parentPath, children: [ c.path ]})
-      else a.get(parentPathKey)?.children.push(c.path)
+      const parent = a.get(parentPathKey)
+      if(parent){
+        parent.childMap.set(pathKey, c.path)
+      }
       return a
     }, new Map())
-  Array.from(pathChildren.values()).forEach(({path, children}) => {
+  Array.from(pathChildren.values()).forEach(({path, childMap}) => {
+    const children = Array.from(childMap.values())
     if (!pathChildrenStore.has(path)) {
       pathChildrenStore.set(path, children)
     } else {
