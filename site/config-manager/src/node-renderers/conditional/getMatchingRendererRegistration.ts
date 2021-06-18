@@ -7,7 +7,7 @@ export const getMatchingNodeDetails =
   async (
     config: NodeConfig,
     path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => Promise<T>
+    getNodeValue: <T>(path: Array<PathSegment>) => Promise<T | undefined>
   ) => {
   if(!isConditionalConfig(config)) throw new Error('Invalid config')
   const targetPath = [...path.slice(0, -1), ...config.options.siblingPath]

@@ -26,10 +26,11 @@ const get = <T>(startingPath: Array<PathSegment>, depth?: number) => {
         const nodeConfigSets = get(nodeConfigSetsState)
         const nodeConfigs = nodeConfigSets.configSets.get(nodeConfigSets.activeConfigsKey)
         if(!nodeConfigs) throw new Error(`Can't find active configs at '${path.join('/')}'`)
+        const pathConfigs = get(pathConfigsStore.get(path))
 
         function getChildData(){
-          if(!pathChildrenStore.has(path)) return null
-          const childPathsState = pathChildrenStore.get(path)
+          if(!pathChildrenStore.has(path, pathConfigs)) return null
+          const childPathsState = pathChildrenStore.get(path, pathConfigs)
           if (!childPathsState) return null
           const childPaths = get<Array<Array<PathSegment>>>(childPathsState)
           return childPaths.length ?
@@ -38,9 +39,6 @@ const get = <T>(startingPath: Array<PathSegment>, depth?: number) => {
         }
 
         const childData = getChildData()
-        const pathConfigsState = pathConfigsStore.get(path)
-        const pathConfigs = get(pathConfigsState)
-        if(!pathConfigs.length) throw new Error(`Couldn't find path configs at '${path.join('/')}'`)
         // transform from the bottom most path node -> up
         const externalNodeData = [ ...nodeConfigs ].reverse().reduce<any>((a, c) => {
           const exactPathConfigs = getExactPathConfigs(pathConfigs, c)
@@ -56,7 +54,7 @@ const get = <T>(startingPath: Array<PathSegment>, depth?: number) => {
           if (!childData?.length || !rendererReg.mergeChildData) return rendererInternalData
           else return rendererReg.mergeChildData(c, path, rendererInternalData, getNodeData, childData)
         }, undefined)
-
+        console.log({ path: path.join('/'), externalNodeData })
         return externalNodeData
       }
 

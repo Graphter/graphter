@@ -1,8 +1,9 @@
 import React, {useEffect, useState} from 'react';
-import { NodeConfig } from "@graphter/core";
+import { NodeConfig, PathSegment } from "@graphter/core";
 import { isEmpty } from "../../util/id";
 import { useTreeDataInitialiser } from "../../providers/state";
 import serviceStore from "../../store/serviceStore";
+import { pathUtils } from '../../util/path';
 
 interface UseDataResult {
   loading: boolean,
@@ -25,7 +26,9 @@ export const useData = (config: NodeConfig, instanceId: string | number): UseDat
             setResult({ loading: false, error: new Error(`Couldn't find a '${config.name}' with ID '${instanceId}'`) })
             return;
           }
-          await treeDataInitialiser(config, [ config.id, instanceId ], getResult.item)
+          await treeDataInitialiser(config, [ config.id, instanceId ], (path: Array<PathSegment>) =>
+            pathUtils.getValueByGlobalPath(getResult.item, path, null)
+          )
           setResult({ loading: false, data: getResult.item })
         } catch (err) {
           console.error(err)

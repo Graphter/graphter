@@ -16,6 +16,7 @@ import { isListConfig } from "./isListConfig";
 import { nanoid } from 'nanoid'
 import { useNodeData } from "@graphter/renderer-react";
 import { useTreeDataInitialiser } from "@graphter/renderer-react";
+import { useChildPaths } from "@graphter/renderer-react";
 
 export interface ItemMeta {
   item: any
@@ -46,6 +47,8 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   const treeDataInitialiser = useTreeDataInitialiser()
 
   const [ itemsMeta, setItemsMeta ] = useNodeData<Array<ItemMeta>>(path, config, originalTreeData)
+
+  const [ childPaths, setChildPaths ] = useChildPaths(path)
 
   useEffect(() => {
     if (!itemsMeta) {
@@ -80,9 +83,9 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
   return (
     <div className='flex flex-col' data-nodetype='list' data-nodepath={path.join('/')}>
       <div className='' data-testid='items'>
-        {itemsMeta && itemsMeta.map((itemMeta: ItemMeta, i: number) => {
-          if (itemMeta.deleted) return null
-          const childPath = [ ...path, i ]
+        {childPaths && childPaths.map((childPath, i: number) => {
+          const itemMeta = itemsMeta[i]
+          if (!itemMeta || itemMeta.deleted) return null
 
           function setEditMode(key: string, editMode: boolean) {
             editMode ? editingItems.add(key) : editingItems.delete(key)
@@ -125,10 +128,10 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
           className='p-5 border border-dashed rounded hover:border-blue-200 hover:bg-gray-50 transition-colours duration-200 text-blue-300'
           onClick={() => {
             (async () => {
-              await treeDataInitialiser(childConfig, [ ...path, itemsMeta.length ], originalTreeData)
-              const childPath = [ ...path, itemsMeta.length ]
+              await treeDataInitialiser(childConfig, [ ...path, itemsMeta.length ])
+              const newChildPath = [ ...path, itemsMeta.length ]
               const childFallbackValue = childRendererRegistration.createFallbackDefaultValue ?
-                childRendererRegistration.createFallbackDefaultValue(childConfig, childPath, (path) => pathUtils.getValueByGlobalPath(originalTreeData, path)) :
+                childRendererRegistration.createFallbackDefaultValue(childConfig, newChildPath, (path) => pathUtils.getValueByGlobalPath(originalTreeData, path)) :
                 null
               setItemsMeta([
                 ...itemsMeta,
@@ -139,6 +142,7 @@ const ListNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRenderer((
                   deleted: false
                 }
               ])
+              setChildPaths([ ...childPaths, newChildPath ])
             })()
           }}
           data-testid='add-item-btn'

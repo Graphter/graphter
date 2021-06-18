@@ -37,7 +37,7 @@ export default function NodeEditRenderer(
   const topNodeConfig = useConfig(topNodeConfigId)
 
   const save = useTreeDataCallback(
-    (treeData) => {
+    async (treeData) => {
       console.log('saving model ', treeData)
     },
     path)

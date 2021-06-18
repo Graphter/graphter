@@ -4,26 +4,32 @@ import { nodeRendererStore } from "@graphter/renderer-react";
 import { isObjectConfig } from "./isObjectConfig";
 
 export const objectInitialiser: NodeDataInitialiserFn = async (
-  originalTreeData,
+  getBranchData,
   config,
   path
 ) => {
   if(!isObjectConfig(config)) throw new Error('ObjectNodeRenderer received invalid config')
-  const originalNodeData = pathUtils.getValueByGlobalPath(originalTreeData, path, createDefault(config, {}))
+  let extractedExternalData = await getBranchData(path)
+
+  const rendererReg = nodeRendererStore.get(config.type)
+  const externalNodeData: { [key: string]: any } = typeof extractedExternalData === 'undefined' ?
+    createDefault(config, rendererReg.createFallbackDefaultValue ? rendererReg.createFallbackDefaultValue(config, path, getBranchData) : null) :
+    extractedExternalData
+
   const nodeMeta = {
     path,
     config,
-    internalData: originalNodeData
+    internalData: externalNodeData
   }
 
   const childNodeMetas = (await Promise.all(config.children.map((childConfig) => {
     const childRendererReg = nodeRendererStore.get(childConfig.type)
     const childPath = [ ...path, childConfig.id ]
-    if(childRendererReg?.initialiser) return childRendererReg.initialiser(originalTreeData, childConfig, childPath)
+    if(childRendererReg?.initialiser) return childRendererReg.initialiser(getBranchData, childConfig, childPath)
     const childPathMeta = {
       path: childPath,
       config: childConfig,
-      internalData: originalNodeData[childConfig.id]
+      internalData: externalNodeData[childConfig.id]
     }
     return Promise.resolve([ childPathMeta ])
   }))).flat()

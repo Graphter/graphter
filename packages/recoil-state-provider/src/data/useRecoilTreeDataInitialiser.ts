@@ -11,17 +11,24 @@ import { NodeConfig, NodeInitialisationData, PathSegment } from "@graphter/core"
 import { getExactPathConfigs } from "../utils/getExactPathConfigs";
 import { pathConfigsToString } from "../utils/pathConfigsToString";
 import { createDefault } from "@graphter/renderer-react";
-import { pathUtils } from "@graphter/renderer-react";
+import branchDataStore from '../store/branchDataStore';
+import { pathConfigsStore } from '../store/pathConfigsStore';
 
 export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
   const gotoSnapshot = useGotoRecoilSnapshot();
   const initialiseTreeData = useRecoilCallback(({snapshot}) =>
-    async (config: NodeConfig, path: Array<PathSegment>, treeData: any) => {
-
+    async (
+      config: NodeConfig,
+      path: Array<PathSegment>,
+      getBranchData?: <T>(path: Array<PathSegment>) => Promise<T | undefined>
+    ) => {
+      const implGetBranchData = getBranchData || (async (path: Array<PathSegment>) => {
+        return await snapshot.getPromise(branchDataStore.get(path))
+      })
       console.log(`Initialising branch at '${path.join('/')}' starting with config: ${config.id}`)
       const rendererRegistration = nodeRendererStore.get(config.type)
       if (!rendererRegistration?.initialiser) return
-      const initData = await rendererRegistration.initialiser(treeData, config, path)
+      const initData = await rendererRegistration.initialiser(implGetBranchData, config, path)
       initData.forEach((d, i) => console.log( { i, path: d.path.join('/'), configId: d.config.id, data: d.internalData }))
       // Must occur in this order because they each depend on the previous init being completed
 
@@ -34,17 +41,16 @@ export const useRecoilTreeDataInitialiser: TreeDataInitialiserHook = () => {
       })
 
       newSnapshot = await newSnapshot.asyncMap(async ({set}) => {
-        await initialiseRendererInternalData(initData, treeData, newSnapshot.getPromise, set)
+        await initialiseRendererInternalData(initData, implGetBranchData, newSnapshot.getPromise, set)
       })
-
 
       gotoSnapshot(newSnapshot)
       console.log(`Initialised branch at '${path.join('/')}' starting with config: ${config.id}`)
 
     }, [])
 
-  return async (config, path, treeData) => {
-    return initialiseTreeData(config, path, treeData)
+  return async (config, path, getBranchData) => {
+    return await initialiseTreeData(config, path, getBranchData)
   }
 }
 
@@ -96,7 +102,7 @@ async function initialiseNodeConfigSets(
 
 async function initialiseRendererInternalData(
   initData: Array<NodeInitialisationData>,
-  treeData: any,
+  getBranchData: <T>(path: Array<PathSegment>) => Promise<T>,
   get: <T>(recoilValue: RecoilValue<T>) => Promise<T>,
   set: SetRecoilState
 ) {
@@ -130,14 +136,14 @@ async function initialiseRendererInternalData(
         nodeInitData.internalData = createDefault(nodeInitData.config, await rendererReg.createFallbackDefaultValue(
           nodeInitData.config,
           nodeInitData.path,
-          (path: Array<PathSegment>) => pathUtils.getValueByGlobalPath(path, treeData)))
+          getBranchData))
       }
     }
     if (rendererInternalDataStore.has(nodeInitData.path, exactPathConfigs)) {
       const internalDataState = rendererInternalDataStore.get(nodeInitData.path, exactPathConfigs)
       if (!internalDataState) throw new Error('Should not happen')
       console.log(`#${i} Changing internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
-      set(internalDataState, nodeInitData.internalData)
+      //set(internalDataState, nodeInitData.internalData)
     } else {
       console.log(`#${i} Setting internal node data at '${pathConfigsToString(exactPathConfigs)}' to `, nodeInitData)
       rendererInternalDataStore.set(nodeInitData.path, exactPathConfigs, nodeInitData.internalData)
@@ -163,15 +169,17 @@ async function initialisePathChildren(
       }
       return a
     }, new Map())
-  Array.from(pathChildren.values()).forEach(({path, childMap}) => {
+  await Promise.all(Array.from(pathChildren.values()).map(async ({path, childMap}) => {
+    const pathConfigsState = pathConfigsStore.get(path)
+    const pathConfigs = await get(pathConfigsState)
     const children = Array.from(childMap.values())
-    if (!pathChildrenStore.has(path)) {
-      pathChildrenStore.set(path, children)
+    if (!pathChildrenStore.has(path, pathConfigs)) {
+      pathChildrenStore.set(path, pathConfigs, children)
     } else {
-      const childPathsState = pathChildrenStore.get(path)
-      set(childPathsState, children)
+      const childPathsState = pathChildrenStore.get(path, pathConfigs)
+      //set(childPathsState, children)
     }
-  })
+  }))
 }
 
 export interface PathMeta {

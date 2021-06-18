@@ -29,13 +29,13 @@ export interface CreateFallbackDefaultValueFn {
   (
     config: NodeConfig,
     path: Array<PathSegment>,
-    getNodeValue: <T>(path: Array<PathSegment>) => T
+    getBranchData: <T>(path: Array<PathSegment>) => Promise<T | undefined>
   ): Promise<any>
 }
 
 export interface NodeDataInitialiserFn {
   (
-    originalTreeData: any,
+    getInternalData: <T>(path: Array<PathSegment>) => Promise<T | undefined>,
     config: NodeConfig,
     path: Array<PathSegment>
   ): Promise<Array<NodeInitialisationData>>
