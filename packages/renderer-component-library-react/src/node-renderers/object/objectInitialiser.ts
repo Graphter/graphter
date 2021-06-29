@@ -22,7 +22,11 @@ export const objectInitialiser: NodeDataInitialiserFn = async (
     internalData: externalNodeData
   }
 
-  const childNodeMetas = (await Promise.all(config.children.map((childConfig) => {
+  if(externalNodeData === null){
+    return [ nodeMeta ]
+  }
+
+  const childNodeMetas =  (await Promise.all(config.children.map((childConfig) => {
     const childRendererReg = nodeRendererStore.get(childConfig.type)
     const childPath = [ ...path, childConfig.id ]
     if(childRendererReg?.initialiser) return childRendererReg.initialiser(getBranchData, childConfig, childPath)
