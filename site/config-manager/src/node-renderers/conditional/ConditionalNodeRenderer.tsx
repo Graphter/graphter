@@ -35,8 +35,7 @@ const ConditionalNodeRenderer: ComponentType<NodeRendererProps> = setupNodeRende
     if(matchingChildConfig){
       setDownstreamConfig(matchingChildConfig)
     } else {
-      setChildPaths([])
-      removeDownstreamConfig()
+    removeDownstreamConfig()
     }
   }, [ targetNodeData ])
 
