@@ -57,7 +57,7 @@ export const useRecoilDownstreamNodeConfigs: DownstreamNodeConfigsHook = (
       }
     },
     removeDownstreamConfig: () => {
-
+      branchInitQueue.enqueue(initialiseBranch.bind(null, configs[currentConfigIndex], configs, treeDataInitialiser, path))
     }
   }
 }
@@ -70,7 +70,7 @@ const branchInitFn = async (
   path: Array<PathSegment>
 ): Promise<void> => {
   const firstNodeConfig = configs[0]
-  const replacingFirstConfig = firstNodeConfig.id === newConfig.id && firstNodeConfig.type === firstNodeConfig.type
+  const replacingFirstConfig = firstNodeConfig.id === newConfig.id && firstNodeConfig.type === newConfig.type
   // Delete the section of the tree we're about to (re)initialise so that any new branches have default data
   const obscuredTreeData = pathUtils.deleteAtGlobalPath(treeData, path)
   console.log('Initialising branch...')
